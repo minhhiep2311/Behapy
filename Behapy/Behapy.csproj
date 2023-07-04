@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="Templates\elements-enlink-bootstrap-admin-template-3VDP2EB-JtYh8cKK-10-10\.vscode\settings.json" />
+  </ItemGroup>
+
 </Project>
