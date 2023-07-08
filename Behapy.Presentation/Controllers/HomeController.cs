@@ -1,8 +1,8 @@
-﻿using Behapy.Models;
+﻿using Behapy.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace Behapy.Controllers
+namespace Behapy.Presentation.Controllers
 {
     public class HomeController : Controller
     {
