@@ -7,7 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Areas\Identity\Data\NewFile.txt" />
+    <None Remove="Areas\Identity\Data\using System%3b" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Behapy.Domain\Behapy.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Identity\Pages\Account\" />
   </ItemGroup>
 
 </Project>
