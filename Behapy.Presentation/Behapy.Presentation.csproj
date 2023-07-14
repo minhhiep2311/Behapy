@@ -21,4 +21,8 @@
     <ProjectReference Include="..\Behapy.Domain\Behapy.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Identity\Pages\Account\" />
+  </ItemGroup>
+
 </Project>
