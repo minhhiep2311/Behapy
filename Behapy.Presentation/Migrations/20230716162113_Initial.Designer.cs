@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Behapy.Presentation.Migrations
 {
     [DbContext(typeof(BehapyDbContext))]
-    [Migration("20230715154523_Initial")]
+    [Migration("20230716162113_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,12 +36,19 @@ namespace Behapy.Presentation.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -89,7 +96,7 @@ namespace Behapy.Presentation.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Behapy.Presentation.Models.Categories", b =>
+            modelBuilder.Entity("Behapy.Presentation.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -110,7 +117,7 @@ namespace Behapy.Presentation.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Behapy.Presentation.Models.Customers", b =>
+            modelBuilder.Entity("Behapy.Presentation.Models.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -122,19 +129,21 @@ namespace Behapy.Presentation.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Birthday")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Birthday")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("Behapy.Presentation.Models.Employees", b =>
+            modelBuilder.Entity("Behapy.Presentation.Models.Employee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -159,41 +168,7 @@ namespace Behapy.Presentation.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("Behapy.Presentation.Models.OrderDetails", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrderNumber")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PromotionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OrderDetails");
-                });
-
-            modelBuilder.Entity("Behapy.Presentation.Models.Orders", b =>
+            modelBuilder.Entity("Behapy.Presentation.Models.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -215,6 +190,7 @@ namespace Behapy.Presentation.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Discount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Note")
@@ -224,18 +200,67 @@ namespace Behapy.Presentation.Migrations
                     b.Property<int>("PaymentTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PromotionId")
+                    b.Property<int?>("PromotionId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalMoney")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("PaymentTypeId");
+
+                    b.HasIndex("PromotionId");
+
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Behapy.Presentation.Models.OrderStatuses", b =>
+            modelBuilder.Entity("Behapy.Presentation.Models.OrderDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Discount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderNumber")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PromotionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("PromotionId");
+
+                    b.ToTable("OrderDetails");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.OrderStatus", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -255,10 +280,12 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OrderId");
+
                     b.ToTable("OrderStatuses");
                 });
 
-            modelBuilder.Entity("Behapy.Presentation.Models.PaymentTypes", b =>
+            modelBuilder.Entity("Behapy.Presentation.Models.PaymentType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -279,7 +306,7 @@ namespace Behapy.Presentation.Migrations
                     b.ToTable("PaymentTypes");
                 });
 
-            modelBuilder.Entity("Behapy.Presentation.Models.Products", b =>
+            modelBuilder.Entity("Behapy.Presentation.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -298,6 +325,7 @@ namespace Behapy.Presentation.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Discount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ImageUrl")
@@ -312,17 +340,22 @@ namespace Behapy.Presentation.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("PromotionId")
+                    b.Property<int?>("PromotionId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("PromotionId");
+
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Behapy.Presentation.Models.Promotions", b =>
+            modelBuilder.Entity("Behapy.Presentation.Models.Promotion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -333,7 +366,8 @@ namespace Behapy.Presentation.Migrations
                     b.Property<DateTime>("EndAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("MaxDiscount")
+                    b.Property<decimal?>("MaxDiscount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
@@ -351,18 +385,20 @@ namespace Behapy.Presentation.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Value")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Voucher")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TypeId");
+
                     b.ToTable("Promotions");
                 });
 
-            modelBuilder.Entity("Behapy.Presentation.Models.PromotionTypes", b =>
+            modelBuilder.Entity("Behapy.Presentation.Models.PromotionType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -383,7 +419,43 @@ namespace Behapy.Presentation.Migrations
                     b.ToTable("PromotionTypes");
                 });
 
-            modelBuilder.Entity("Behapy.Presentation.Models.ServiceCategories", b =>
+            modelBuilder.Entity("Behapy.Presentation.Models.Service", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategroyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Services");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.ServiceCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -402,37 +474,6 @@ namespace Behapy.Presentation.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ServiceCategories");
-                });
-
-            modelBuilder.Entity("Behapy.Presentation.Models.Services", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SerCatId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Services");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -572,6 +613,115 @@ namespace Behapy.Presentation.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Behapy.Presentation.Models.Customer", b =>
+                {
+                    b.HasOne("Behapy.Presentation.Areas.Identity.Data.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.Order", b =>
+                {
+                    b.HasOne("Behapy.Presentation.Models.Customer", "Customer")
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Behapy.Presentation.Models.PaymentType", "PaymentType")
+                        .WithMany("Orders")
+                        .HasForeignKey("PaymentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Behapy.Presentation.Models.Promotion", "Promotion")
+                        .WithMany("Orders")
+                        .HasForeignKey("PromotionId");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("PaymentType");
+
+                    b.Navigation("Promotion");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.OrderDetail", b =>
+                {
+                    b.HasOne("Behapy.Presentation.Models.Order", "Order")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Behapy.Presentation.Models.Product", "Product")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("Behapy.Presentation.Models.Promotion", "Promotion")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("PromotionId");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Promotion");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.OrderStatus", b =>
+                {
+                    b.HasOne("Behapy.Presentation.Models.Order", "Order")
+                        .WithMany("OrderStatuses")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.Product", b =>
+                {
+                    b.HasOne("Behapy.Presentation.Models.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Behapy.Presentation.Models.Promotion", "Promotion")
+                        .WithMany("Products")
+                        .HasForeignKey("PromotionId");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Promotion");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.Promotion", b =>
+                {
+                    b.HasOne("Behapy.Presentation.Models.PromotionType", "Type")
+                        .WithMany("Promotions")
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.Service", b =>
+                {
+                    b.HasOne("Behapy.Presentation.Models.ServiceCategory", "Category")
+                        .WithMany("Services")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -621,6 +771,52 @@ namespace Behapy.Presentation.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.Category", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.Customer", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.Order", b =>
+                {
+                    b.Navigation("OrderDetails");
+
+                    b.Navigation("OrderStatuses");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.PaymentType", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.Product", b =>
+                {
+                    b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.Promotion", b =>
+                {
+                    b.Navigation("OrderDetails");
+
+                    b.Navigation("Orders");
+
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.PromotionType", b =>
+                {
+                    b.Navigation("Promotions");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.ServiceCategory", b =>
+                {
+                    b.Navigation("Services");
                 });
 #pragma warning restore 612, 618
         }
