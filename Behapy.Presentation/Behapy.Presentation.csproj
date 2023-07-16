@@ -4,11 +4,18 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>e4a6a32f-2859-46bf-ae96-3b45fc428d26</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Areas\Identity\Data\NewFile.txt" />
-    <None Remove="Areas\Identity\Data\using System%3b" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.18">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.14" />
   </ItemGroup>
 
   <ItemGroup>

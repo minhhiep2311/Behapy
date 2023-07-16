@@ -10,4 +10,3 @@ namespace Behapy.Presentation.Areas.Identity.Data;
 public class User : IdentityUser
 {
 }
-
