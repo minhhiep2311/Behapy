@@ -1,6 +1,6 @@
 ﻿namespace Behapy.Presentation.Models
 {
-    public class ServiceCategories
+    public class ServiceCategory
     {
         public int Id { get; set; }
         public string Name { get; set; }

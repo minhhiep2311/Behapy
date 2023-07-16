@@ -1,6 +1,6 @@
 ﻿namespace Behapy.Presentation.Models
 {
-    public class Orders
+    public class Order
     {
         public decimal Discount { get; set; }
         public int PaymentTypeId { get; set;}

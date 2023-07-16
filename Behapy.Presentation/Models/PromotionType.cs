@@ -1,6 +1,6 @@
 ﻿namespace Behapy.Presentation.Models
 {
-    public class PaymentTypes
+    public class PromotionType
     {
         public int Id { get; set; }
         public string Name { get; set; }
