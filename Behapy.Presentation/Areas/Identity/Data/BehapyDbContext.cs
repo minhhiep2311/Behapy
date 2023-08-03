@@ -11,18 +11,18 @@ public class BehapyDbContext : IdentityDbContext<User>
         : base(options)
     { }
 
-    public virtual DbSet<Categories> Categories { get; set; } = null!;
-    public virtual DbSet<Customers> Customers { get; set; } = null!;
-    public virtual DbSet<Employees> Employees { get; set; } = null!;
-    public virtual DbSet<OrderDetails> OrderDetails { get; set; } = null!;
-    public virtual DbSet<Orders> Orders { get; set; } = null!;
-    public virtual DbSet<OrderStatuses> OrderStatuses { get; set; } = null!;
-    public virtual DbSet<PaymentTypes> PaymentTypes { get; set; } = null!;
-    public virtual DbSet<Products> Products { get; set; } = null!;
-    public virtual DbSet<Promotions> Promotions { get; set; } = null!;
-    public virtual DbSet<PromotionTypes> PromotionTypes { get; set; } = null!;
-    public virtual DbSet<ServiceCategories> ServiceCategories { get; set; } = null!;
-    public virtual DbSet<Services> Services { get; set; } = null!;
+    public virtual DbSet<Category> Categories { get; set; } = null!;
+    public virtual DbSet<Customer> Customers { get; set; } = null!;
+    public virtual DbSet<Employee> Employees { get; set; } = null!;
+    public virtual DbSet<OrderDetail> OrderDetails { get; set; } = null!;
+    public virtual DbSet<Order> Orders { get; set; } = null!;
+    public virtual DbSet<OrderStatus> OrderStatuses { get; set; } = null!;
+    public virtual DbSet<PaymentType> PaymentTypes { get; set; } = null!;
+    public virtual DbSet<Product> Products { get; set; } = null!;
+    public virtual DbSet<Promotion> Promotions { get; set; } = null!;
+    public virtual DbSet<PromotionType> PromotionTypes { get; set; } = null!;
+    public virtual DbSet<ServiceCategory> ServiceCategories { get; set; } = null!;
+    public virtual DbSet<Service> Services { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
