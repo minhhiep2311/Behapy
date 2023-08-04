@@ -45,7 +45,7 @@ public class ProductsController : Controller
 	// GET: Products/Create
 	public IActionResult Create()
 	{
-		ViewData["Category"] = new SelectList(_context.Categories, null, "Name");
+		ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
 
 		Product model = new();
 		model.IsActive = true;
@@ -58,7 +58,7 @@ public class ProductsController : Controller
 	// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<IActionResult> Create([Bind("Id,Name,Price,IsActive,Description,ImageUrl,Discount,CreatedAt,Category,PromotionId")] Product product)
+	public async Task<IActionResult> Create([Bind("Id,Name,Price,IsActive,Description,ImageUrl,CategoryId")] Product product)
 	{
 		if (ModelState.IsValid)
 		{

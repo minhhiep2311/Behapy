@@ -123,7 +123,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItem");
+                    b.ToTable("CartItem", (string)null);
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.Category", b =>
@@ -144,7 +144,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.Customer", b =>
@@ -170,7 +170,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.Employee", b =>
@@ -195,7 +195,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.Order", b =>
@@ -245,7 +245,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasIndex("PromotionId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.OrderDetail", b =>
@@ -287,7 +287,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasIndex("PromotionId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.OrderStatus", b =>
@@ -312,7 +312,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderStatuses");
+                    b.ToTable("OrderStatuses", (string)null);
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.PaymentType", b =>
@@ -333,7 +333,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PaymentTypes");
+                    b.ToTable("PaymentTypes", (string)null);
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.Product", b =>
@@ -382,7 +382,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasIndex("PromotionId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.Promotion", b =>
@@ -425,7 +425,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Promotions");
+                    b.ToTable("Promotions", (string)null);
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.PromotionType", b =>
@@ -446,7 +446,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PromotionTypes");
+                    b.ToTable("PromotionTypes", (string)null);
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.Service", b =>
@@ -482,7 +482,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", (string)null);
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.ServiceCategory", b =>
@@ -503,7 +503,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ServiceCategories");
+                    b.ToTable("ServiceCategories", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

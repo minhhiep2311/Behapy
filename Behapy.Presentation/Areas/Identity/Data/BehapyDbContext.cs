@@ -27,5 +27,25 @@ public class BehapyDbContext : IdentityDbContext<User>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<Product>()
+            .Property(s => s.CreatedAt)
+            .HasDefaultValueSql("GETDATE()");
+
+        builder.Entity<User>()
+            .Property(s => s.CreatedAt)
+            .HasDefaultValueSql("GETDATE()");
+
+        builder.Entity<CartItem>()
+            .Property(s => s.CreatedAt)
+            .HasDefaultValueSql("GETDATE()");
+
+        builder.Entity<OrderStatus>()
+            .Property(s => s.CreatedAt)
+            .HasDefaultValueSql("GETDATE()");
+
+        builder.Entity<Service>()
+            .Property(s => s.CreatedAt)
+            .HasDefaultValueSql("GETDATE()");
     }
 }
