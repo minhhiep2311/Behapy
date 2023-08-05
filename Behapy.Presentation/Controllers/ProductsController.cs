@@ -1,18 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Behapy.Presentation.Data;
+using Behapy.Presentation.Models;
+using Behapy.Presentation.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Behapy.Presentation.Data;
-using Behapy.Presentation.Models;
 
 namespace Behapy.Presentation.Controllers;
 
 public class ProductsController : Controller
 {
     private readonly BehapyDbContext _context;
+    private readonly IFileService _fileService;
 
-    public ProductsController(BehapyDbContext context)
+    public ProductsController(BehapyDbContext context, IFileService fileService)
     {
         _context = context;
+        _fileService = fileService;
     }
 
     // GET: Products
@@ -48,17 +51,19 @@ public class ProductsController : Controller
     // GET: Products/Create
     public IActionResult Create()
     {
+        GetImageKitAuthenticationParameters();
+
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
 
-        Product model = new();
-        model.IsActive = true;
+        Product model = new()
+        {
+            IsActive = true
+        };
 
         return View(model);
     }
 
     // POST: Products/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,Name,Price,IsActive,Description,ImageUrl,CategoryId")] Product product)
@@ -69,6 +74,8 @@ public class ProductsController : Controller
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+        GetImageKitAuthenticationParameters();
 
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
 
@@ -88,14 +95,13 @@ public class ProductsController : Controller
         {
             return NotFound();
         }
+
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Id", product.PromotionId);
         return View(product);
     }
 
-    // POST: Products/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    // POST: Products/Edit/5LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,IsActive,Description,ImageUrl,Discount,CreatedAt,CategoryId,PromotionId")] Product product)
@@ -167,6 +173,15 @@ public class ProductsController : Controller
 
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
+    }
+
+    private void GetImageKitAuthenticationParameters()
+    {
+        var ikAuthParams = _fileService.GetAuthenticationParameters();
+
+        ViewData["Token"] = ikAuthParams.token;
+        ViewData["Signature"] = ikAuthParams.signature;
+        ViewData["Expire"] = ikAuthParams.expire;
     }
 
     private bool ProductExists(int id)
