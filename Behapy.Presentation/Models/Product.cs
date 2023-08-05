@@ -28,13 +28,12 @@ public class Product
 	[Display(Name = "Giảm giá")]
 	public decimal Discount { get; set; }
 
-	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 	[Display(Name = "Thời gian tạo")]
 	public DateTime CreatedAt { get; set; }
 
 	[Display(Name = "Danh mục")]
 	public int CategoryId { get; set; }
-	public Category Category { get; set; } = null!;
+	public Category? Category { get; set; }
 
 	[Display(Name = "Khuyến mãi")]
 	public int? PromotionId { get; set; }
