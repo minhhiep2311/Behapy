@@ -1,6 +1,8 @@
-using Microsoft.EntityFrameworkCore;
-using Behapy.Presentation.Data;
 using Behapy.Presentation.Areas.Identity.Data;
+using Behapy.Presentation.Data;
+using Behapy.Presentation.Services.Implementations;
+using Behapy.Presentation.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("BehapyDbContextConnection") ?? throw new InvalidOperationException("Connection string 'BehapyDbContextConnection' not found.");
@@ -13,6 +15,8 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IFileService, FileService>();
 
 var app = builder.Build();
 

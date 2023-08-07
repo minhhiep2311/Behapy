@@ -5,11 +5,13 @@ VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Behapy.Presentation", "Behapy.Presentation\Behapy.Presentation.csproj", "{A56847D9-63BA-43C0-8A22-DDB73A5315FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Behapy.Application", "Behapy.Application\Behapy.Application.csproj", "{00C286FE-492C-4378-8B60-1476E054B8DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Behapy.Application", "Behapy.Application\Behapy.Application.csproj", "{00C286FE-492C-4378-8B60-1476E054B8DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Behapy.Domain", "Behapy.Domain\Behapy.Domain.csproj", "{A3F40168-3F7E-4CD4-9F6B-3852B9935470}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Behapy.Domain", "Behapy.Domain\Behapy.Domain.csproj", "{A3F40168-3F7E-4CD4-9F6B-3852B9935470}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Behapy.Infrastructure", "Behapy.Infrastructure\Behapy.Infrastructure.csproj", "{EEC5267B-2B44-4268-A956-DC931437F7DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Behapy.Infrastructure", "Behapy.Infrastructure\Behapy.Infrastructure.csproj", "{EEC5267B-2B44-4268-A956-DC931437F7DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scripts", "Scripts\Scripts.csproj", "{FD5F4674-7A6A-448D-BA0C-A0D15744F8F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{EEC5267B-2B44-4268-A956-DC931437F7DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEC5267B-2B44-4268-A956-DC931437F7DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEC5267B-2B44-4268-A956-DC931437F7DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD5F4674-7A6A-448D-BA0C-A0D15744F8F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD5F4674-7A6A-448D-BA0C-A0D15744F8F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD5F4674-7A6A-448D-BA0C-A0D15744F8F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD5F4674-7A6A-448D-BA0C-A0D15744F8F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
