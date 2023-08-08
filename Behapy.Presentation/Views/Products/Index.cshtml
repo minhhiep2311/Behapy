@@ -16,7 +16,7 @@
             <h2 class="breadcrumb-heading">Shop Layout</h2>
             <ul>
               <li>
-                <a href="index.html">
+                <a href="/">
                   Home <i class="pe-7s-angle-right"></i>
                 </a>
               </li>
@@ -83,12 +83,12 @@
                  aria-labelledby="grid-view-tab">
               <div class="product-grid-view row">
 
-                @for (int i = 0; i < Model.Count; i++)
+                @for (var i = 0; i < Model.Count; i++)
                 {
                   var item = Model[i];
                   var pt6 = i != 0 ? "pt-6" : "";
                   var ptsm0 = i == 1 ? "pt-sm-0" : "";
-                  var ptlg0 = i == 2 || i == 3 ? "pt-lg-0" : "";
+                  var ptlg0 = i is 2 or 3 ? "pt-lg-0" : "";
 
                   <div class="col-lg-3 col-sm-6 @pt6 @ptsm0 @ptlg0">
                     <div class="product-item">
@@ -144,7 +144,7 @@
                  aria-labelledby="list-view-tab">
               <div class="product-list-view row">
 
-                @for (int i = 0; i < Model.Count; i++)
+                @for (var i = 0; i < Model.Count; i++)
                 {
                   var item = Model[i];
                   var pt6 = i != 0 ? "pt-6" : "";
