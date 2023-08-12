@@ -19,11 +19,19 @@ public class ProductsController : Controller
     }
 
     // GET: Products
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery(Name = "category")] int? categoryId,
+        [FromQuery(Name = "q")] string? searchText)
     {
+        ViewData["CategoryId"] = categoryId;
+        ViewData["SearchText"] = searchText;
+
         var products = _context.Products
             .Include(p => p.Category)
-            .Include(p => p.Promotion);
+            .Include(p => p.Promotion)
+            .Where(p =>
+                (categoryId == null || p.CategoryId == categoryId) &&
+                (string.IsNullOrWhiteSpace(searchText) || EF.Functions.Like(p.Name, $"%{searchText}%"))
+            );
 
         return View(await products.ToListAsync());
     }
@@ -66,7 +74,9 @@ public class ProductsController : Controller
     // POST: Products/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Name,Price,IsActive,Description,ImageUrl,CategoryId")] Product product)
+    public async Task<IActionResult> Create(
+        [Bind("Id,Name,Price,IsActive,Description,ImageUrl,CategoryId")]
+        Product product)
     {
         if (ModelState.IsValid)
         {
@@ -104,7 +114,9 @@ public class ProductsController : Controller
     // POST: Products/Edit/5LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,IsActive,Description,ImageUrl,Discount,CreatedAt,CategoryId,PromotionId")] Product product)
+    public async Task<IActionResult> Edit(int id,
+        [Bind("Id,Name,Price,IsActive,Description,ImageUrl,Discount,CreatedAt,CategoryId,PromotionId")]
+        Product product)
     {
         if (id != product.Id)
         {
@@ -127,8 +139,10 @@ public class ProductsController : Controller
 
                 throw;
             }
+
             return RedirectToAction(nameof(Index));
         }
+
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Id", product.PromotionId);
         return View(product);
@@ -167,6 +181,13 @@ public class ProductsController : Controller
 
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
+    }
+
+    // POST: Products/Search
+    [HttpPost]
+    public IActionResult Search(string category, string q)
+    {
+        return RedirectToAction("Index", new { category, q });
     }
 
     private void GetImageKitAuthenticationParameters()
