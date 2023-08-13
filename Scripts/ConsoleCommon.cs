@@ -2,19 +2,15 @@
 
 public static class ConsoleCommon
 {
-    public static int Ask(string question) => Ask(question, Array.Empty<string>());
-
-    public static int Ask(string question, string[] options) => Ask(question, options, Array.Empty<char?>());
-
     public static int Ask(string question, string[] options, char[] abbreviates) =>
         Ask(question, options, Array.ConvertAll<char, char?>(abbreviates, x => x));
 
-    public static int Ask(string question, string[] options, char?[] abbreviates)
+    private static int Ask(string question, IReadOnlyList<string> options, IReadOnlyList<char?> abbreviates)
     {
-        if (options.Length < abbreviates.Length) throw new Exception("Số phím tắt không được lớn hơn số lựa chọn!");
+        if (options.Count < abbreviates.Count) throw new Exception("Số phím tắt không được lớn hơn số lựa chọn!");
 
         var answerIdx = -1;
-        var choice = options.Length > 0 ? BuildChoice(options, abbreviates) : "";
+        var choice = options.Count > 0 ? BuildChoice(options, abbreviates) : "";
 
         do
         {
@@ -27,10 +23,10 @@ public static class ConsoleCommon
 
             if (answer is null) continue;
 
-            for (var i = 0; i < options.Length; i++)
+            for (var i = 0; i < options.Count; i++)
             {
                 if ((answer.Length == 1 && answer[0].ToString() == i.ToString()) ||
-                    (i < abbreviates.Length &&
+                    (i < abbreviates.Count &&
                      answer.Length == 1 &&
                      abbreviates[i] is not null &&
                      char.ToLower(answer[0]) == char.ToLower(abbreviates[i]!.Value)) ||
