@@ -1,14 +1,14 @@
 ﻿using Behapy.Presentation.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Behapy.Presentation.Areas.Identity.Data;
 
-public class BehapyDbContext : IdentityDbContext<User>
+public class BehapyDbContext : IdentityDbContext<User, Role, string>
 {
     public BehapyDbContext(DbContextOptions<BehapyDbContext> options)
-        : base(options)
-    { }
+        : base(options) { }
 
     public virtual DbSet<Category> Categories { get; set; } = null!;
     public virtual DbSet<Customer> Customers { get; set; } = null!;
@@ -26,6 +26,14 @@ public class BehapyDbContext : IdentityDbContext<User>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims");
+        builder.Entity<Role>().ToTable("Roles");
+        builder.Entity<User>().ToTable("Users");
+        builder.Entity<IdentityUserClaim<string>>().ToTable("UserClaims");
+        builder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins");
+        builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles");
+        builder.Entity<IdentityUserToken<string>>().ToTable("UserTokens");
 
         builder.Entity<Product>()
             .Property(s => s.CreatedAt)
@@ -46,5 +54,32 @@ public class BehapyDbContext : IdentityDbContext<User>
         builder.Entity<Service>()
             .Property(s => s.CreatedAt)
             .HasDefaultValueSql("GETDATE()");
+
+        // Seed data
+        builder.Entity<Role>().HasData(
+            new Role { Id = "08db1e18-c46f-4e76-8e77-69430f54d796", Name = "Admin", NormalizedName = "ADMIN" },
+            new Role { Id = "08db1e1a-7953-4790-8ebe-272e34a8fe18", Name = "User", NormalizedName = "USER" }
+        );
+
+        builder.Entity<User>().HasData(
+            new User
+            {
+                Id = "08db0f36-7dbb-436f-88e5-f1be70b3bda6",
+                UserName = "Admin",
+                NormalizedUserName = "ADMIN",
+                PasswordHash = new PasswordHasher<User>().HashPassword(null!, "123456"),
+                Email = "admin@gmail.com",
+                NormalizedEmail = "ADMIN@GMAIL.COM",
+                SecurityStamp = Guid.NewGuid().ToString()
+            }
+        );
+
+        builder.Entity<IdentityUserRole<string>>().HasData(
+            new IdentityUserRole<string>
+            {
+                UserId = "08db0f36-7dbb-436f-88e5-f1be70b3bda6",
+                RoleId = "08db1e18-c46f-4e76-8e77-69430f54d796"
+            }
+        );
     }
 }
