@@ -15,11 +15,13 @@ namespace Behapy.Presentation.Areas.Identity.Pages.Account;
 public class LoginModel : PageModel
 {
     private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<User> _userManager;
     private readonly ILogger<LoginModel> _logger;
 
-    public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger)
+    public LoginModel(SignInManager<User> signInManager, UserManager<User> userManager, ILogger<LoginModel> logger)
     {
         _signInManager = signInManager;
+        _userManager = userManager;
         _logger = logger;
     }
 
@@ -75,7 +77,7 @@ public class LoginModel : PageModel
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        [Display(Name = "Remember me?")]
+        [Display(Name = "Ghi nhớ đăng nhập")]
         public bool RememberMe { get; set; }
     }
 
@@ -104,31 +106,27 @@ public class LoginModel : PageModel
 
         if (!ModelState.IsValid) return Page();
 
-        // This doesn't count login failures towards account lockout
-        // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-        var result =
-            await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe,
-                lockoutOnFailure: false);
+        var user = await _userManager.FindByEmailAsync(Input.Email);
+        var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe, false);
+
         if (result.Succeeded)
         {
-            _logger.LogInformation("User logged in.");
+            _logger.LogInformation("User logged in");
             return LocalRedirect(returnUrl);
         }
 
         if (result.RequiresTwoFactor)
         {
-            return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+            return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe });
         }
 
         if (result.IsLockedOut)
         {
-            _logger.LogWarning("User account locked out.");
+            _logger.LogWarning("User account locked out");
             return RedirectToPage("./Lockout");
         }
 
-        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+        ModelState.AddModelError(string.Empty, "Đăng nhập thất bại");
         return Page();
-
-        // If we got this far, something failed, redisplay form
     }
 }

@@ -88,13 +88,12 @@
                   </button>
                   <ul class="dropdown-menu dropdown-menu-end"
                       aria-labelledby="settingButton">
-                    <li>
-                      <a class="dropdown-item" href="my-account.html">My account</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="login-register.html">Login | Register</a>
-                    </li>
+                    @await Html.PartialAsync("_LoginPartial")
                   </ul>
+                  
+                  @* <li class="dropdown"> *@
+                  @*   @await Component.InvokeAsync("AccountComponent") *@
+                  @* </li> *@
                 </li>
                 <li class="d-none d-md-block">
                   <a href="wishlist.html">

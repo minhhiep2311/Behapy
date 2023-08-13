@@ -16740,10 +16740,10 @@ blockquote .inner-content .user-name:before {
 }
 
 .header-right > ul .btn {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
+  /*display: -webkit-box;*/
+  /*display: -webkit-flex;*/
+  /*display: -ms-flexbox;*/
+  /*display: flex;*/
 }
 
 .header-right > ul .btn i {
