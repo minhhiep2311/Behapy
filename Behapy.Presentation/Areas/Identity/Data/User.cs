@@ -2,8 +2,8 @@
 
 namespace Behapy.Presentation.Areas.Identity.Data;
 
-public class User : IdentityUser
+public class User : IdentityUser<string>
 {
     public DateTime CreatedAt { get; set; }
-    public string ImageUrl { get; set; } = null!;
+    public string? ImageUrl { get; set; }
 }

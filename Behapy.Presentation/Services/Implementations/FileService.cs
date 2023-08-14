@@ -10,7 +10,7 @@ public class FileService : IFileService
 
     public FileService(IConfiguration configuration)
     {
-        ImageKit = new(configuration["ImageKit:PublicKey"], configuration["ImageKit:PrivateKey"], configuration["ImageKit:UrlEndpoint"]);
+        ImageKit = new ImagekitClient(configuration["ImageKit:PublicKey"], configuration["ImageKit:PrivateKey"], configuration["ImageKit:UrlEndpoint"]);
     }
 
     public AuthParamResponse GetAuthenticationParameters() => ImageKit.GetAuthenticationParameters();
