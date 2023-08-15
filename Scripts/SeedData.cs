@@ -13,7 +13,7 @@ internal class SeedData
 {
     private SqlConnection _connection = null!;
 
-    private const string DataFilePath = @"C:\Users\An\Downloads\Project Behapy.xlsx";
+    private const string DataFilePath = @"C:\Users\HP\Downloads\Behapy.xlsx";
 
     private static void Main(string[] args)
     {

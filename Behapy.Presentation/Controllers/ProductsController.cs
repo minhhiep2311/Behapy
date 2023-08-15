@@ -28,6 +28,15 @@ public class ProductsController : Controller
         return View(await products.ToListAsync());
     }
 
+    public async Task<IActionResult> Admin()
+    {
+        var products = _context.Products
+            .Include(p => p.Category)
+            .Include(p => p.Promotion);
+
+        return View(await products.ToListAsync());
+    }
+
     // GET: Products/Details/5
     public async Task<IActionResult> Details(int? id)
     {
