@@ -1,0 +1,16 @@
+﻿@model List<Behapy.Presentation.Models.Category>
+
+<form method="post" enctype="multipart/form-data" asp-controller="Products" asp-action="Search" class="header-searchbox">
+  <select name="category" class="nice-select select-search-category wide">
+    <option value="all"> Tất cả </option>
+    @foreach (var item in Model)
+    {
+      <option value="@item.Id" selected="@(ViewBag.CategoryId == item.Id)"> @item.Name </option>
+    }
+  </select>
+  <input name="q" value="@ViewBag.SearchText" class="input-field" type="text" placeholder="Search Products"/>
+  <button class="btn btn-outline-whisper btn-primary-hover"
+          type="submit">
+    <i class="pe-7s-search"></i>
+  </button>
+</form>
