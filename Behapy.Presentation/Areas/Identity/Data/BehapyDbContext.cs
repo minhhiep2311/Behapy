@@ -1,9 +1,8 @@
-﻿using Behapy.Presentation.Areas.Identity.Data;
-using Behapy.Presentation.Models;
+﻿using Behapy.Presentation.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Behapy.Presentation.Data;
+namespace Behapy.Presentation.Areas.Identity.Data;
 
 public class BehapyDbContext : IdentityDbContext<User>
 {

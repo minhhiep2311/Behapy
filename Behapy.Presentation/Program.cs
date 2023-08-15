@@ -1,5 +1,4 @@
 using Behapy.Presentation.Areas.Identity.Data;
-using Behapy.Presentation.Data;
 using Behapy.Presentation.Services.Implementations;
 using Behapy.Presentation.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;

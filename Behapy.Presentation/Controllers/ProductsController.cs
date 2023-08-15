@@ -1,4 +1,4 @@
-﻿using Behapy.Presentation.Data;
+﻿using Behapy.Presentation.Areas.Identity.Data;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +31,7 @@ public class ProductsController : Controller
     // GET: Products/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        if (id == null || _context.Products == null)
+        if (id == null)
         {
             return NotFound();
         }
@@ -85,7 +85,7 @@ public class ProductsController : Controller
     // GET: Products/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-        if (id == null || _context.Products == null)
+        if (id == null)
         {
             return NotFound();
         }
@@ -124,10 +124,8 @@ public class ProductsController : Controller
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
             return RedirectToAction(nameof(Index));
         }
@@ -139,7 +137,7 @@ public class ProductsController : Controller
     // GET: Products/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
-        if (id == null || _context.Products == null)
+        if (id == null)
         {
             return NotFound();
         }
@@ -161,10 +159,6 @@ public class ProductsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        if (_context.Products == null)
-        {
-            return Problem("Entity set 'BehapyDbContext.Products'  is null.");
-        }
         var product = await _context.Products.FindAsync(id);
         if (product != null)
         {
@@ -186,6 +180,6 @@ public class ProductsController : Controller
 
     private bool ProductExists(int id)
     {
-        return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();
+        return _context.Products.Any(e => e.Id == id);
     }
 }
