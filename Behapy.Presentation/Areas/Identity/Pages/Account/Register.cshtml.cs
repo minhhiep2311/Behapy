@@ -79,10 +79,10 @@ public class RegisterModel : PageModel
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
+        [StringLength(100, ErrorMessage = "{0} phải có tối thiểu {2} và tối đa {1} ký tự",
             MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Mật khẩu")]
         public string Password { get; set; }
 
         /// <summary>
@@ -90,9 +90,13 @@ public class RegisterModel : PageModel
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Xác nhận mật khẩu")]
+        [Compare("Password", ErrorMessage = "Mật khẩu và xác nhận mật khẩu không trùng khớp")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [Display(Name = "Họ tên")]
+        public string UserName { get; set; }
     }
 
 
@@ -117,7 +121,7 @@ public class RegisterModel : PageModel
 
         if (result.Succeeded)
         {
-            _logger.LogInformation("User created a new account with password.");
+            _logger.LogInformation("User created a new account with password");
 
             var userId = await _userManager.GetUserIdAsync(user);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -128,8 +132,11 @@ public class RegisterModel : PageModel
                 values: new { area = "Identity", userId, code, returnUrl },
                 protocol: Request.Scheme);
 
-            await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+            if (callbackUrl != null)
+            {
+                await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+            }
 
             if (_userManager.Options.SignIn.RequireConfirmedAccount)
             {

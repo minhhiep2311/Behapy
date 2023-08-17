@@ -49,14 +49,11 @@ public class CategoriesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,Name,Description")] Category category)
     {
-        if (ModelState.IsValid)
-        {
-            _context.Add(category);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        if (!ModelState.IsValid) return View(category);
 
-        return View(category);
+        _context.Add(category);
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
     }
 
     // GET: Categories/Edit/5
@@ -90,7 +87,7 @@ public class CategoriesController : Controller
         {
             return View(category);
         }
-        
+
         try
         {
             _context.Update(category);
