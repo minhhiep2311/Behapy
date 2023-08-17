@@ -93,7 +93,7 @@
                   <div class="col-lg-3 col-sm-6 @pt6 @ptsm0 @ptlg0">
                     <div class="product-item">
                       <div class="product-img img-zoom-effect">
-                        <a asp-controller="Products" asp-action="Details">
+                        <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">
                           <img class="img-full" src="@item.ImageUrl" alt="@item.Name" />
                         </a>
                         <div class="product-add-action">
@@ -177,9 +177,9 @@
                       </div>
                       <div class="product-content align-self-center">
                         <a class="product-name pb-2"
-                           href="single-product.html">Black Pepper Grains</a>
+                           href="single-product.html">@item.Name</a>
                         <div class="price-box pb-1">
-                          <span class="new-price">$80.00</span>
+                          <span class="new-price">@item.Price</span>
                         </div>
                         <div class="rating-box pb-2">
                           <ul>
@@ -191,14 +191,7 @@
                           </ul>
                         </div>
                         <p class="short-desc mb-0">
-                          Li Europan lingues es membres del sam familie. Lor
-                          separat existentie es un myth. Por scientie,
-                          musica, sport etc, litot Europa usa li sam
-                          vocabular. Li lingues differe solmen in li
-                          grammatica, li pronunciation e li plu commun
-                          vocabules. Omnicos directe al desirabilite de un
-                          nov lingua franca: On refusa continuar payar
-                          custosi.
+                          @item.Description
                         </p>
                       </div>
                     </div>
