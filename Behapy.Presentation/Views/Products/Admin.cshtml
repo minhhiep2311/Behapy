@@ -68,10 +68,9 @@
             </tr>
           </thead>
           <tbody>
-            @for (var i = 0; i < Model.Count; i++)
+            @for (var i = 1; i < Model.Count; i++)
             {
               var item = Model[i];
-
               <tr>
                 <td>
                   <div class="checkbox">
@@ -90,7 +89,7 @@
                   </div>
                 </td>
                 <td>@item.Price</td>
-                <td></td>
+                <td>@item.Amount</td>
                 <td>
                   <div class="d-flex align-items-center">
                     <div class="badge badge-success badge-dot m-r-10"></div>
@@ -98,10 +97,12 @@
                   </div>
                 </td>
                 <td class="text-right">
-                  <button class="btn btn-icon btn-hover btn-sm btn-rounded pull-right">
+                  <button onclick="location.href='@Url.Action("Edit", "Products", new { id = item.Id })'"
+                          class="btn btn-icon btn-hover btn-sm btn-rounded pull-right">
                     <i class="anticon anticon-edit"></i>
                   </button>
-                  <button class="btn btn-icon btn-hover btn-sm btn-rounded">
+                  <button onclick="location.href='@Url.Action("Delete", "Products", new { id = item.Id })'"
+                          class="btn btn-icon btn-hover btn-sm btn-rounded">
                     <i class="anticon anticon-delete"></i>
                   </button>
                 </td>
