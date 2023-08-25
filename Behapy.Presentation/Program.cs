@@ -29,10 +29,7 @@ builder.Services
     .AddEntityFrameworkStores<BehapyDbContext>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(x =>
-    {
-        x.LoginPath = "/Identity/Account/Login";
-    });
+    .AddCookie(x => { x.LoginPath = "/Identity/Account/Login"; });
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -45,7 +42,10 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 builder.Services.AddHttpContextAccessor();
 

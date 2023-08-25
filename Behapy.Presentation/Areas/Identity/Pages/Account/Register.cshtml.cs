@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using Behapy.Presentation.Services.Interfaces;
 
 namespace Behapy.Presentation.Areas.Identity.Pages.Account;
 
@@ -20,12 +21,14 @@ public class RegisterModel : PageModel
     // private readonly IUserEmailStore<User> _emailStore;
     private readonly ILogger<RegisterModel> _logger;
     // private readonly IEmailSender _emailSender;
+    private readonly ICustomerService _customerService;
 
     public RegisterModel(
         UserManager<User> userManager,
         IUserStore<User> userStore,
         SignInManager<User> signInManager,
-        ILogger<RegisterModel> logger
+        ILogger<RegisterModel> logger,
+        ICustomerService customerService
         // IEmailSender emailSender
         )
     {
@@ -34,6 +37,7 @@ public class RegisterModel : PageModel
         // _emailStore = GetEmailStore();
         _signInManager = signInManager;
         _logger = logger;
+        _customerService = customerService;
         // _emailSender = emailSender;
     }
 
@@ -149,6 +153,8 @@ public class RegisterModel : PageModel
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
+            _customerService.Register(user.Id);
+
             return LocalRedirect(returnUrl);
         }
 
