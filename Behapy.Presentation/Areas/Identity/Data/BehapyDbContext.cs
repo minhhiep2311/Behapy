@@ -10,6 +10,7 @@ public class BehapyDbContext : IdentityDbContext<User, Role, string>
     public BehapyDbContext(DbContextOptions<BehapyDbContext> options)
         : base(options) { }
 
+    public virtual DbSet<CartItem> CartItems { get; set; } = null!;
     public virtual DbSet<Category> Categories { get; set; } = null!;
     public virtual DbSet<Customer> Customers { get; set; } = null!;
     public virtual DbSet<Employee> Employees { get; set; } = null!;
@@ -65,6 +66,7 @@ public class BehapyDbContext : IdentityDbContext<User, Role, string>
             new User
             {
                 Id = "08db0f36-7dbb-436f-88e5-f1be70b3bda6",
+                FullName = "Admin",
                 UserName = "Admin",
                 NormalizedUserName = "ADMIN",
                 PasswordHash = new PasswordHasher<User>().HashPassword(null!, "123456"),
