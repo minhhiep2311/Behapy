@@ -91,7 +91,7 @@
                   var ptlg0 = i is 2 or 3 ? "pt-lg-0" : "";
 
                   <div class="col-lg-3 col-sm-6 @pt6 @ptsm0 @ptlg0">
-                    <div class="product-item">
+                    <div class="product-item"> 
                       <div class="product-img img-zoom-effect">
                         <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">
                           <img class="img-full" src="@item.ImageUrl" alt="@item.Name" />
@@ -99,17 +99,12 @@
                         <div class="product-add-action">
                           <ul>
                             <li>
-                              <a href="cart.html">
+                              <a onclick="addToCart(@item.Id)" role="button">
                                 <i class="pe-7s-cart"></i>
                               </a>
                             </li>
                             <li>
-                              <a href="compare.html">
-                                <i class="pe-7s-shuffle"></i>
-                              </a>
-                            </li>
-                            <li>
-                              <a href="wishlist.html">
+                              <a href="wishlist.html" role="button">
                                 <i class="pe-7s-like"></i>
                               </a>
                             </li>
@@ -158,17 +153,12 @@
                         <div class="product-add-action">
                           <ul>
                             <li>
-                              <a href="cart.html">
+                              <a onclick="addToCart(@item.Id)" role="button">
                                 <i class="pe-7s-cart"></i>
                               </a>
                             </li>
                             <li>
-                              <a href="compare.html">
-                                <i class="pe-7s-shuffle"></i>
-                              </a>
-                            </li>
-                            <li>
-                              <a href="wishlist.html">
+                              <a href="wishlist.html" role="button">
                                 <i class="pe-7s-like"></i>
                               </a>
                             </li>
@@ -176,8 +166,9 @@
                         </div>
                       </div>
                       <div class="product-content align-self-center">
-                        <a class="product-name pb-2"
-                           href="single-product.html">@item.Name</a>
+                        <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id" class="product-name pb-2">
+                          @item.Name
+                        </a>
                         <div class="price-box pb-1">
                           <span class="new-price">@item.Price</span>
                         </div>
@@ -231,3 +222,59 @@
     </div>
   </div>
 </main>
+
+@section Scripts {
+  <script>
+    function addToCart(productId) {
+      $.ajax({
+        url: `Cart/Add?productId=${productId}`,
+        type: 'POST',
+        contentType: 'application/json',
+        success: function () {
+          bootstrap.showToast({
+            body: 'Đã thêm sản phẩm vào giỏ hàng!',
+            zIndex: 999
+          });
+          updateMiniCart();
+        },
+      });
+    }
+
+    function updateMiniCart() {
+      $.ajax({
+        url: `Cart/GetAll/`,
+        type: 'GET',
+        contentType: 'application/json',
+        success: function (res) {
+          const listWrapper = $('.minicart-list').html('');
+          
+          for (const item of res) {
+            const itemHtml = $('<li class="minicart-product"></li>');
+            const removeBtn = $(`
+              <a class="product-item_remove" href="#">
+                <i class="pe-7s-close"></i>
+              </a>
+            `);
+            const img = `
+              <a href="/Products/Details/${item.product.id}" class="product-item_img">
+                <img class="img-full" src="${item.product.imageUrl}" alt="${item.product.name}"/>
+              </a>
+            `;
+            const content = `
+              <div class="product-item_content">
+                <a href="/Products/Details/${item.product.id}" class="product-item_title">${item.product.name}</a>
+                <span class="product-item_quantity">${item.amount} x ${item.product.price}</span>
+              </div>
+            `;
+            
+            itemHtml.append(removeBtn)
+              .append(img)
+              .append(content);
+            
+            listWrapper.append(itemHtml);
+          }
+        },
+      });
+    }
+  </script>
+}
