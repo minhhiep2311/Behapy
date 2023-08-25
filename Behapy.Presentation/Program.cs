@@ -6,7 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+    );
+
 builder.Services.AddRazorPages();
 
 var connectionString = builder.Configuration.GetConnectionString("BehapyDbContextConnection") ??
@@ -46,9 +50,8 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
-
-builder.Services.AddHttpContextAccessor();
-
+builder.Services.AddScoped<ICartService, CartService>();
+    
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
