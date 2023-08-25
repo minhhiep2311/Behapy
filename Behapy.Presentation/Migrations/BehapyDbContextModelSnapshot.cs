@@ -52,14 +52,14 @@ namespace Behapy.Presentation.Migrations
                         new
                         {
                             Id = "08db1e18-c46f-4e76-8e77-69430f54d796",
-                            ConcurrencyStamp = "37377ac2-ffdc-4ed8-ab2c-a3f7e31fbfc7",
+                            ConcurrencyStamp = "67696138-a9c6-43fd-9458-a47dc9dec2e1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "08db1e1a-7953-4790-8ebe-272e34a8fe18",
-                            ConcurrencyStamp = "58114a81-c456-4599-af14-e7e3a26c6a76",
+                            ConcurrencyStamp = "bc86a40b-756b-4ec9-8207-77d6a8f0f93d",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -88,6 +88,10 @@ namespace Behapy.Presentation.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
@@ -142,16 +146,17 @@ namespace Behapy.Presentation.Migrations
                         {
                             Id = "08db0f36-7dbb-436f-88e5-f1be70b3bda6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "1e013642-38c3-4b66-af75-04b800dd42df",
+                            ConcurrencyStamp = "30ebdb35-c7d4-4616-afc7-1cf5b7aaf2e5",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
+                            FullName = "Admin",
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHU5DcrhmdONanzJElm3p0XY99t1c0XSQ8+8hOVKGUdyDMl9QN4+bE/lBQiPJIP8/w==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEO0uUP4Thdtw+Shxyuq7gzUt025agKBxYU5FxTV+uBIj61fYZLltJvx0TmLW03vjAQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9071c920-09cf-4ebc-ad52-06d2f4e1271f",
+                            SecurityStamp = "cccdc6f2-3774-4a4a-85da-6e87c9de1353",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });
@@ -188,7 +193,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItem");
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.Category", b =>
@@ -221,10 +226,9 @@ namespace Behapy.Presentation.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Birthday")
+                    b.Property<DateTime?>("Birthday")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
