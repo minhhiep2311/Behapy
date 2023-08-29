@@ -19,6 +19,12 @@ public class CartController : Controller
         _cartService = cartService;
     }
 
+    public async Task<IActionResult> Index()
+    {
+        var items = await GetAll();
+        return View(items);
+    }
+
     // GET: Cart/GetAll
     [HttpGet]
     public async Task<List<CartItem>?> GetAll()
@@ -59,6 +65,27 @@ public class CartController : Controller
             _context.CartItems.Add(model);
         }
 
+        _context.SaveChanges();
+    }
+
+    // DELETE: Cart/Add/5
+    [HttpDelete]
+    public void Delete(int productId)
+    {
+        var customer = _customerService.GetCustomer();
+        if (customer == null) throw new Exception("Not logged in");
+
+        var product = _context.Products
+            .AsNoTracking()
+            .FirstOrDefault(p => p.Id == productId);
+        if (product == null) throw new Exception("Product not found");
+
+        var cartItem = _context.CartItems
+            .FirstOrDefault(c => c.CustomerId == customer.Id && c.ProductId == productId);
+
+        if (cartItem == null) return;
+
+        _context.CartItems.Remove(cartItem);
         _context.SaveChanges();
     }
 }
