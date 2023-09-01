@@ -1,0 +1,100 @@
+@model List<Behapy.Presentation.Models.CartItem>
+
+@{
+  ViewData["Title"] = "Cart";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+
+  var total = Model.Sum(item => item.Product.Price * item.Amount);
+}
+
+<main class="main-content">
+  <div class="cart-area section-space-y-axis-100">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <form action="javascript:void(0)">
+            <div class="table-content table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="product_remove">STT</th>
+                    <th class="product-thumbnail">Ảnh</th>
+                    <th class="cart-product-name">Tên sản phẩm</th>
+                    <th class="product-price">Đơn giá</th>
+                    <th class="product-quantity">Số lượng</th>
+                    <th class="product-subtotal">Thành tiền</th>
+                    <th class="product-subtotal">Thao tác</th>
+                  </tr>
+                </thead>
+
+                <tbody id="cart-table-content">
+                  @for (var i = 0; i < Model.Count; i++)
+                  {
+                    var item = Model[i];
+
+                    <tr>
+                      <td class="index">@(i + 1)</td>
+                      <td class="product-thumbnail">
+                        <a asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId">
+                          <img src="@item.Product.ImageUrl" alt="@item.Product.Name"/>
+                        </a>
+                      </td>
+                      <td class="product-name">
+                        <a asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId">@item.Product.Name</a>
+                      </td>
+                      <td class="product-price">
+                        <span class="amount">@item.Product.Price</span>
+                      </td>
+                      <td class="quantity">
+                        <div class="cart-plus-minus">
+                          <input class="cart-plus-minus-box" value="@item.Amount" type="text"/>
+                        </div>
+                      </td>
+                      <td class="product-subtotal">
+                        <span class="amount">@(item.Amount * item.Product.Price)</span>
+                      </td>
+                      <td class="product_remove">
+                        <a onclick="removeFromCart(@item.ProductId)" role="button">
+                          <i class="pe-7s-close" title="Remove"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="coupon-all">
+                  <div class="coupon">
+                    <input id="coupon_code" class="input-text" name="coupon_code" value="" placeholder="Mã giảm giá" type="text"/>
+                    <input class="button mt-xxs-30" name="apply_coupon" value="Áp dụng" type="submit"/>
+                  </div>
+                  <div class="coupon2">
+                    <input class="button" name="update_cart" value="Cập nhật giỏ hàng" type="submit"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-5 ml-auto">
+                <div class="cart-page-total">
+                  <h2>Tổng tiền giỏ hàng</h2>
+                  <ul>
+                    <li>Tổng tiền <span id="cart-subtotal">@total</span></li>
+                    <li>Giá tiền <span id="cart-total">@total</span></li>
+                  </ul>
+                  <a href="javascript:void(0)">Thanh toán</a>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+@section Scripts {
+  <script src="~/js/shop/cart.js"></script>
+}
