@@ -20,10 +20,13 @@ public class ProductsController : Controller
 
     // GET: Products
     public async Task<IActionResult> Index([FromQuery(Name = "category")] int? categoryId,
-        [FromQuery(Name = "q")] string? searchText)
+        [FromQuery(Name = "q")] string? searchText,
+         [FromQuery(Name = "sortOrder")] string? sortOrder)
     {
         ViewData["CategoryId"] = categoryId;
         ViewData["SearchText"] = searchText;
+        ViewData["SortOrder"] = sortOrder;
+
 
         var products = _context.Products
             .Include(p => p.Category)
@@ -32,6 +35,24 @@ public class ProductsController : Controller
                 (categoryId == null || p.CategoryId == categoryId) &&
                 (string.IsNullOrWhiteSpace(searchText) || EF.Functions.Like(p.Name, $"%{searchText}%"))
             );
+
+
+
+        switch (sortOrder)
+        {
+            case "latest":
+                products = products.OrderByDescending(p => p.CreatedAt);
+                break;
+            case "high-price":
+                products = products.OrderByDescending(p => p.Price);
+                break;
+            case "low-price":
+                products = products.OrderBy(p => p.Price);
+                break;
+            default:
+                break;
+        }
+
 
         return View(await products.ToListAsync());
     }
