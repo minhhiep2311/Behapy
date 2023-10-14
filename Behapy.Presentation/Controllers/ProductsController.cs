@@ -21,7 +21,8 @@ public class ProductsController : Controller
     // GET: Products
     public async Task<IActionResult> Index([FromQuery(Name = "category")] int? categoryId,
         [FromQuery(Name = "q")] string? searchText,
-         [FromQuery(Name = "sortOrder")] string? sortOrder)
+         [FromQuery(Name = "sortOrder")] string? sortOrder,
+           int pg=1)
     {
         ViewData["CategoryId"] = categoryId;
         ViewData["SearchText"] = searchText;
@@ -35,7 +36,6 @@ public class ProductsController : Controller
                 (categoryId == null || p.CategoryId == categoryId) &&
                 (string.IsNullOrWhiteSpace(searchText) || EF.Functions.Like(p.Name, $"%{searchText}%"))
             );
-
 
 
         switch (sortOrder)
@@ -53,10 +53,19 @@ public class ProductsController : Controller
                 break;
         }
 
+      
+        int pageSize = 8;
+        if (pg < 1) pg = 1;
+        int recsCount = products.Count();
+        var pager = new Pager(recsCount,pg, pageSize);
+        int recSkip = (pg - 1) * pageSize;
+        this.ViewBag.Pager = pager;
 
-        return View(await products.ToListAsync());
+        return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
+
     }
 
+    //GET: Products/Admin
     public async Task<IActionResult> Admin()
     {
         var products = _context.Products

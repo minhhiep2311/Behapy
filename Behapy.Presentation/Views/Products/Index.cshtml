@@ -1,8 +1,18 @@
-﻿@model List<Behapy.Presentation.Models.Product>
+﻿@*@model List<Behapy.Presentation.Models.Product>*@
+@using Behapy.Presentation.Models
+@model IEnumerable<Behapy.Presentation.Models.Product>
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if(ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
 }
 
 <main class="main-content">
@@ -83,14 +93,18 @@
                              aria-labelledby="grid-view-tab">
                             <div class="product-grid-view row">
 
-                                @for (var i = 0; i < Model.Count; i++)
-
+                               @* @for (var i = 0; i < Model.Count; i++)*@
+                                @foreach (var item in Model)
                                 {
-                                    var item = Model[i];
+                                   
+                                    var i = 0;
                                     var pt6 = i != 0 ? "pt-6" : "";
                                     var ptsm0 = i == 1 ? "pt-sm-0" : "";
                                     var ptlg0 = i is 2 or 3 ? "pt-lg-0" : "";
 
+                                    i++;
+
+                                    @*var item = Model[i];*@
                                     @* var pt6 = ViewBag.SortedProducts.IndexOf(item) != 0 ? "pt-6" : "";
                                 var ptsm0 = ViewBag.SortedProducts.IndexOf(item) == 1 ? "pt-sm-0" : "";
                                 var ptlg0 = ViewBag.SortedProducts.IndexOf(item) == 2 || ViewBag.SortedProducts.IndexOf(item) == 3 ? "pt-lg-0" : "";*@
@@ -134,7 +148,7 @@
                                         </div>
                                     </div>
                                 }
-                                }
+                                
                             </div>
                         </div>
 
@@ -145,11 +159,13 @@
                              aria-labelledby="list-view-tab">
                             <div class="product-list-view row">
 
-                                @for (var i = 0; i < Model.Count; i++)
+                                @*@for (var i = 0; i < Model.Count; i++)*@
+                                    @foreach (var item in Model)
                                 {
-                                    var item = Model[i];
+                                    @*var item = Model[i];*@
+                                    var i = 0;
                                     var pt6 = i != 0 ? "pt-6" : "";
-
+                                    i++;
                                     <div class="col-12 @pt6">
                                         <div class="product-item">
                                             <div class="product-img img-zoom-effect">
@@ -201,24 +217,60 @@
                     <!-- Pagination -->
                     <div class="pagination-area pt-10">
                         <nav aria-label="Page navigation example">
-                            <ul class="pagination justify-content-center">
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Previous">
-                                        <span class="fa fa-chevron-left"></span>
-                                    </a>
-                                </li>
-                                <li class="page-item active">
-                                    <a class="page-link" href="#">1</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">2</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <span class="fa fa-chevron-right"></span>
-                                    </a>
-                                </li>
-                            </ul>
+                            @if(pager.TotalPages > 0)
+                            {
+                                <ul class="pagination justify-content-center">
+                                    @if(pager.CurrentPage > 1)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" asp-controller="Products" asp-action="Index" asp-route-pg="1">Đầu</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" asp-controller="Products" asp-action="Index" asp-route-pg="@(pager.CurrentPage - 1)" aria-label="Trước">
+                                                <span class="fa fa-chevron-left"></span>
+                                            </a>
+                                        </li>
+                                    }
+
+                                    @for(var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+                                    {
+                                        <li class="page-item @(pge == pager.CurrentPage ? "active" :"" )">
+                                            <a class="page-link" asp-controller="Products" asp-action="Index" asp-route-pg="@pge" >@pge</a>
+                                        </li>
+                                    }
+
+                                    @if (pager.CurrentPage < pager.TotalPages)
+                                    {
+                                      
+                                        <li class="page-item">
+                                            <a class="page-link" asp-controller="Products" asp-action="Index" asp-route-pg="@(pager.CurrentPage + 1)" aria-label="Previous">
+                                                <span class="fa fa-chevron-right"></span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" asp-controller="Products" asp-action="Index" asp-route-pg="@pager.EndPage">Cuối</a>
+                                        </li>
+
+                                    }
+                                    @*<li class="page-item">
+                                        <a class="page-link" href="#" aria-label="Previous">
+                                            <span class="fa fa-chevron-left"></span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#">1</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">2</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" aria-label="Next">
+                                            <span class="fa fa-chevron-right"></span>
+                                        </a>
+                                    </li>*@
+                                </ul>
+                            }
+                           
                         </nav>
                     </div>
                     <!-- Pagination end -->
