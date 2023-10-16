@@ -20,10 +20,14 @@ public class ProductsController : Controller
 
     // GET: Products
     public async Task<IActionResult> Index([FromQuery(Name = "category")] int? categoryId,
-        [FromQuery(Name = "q")] string? searchText)
+        [FromQuery(Name = "q")] string? searchText,
+         [FromQuery(Name = "sortOrder")] string? sortOrder,
+           int pg=1)
     {
         ViewData["CategoryId"] = categoryId;
         ViewData["SearchText"] = searchText;
+        ViewData["SortOrder"] = sortOrder;
+
 
         var products = _context.Products
             .Include(p => p.Category)
@@ -33,9 +37,35 @@ public class ProductsController : Controller
                 (string.IsNullOrWhiteSpace(searchText) || EF.Functions.Like(p.Name, $"%{searchText}%"))
             );
 
-        return View(await products.ToListAsync());
+
+        switch (sortOrder)
+        {
+            case "latest":
+                products = products.OrderByDescending(p => p.CreatedAt);
+                break;
+            case "high-price":
+                products = products.OrderByDescending(p => p.Price);
+                break;
+            case "low-price":
+                products = products.OrderBy(p => p.Price);
+                break;
+            default:
+                break;
+        }
+
+      
+        int pageSize = 8;
+        if (pg < 1) pg = 1;
+        int recsCount = products.Count();
+        var pager = new Pager(recsCount,pg, pageSize);
+        int recSkip = (pg - 1) * pageSize;
+        this.ViewBag.Pager = pager;
+
+        return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
+
     }
 
+    //GET: Products/Admin
     public async Task<IActionResult> Admin()
     {
         var products = _context.Products
