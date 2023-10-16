@@ -75,9 +75,9 @@
                 <form asp-controller="Products" asp-action="Index" method="get">
                   <select class="nice-select wide rounded-0" id="sort-select" name="sortOrder" onchange="onFilterChange()">
                     <option value="" selected>-- Tất cả --</option>
-                    <option value="latest" selected='@ViewBag.SortOrder == "latest"'>Mới nhất</option>
-                    <option value="high-price" selected='@ViewBag.SortOrder == "high-price"'>Giá giảm dần</option>
-                    <option value="low-price" selected='@ViewBag.SortOrder == "low-price"'>Giá tăng dần</option>
+                    <option value="latest" selected='@(ViewBag.SortOrder == "latest")'>Mới nhất</option>
+                    <option value="high-price" selected='@(ViewBag.SortOrder == "high-price")'>Giá giảm dần</option>
+                    <option value="low-price" selected='@(ViewBag.SortOrder == "low-price")'>Giá tăng dần</option>
                   </select>
                 </form>
               </li>
