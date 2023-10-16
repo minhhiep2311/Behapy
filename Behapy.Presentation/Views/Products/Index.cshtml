@@ -1,32 +1,42 @@
-﻿@model List<Behapy.Presentation.Models.Product>
+﻿@*@model List<Behapy.Presentation.Models.Product>*@
+@using Behapy.Presentation.Models
+@model IEnumerable<Behapy.Presentation.Models.Product>
 
 @{
-  ViewData["Title"] = "Index";
-  Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if(ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
 }
 
 <main class="main-content">
-  <!-- Breadcrumb -->
-  <div class="breadcrumb-area breadcrumb-height"
-       data-bg-image="/images/shop/layout/layout.jpg">
-    @*<div class="container h-100">
-      <div class="row h-100">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-area breadcrumb-height"
+         data-bg-image="/images/shop/layout/layout.jpg">
+        @*<div class="container h-100">
+        <div class="row h-100">
         <div class="col-lg-12">
-          <div class="breadcrumb-item">
-            <h2 class="breadcrumb-heading">Shop Layout</h2>
-            <ul>
-              <li>
-                <a href="/">
-                  Home <i class="pe-7s-angle-right"></i>
-                </a>
-              </li>
-              <li>Shop Pages</li>
-            </ul>
-          </div>
+        <div class="breadcrumb-item">
+        <h2 class="breadcrumb-heading">Shop Layout</h2>
+        <ul>
+        <li>
+        <a href="/">
+        Home <i class="pe-7s-angle-right"></i>
+        </a>
+        </li>
+        <li>Shop Pages</li>
+        </ul>
         </div>
-      </div>
-    </div>*@
-  </div>
+        </div>
+        </div>
+        </div>*@
+    </div>
 
   <div class="shop-area section-space-y-axis-100">
     <div class="container">
@@ -62,167 +72,285 @@
                 <span>23</span> Product Found of <span>50</span>
               </li>
               <li class="short">
-                <select class="nice-select wide rounded-0">
-                  <option value="1">Thứ tự mặc định</option>
-                  <option value="2">Thứ tự theo mức độ phổ biến</option>
-                  <option value="3">Thứ tự theo điểm đánh giá</option>
-                  <option value="4">Mới nhất</option>
-                  <option value="5">Thứ tự theo giá: từ thấp đến cao</option>
-                  <option value="6">Thứ tự theo giá: từ cao xuống thấp</option>
-                </select>
+                <form asp-controller="Products" asp-action="Index" method="get">
+                  <select class="nice-select wide rounded-0" id="sort-select" name="sortOrder" onchange="onFilterChange()">
+                    <option value="" selected>-- Tất cả --</option>
+                    <option value="latest" selected='@(ViewBag.SortOrder == "latest")'>Mới nhất</option>
+                    <option value="high-price" selected='@(ViewBag.SortOrder == "high-price")'>Giá giảm dần</option>
+                    <option value="low-price" selected='@(ViewBag.SortOrder == "low-price")'>Giá tăng dần</option>
+                  </select>
+                </form>
               </li>
             </ul>
           </div>
 
-          <!-- Content -->
-          <div class="tab-content text-charcoal pt-8">
-            <!-- Short list-->
-            <div class="tab-pane fade show active"
-                 id="grid-view"
-                 role="tabpanel"
-                 aria-labelledby="grid-view-tab">
-              <div class="product-grid-view row">
+                    <!-- Content -->
+                    <div class="tab-content text-charcoal pt-8">
+                        <!-- Short list-->
+                        <div class="tab-pane fade show active"
+                             id="grid-view"
+                             role="tabpanel"
+                             aria-labelledby="grid-view-tab">
+                            <div class="product-grid-view row">
 
-                @for (var i = 0; i < Model.Count; i++)
-                {
-                  var item = Model[i];
-                  var pt6 = i != 0 ? "pt-6" : "";
-                  var ptsm0 = i == 1 ? "pt-sm-0" : "";
-                  var ptlg0 = i is 2 or 3 ? "pt-lg-0" : "";
+                               @* @for (var i = 0; i < Model.Count; i++)*@
+                                @foreach (var item in Model)
+                                {
+                                   
+                                    var i = 0;
+                                    var pt6 = i != 0 ? "pt-6" : "";
+                                    var ptsm0 = i == 1 ? "pt-sm-0" : "";
+                                    var ptlg0 = i is 2 or 3 ? "pt-lg-0" : "";
+                                    i++;
 
-                  <div class="col-lg-3 col-sm-6 @pt6 @ptsm0 @ptlg0">
-                    <div class="product-item"> 
-                      <div class="product-img img-zoom-effect">
-                        <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">
-                          <img class="img-full" src="@item.ImageUrl" alt="@item.Name" />
-                        </a>
-                        <div class="product-add-action">
-                          <ul>
-                            <li>
-                              <a onclick="addToCart(@item.Id)" role="button">
-                                <i class="pe-7s-cart"></i>
-                              </a>
-                            </li>
-                            <li>
-                              <a href="wishlist.html" role="button">
-                                <i class="pe-7s-like"></i>
-                              </a>
-                            </li>
-                          </ul>
+                                    <div class="col-lg-3 col-sm-6 @pt6 @ptsm0 @ptlg0">
+                                        <div class="product-item">
+                                            <div class="product-img img-zoom-effect">
+                                                <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">
+                                                    <img class="img-full" src="@item.ImageUrl" alt="@item.Name" />
+                                                </a>
+                                                <div class="product-add-action">
+                                                    <ul>
+                                                        <li>
+                                                            <a onclick="addToCart(@item.Id)" role="button">
+                                                                <i class="pe-7s-cart"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="wishlist.html" role="button">
+                                                                <i class="pe-7s-like"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="product-content">
+                                                <a class="product-name" asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
+                                                <div class="price-box pb-1">
+                                                    <span class="new-price">@item.Price</span>
+                                                </div>
+                                                <div class="rating-box">
+                                                    <ul>
+                                                        <li><i class="pe-7s-star"></i></li>
+                                                        <li><i class="pe-7s-star"></i></li>
+                                                        <li><i class="pe-7s-star"></i></li>
+                                                        <li><i class="pe-7s-star"></i></li>
+                                                        <li><i class="pe-7s-star"></i></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                
+                            </div>
                         </div>
-                      </div>
-                      <div class="product-content">
-                        <a class="product-name" asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
-                        <div class="price-box pb-1">
-                          <span class="new-price">@item.Price</span>
+
+                        <!-- Long list -->
+                        <div class="tab-pane fade"
+                             id="list-view"
+                             role="tabpanel"
+                             aria-labelledby="list-view-tab">
+                            <div class="product-list-view row">
+
+                                @*@for (var i = 0; i < Model.Count; i++)*@
+                                    @foreach (var item in Model)
+                                {
+                                    @*var item = Model[i];*@
+                                    var i = 0;
+                                    var pt6 = i != 0 ? "pt-6" : "";
+                                    i++;
+                                    <div class="col-12 @pt6">
+                                        <div class="product-item">
+                                            <div class="product-img img-zoom-effect">
+                                                <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">
+                                                    <img class="img-full" src="@item.ImageUrl" alt="@item.Name" />
+                                                </a>
+                                                <div class="product-add-action">
+                                                    <ul>
+                                                        <li>
+                                                            <a onclick="addToCart(@item.Id)" role="button">
+                                                                <i class="pe-7s-cart"></i>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="wishlist.html" role="button">
+                                                                <i class="pe-7s-like"></i>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="product-content align-self-center">
+                                                <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id" class="product-name pb-2">
+                                                    @item.Name
+                                                </a>
+                                                <div class="price-box pb-1">
+                                                    <span class="new-price">@item.Price</span>
+                                                </div>
+                                                <div class="rating-box pb-2">
+                                                    <ul>
+                                                        <li><i class="pe-7s-star"></i></li>
+                                                        <li><i class="pe-7s-star"></i></li>
+                                                        <li><i class="pe-7s-star"></i></li>
+                                                        <li><i class="pe-7s-star"></i></li>
+                                                        <li><i class="pe-7s-star"></i></li>
+                                                    </ul>
+                                                </div>
+                                                <p class="short-desc mb-0">
+                                                    @item.Description
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
                         </div>
-                        @*<div class="rating-box">
-                          <ul>
-                            <li><i class="pe-7s-star"></i></li>
-                            <li><i class="pe-7s-star"></i></li>
-                            <li><i class="pe-7s-star"></i></li>
-                            <li><i class="pe-7s-star"></i></li>
-                            <li><i class="pe-7s-star"></i></li>
-                          </ul>
-                        </div>*@
-                      </div>
                     </div>
-                  </div>
-                }
-              </div>
-            </div>
 
-            <!-- Long list -->
-            <div class="tab-pane fade"
-                 id="list-view"
-                 role="tabpanel"
-                 aria-labelledby="list-view-tab">
-              <div class="product-list-view row">
+                    <!-- Pagination -->
+                    <div class="pagination-area pt-10">
+                        <nav aria-label="Page navigation example">
+                            @if(pager.TotalPages > 0)
+                            {
+                                <ul class="pagination justify-content-center">
+                                    @if(pager.CurrentPage > 1)
+                                    {
+                                        <li class="page-item">
+                                            <a class="page-link" asp-controller="Products" asp-action="Index" asp-route-pg="1">Đầu</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" asp-controller="Products" asp-action="Index" asp-route-pg="@(pager.CurrentPage - 1)" aria-label="Trước">
+                                                <span class="fa fa-chevron-left"></span>
+                                            </a>
+                                        </li>
+                                    }
 
-                @for (var i = 0; i < Model.Count; i++)
-                {
-                  var item = Model[i];
-                  var pt6 = i != 0 ? "pt-6" : "";
+                                    @for(var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+                                    {
+                                        <li class="page-item @(pge == pager.CurrentPage ? "active" :"" )">
+                                            <a class="page-link" asp-controller="Products" asp-action="Index" asp-route-pg="@pge" >@pge</a>
+                                        </li>
+                                    }
 
-                  <div class="col-12 @pt6">
-                    <div class="product-item">
-                      <div class="product-img img-zoom-effect">
-                        <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">
-                          <img class="img-full" src="@item.ImageUrl" alt="@item.Name" />
-                        </a>
-                        <div class="product-add-action">
-                          <ul>
-                            <li>
-                              <a onclick="addToCart(@item.Id)" role="button">
-                                <i class="pe-7s-cart"></i>
-                              </a>
-                            </li>
-                            <li>
-                              <a href="wishlist.html" role="button">
-                                <i class="pe-7s-like"></i>
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                      <div class="product-content align-self-center">
-                        <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id" class="product-name pb-2">
-                          @item.Name
-                        </a>
-                        <div class="price-box pb-1">
-                          <span class="new-price">@item.Price</span>
-                        </div>
-                        @*<div class="rating-box pb-2">
-                          <ul>
-                            <li><i class="pe-7s-star"></i></li>
-                            <li><i class="pe-7s-star"></i></li>
-                            <li><i class="pe-7s-star"></i></li>
-                            <li><i class="pe-7s-star"></i></li>
-                            <li><i class="pe-7s-star"></i></li>
-                          </ul>
-                        </div>*@
-                        <p class="short-desc mb-0">
-                          @item.Description
-                        </p>
-                      </div>
+                                    @if (pager.CurrentPage < pager.TotalPages)
+                                    {
+                                      
+                                        <li class="page-item">
+                                            <a class="page-link" asp-controller="Products" asp-action="Index" asp-route-pg="@(pager.CurrentPage + 1)" aria-label="Previous">
+                                                <span class="fa fa-chevron-right"></span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" asp-controller="Products" asp-action="Index" asp-route-pg="@pager.EndPage">Cuối</a>
+                                        </li>
+
+                                    }
+                                    @*<li class="page-item">
+                                        <a class="page-link" href="#" aria-label="Previous">
+                                            <span class="fa fa-chevron-left"></span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#">1</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">2</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" aria-label="Next">
+                                            <span class="fa fa-chevron-right"></span>
+                                        </a>
+                                    </li>*@
+                                </ul>
+                            }
+                           
+                        </nav>
                     </div>
-                  </div>
-                }
-              </div>
+                    <!-- Pagination end -->
+
+                </div>
             </div>
-          </div>
-
-          <!-- Pagination -->
-          <div class="pagination-area pt-10">
-            <nav aria-label="Page navigation example">
-              <ul class="pagination justify-content-center">
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Previous">
-                    <span class="fa fa-chevron-left"></span>
-                  </a>
-                </li>
-                <li class="page-item active">
-                  <a class="page-link" href="#">1</a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" href="#">2</a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Next">
-                    <span class="fa fa-chevron-right"></span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-          <!-- Pagination end -->
-
         </div>
-      </div>
     </div>
-  </div>
 </main>
 
 @section Scripts {
-  <script src="~/js/shop/cart.js"></script>
+    <script>
+        function addToCart(productId) {
+            $.ajax({
+                url: `Cart/Add?productId=${productId}`,
+                type: 'POST',
+                contentType: 'application/json',
+                success: function () {
+                    bootstrap.showToast({
+                        body: 'Đã thêm sản phẩm vào giỏ hàng!',
+                        zIndex: 999
+                    });
+                    updateMiniCart();
+                },
+            });
+        }
+
+        function updateMiniCart() {
+            $.ajax({
+                url: `Cart/GetAll/`,
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (res) {
+                    const listWrapper = $('.minicart-list').html('');
+
+                    for (const item of res) {
+                        const itemHtml = $('<li class="minicart-product"></li>');
+                        const removeBtn = $(`
+                                              <a class="product-item_remove" href="#">
+                                                <i class="pe-7s-close"></i>
+                                              </a>
+                                            `);
+                        const img = `
+                                              <a href="/Products/Details/${item.product.id}" class="product-item_img">
+                                                <img class="img-full" src="${item.product.imageUrl}" alt="${item.product.name}"/>
+                                              </a>
+                                            `;
+                        const content = `
+                                              <div class="product-item_content">
+                                                <a href="/Products/Details/${item.product.id}" class="product-item_title">${item.product.name}</a>
+                                                <span class="product-item_quantity">${item.amount} x ${item.product.price}</span>
+                                              </div>
+                                            `;
+
+                        itemHtml.append(removeBtn)
+                            .append(img)
+                            .append(content);
+
+                        listWrapper.append(itemHtml);
+                    }
+                },
+            });
+        }
+
+        //Sort product
+        const selectElement = document.getElementById("sort-select");
+
+
+        function onFilterChange(){
+            const selectedValue = selectElement.value;
+            const currentUrl = window.location.href;
+            const updatedUrl = updateQueryStringParameter(currentUrl, 'sortOrder', selectedValue);
+            console.log(updatedUrl);
+            window.location.href = updatedUrl;
+        }
+
+
+        function updateQueryStringParameter(uri, key, value) {
+            const re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+            const separator = uri.indexOf("?") !== -1 ? "&" : "?";
+            if (uri.match(re)) {
+                return uri.replace(re, '$1' + key + "=" + value + '$2');
+            } else {
+                return uri + separator + key + "=" + value;
+            }
+        }
+       
+    </script>
 }
