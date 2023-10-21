@@ -1,3 +1,4 @@
+@using Behapy.Presentation.Extensions
 @model List<Behapy.Presentation.Models.CartItem>
 
 @{
@@ -43,7 +44,7 @@
                         <a asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId">@item.Product.Name</a>
                       </td>
                       <td class="product-price">
-                        <span class="amount">@item.Product.Price</span>
+                        <span class="amount">@item.Product.Price.ToMoney()</span>
                       </td>
                       <td class="quantity">
                         <div class="cart-plus-minus">
@@ -51,7 +52,7 @@
                         </div>
                       </td>
                       <td class="product-subtotal">
-                        <span class="amount">@(item.Amount * item.Product.Price)</span>
+                        <span class="amount">@((item.Amount * item.Product.Price).ToMoney())</span>
                       </td>
                       <td class="product_remove">
                         <a onclick="removeFromCart(@item.ProductId)" role="button">
@@ -81,8 +82,8 @@
                 <div class="cart-page-total">
                   <h2>Tổng tiền giỏ hàng</h2>
                   <ul>
-                    <li>Tổng tiền <span id="cart-subtotal">@total</span></li>
-                    <li>Giá tiền <span id="cart-total">@total</span></li>
+                    <li>Tổng tiền <span id="cart-subtotal">@total.ToMoney()</span></li>
+                    <li>Giá tiền <span id="cart-total">@total.ToMoney()</span></li>
                   </ul>
                   <a href="javascript:void(0)">Thanh toán</a>
                 </div>

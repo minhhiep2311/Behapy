@@ -1,4 +1,5 @@
-﻿@model List<Behapy.Presentation.Models.CartItem>?
+﻿@using Behapy.Presentation.Extensions
+@model List<Behapy.Presentation.Models.CartItem>?
 
 <div class="offcanvas-minicart_wrapper" id="miniCart">
   <div class="harmic-offcanvas-body">
@@ -25,7 +26,7 @@
               </a>
               <div class="product-item_content">
                 <a asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId" class="product-item_title">@item.Product.Name</a>
-                <span class="product-item_quantity">@item.Amount x @item.Product.Price</span>
+                <span class="product-item_quantity">@item.Amount x @item.Product.Price.ToMoney()</span>
               </div>
             </li>
           }
@@ -34,7 +35,7 @@
 
       <div class="minicart-item_total">
         <span>Tổng cộng</span>
-        <span id="mini-cart-total" class="amount">@Model.Sum(item => item.Product.Price * item.Amount)</span>
+        <span id="mini-cart-total" class="amount">@Model.Sum(item => item.Product.Price * item.Amount).ToMoney()</span>
       </div>
 
       <div class="group-btn_wrap d-grid gap-2">

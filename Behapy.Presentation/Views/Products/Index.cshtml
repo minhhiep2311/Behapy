@@ -1,5 +1,6 @@
 ﻿@*@model List<Behapy.Presentation.Models.Product>*@
 @using Behapy.Presentation.Models
+@using Behapy.Presentation.Extensions
 @model IEnumerable<Behapy.Presentation.Models.Product>
 
 @{
@@ -127,7 +128,7 @@
                                             <div class="product-content">
                                                 <a class="product-name" asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
                                                 <div class="price-box pb-1">
-                                                    <span class="new-price">@item.Price</span>
+                                                    <span class="new-price">@item.Price.ToMoney()</span>
                                                 </div>
                                                 <div class="rating-box">
                                                     <ul>
@@ -186,7 +187,7 @@
                                                     @item.Name
                                                 </a>
                                                 <div class="price-box pb-1">
-                                                    <span class="new-price">@item.Price</span>
+                                                    <span class="new-price">@item.Price.ToMoney()</span>
                                                 </div>
                                                 <div class="rating-box pb-2">
                                                     <ul>
