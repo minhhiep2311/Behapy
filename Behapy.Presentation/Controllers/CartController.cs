@@ -1,6 +1,7 @@
 ﻿using Behapy.Presentation.Areas.Identity.Data;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,7 @@ public class CartController : Controller
         _cartService = cartService;
     }
 
+    [Authorize]
     public async Task<IActionResult> Index()
     {
         var items = await GetAll();
@@ -68,7 +70,7 @@ public class CartController : Controller
         _context.SaveChanges();
     }
 
-    // DELETE: Cart/Add/5
+    // DELETE: Cart/Delete/5
     [HttpDelete]
     public void Delete(int productId)
     {
