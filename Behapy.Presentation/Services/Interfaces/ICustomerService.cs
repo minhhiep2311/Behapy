@@ -6,5 +6,7 @@ public interface ICustomerService
 {
     void Register(string userId);
     
-    Customer? GetCustomer();
+    Customer? GetCustomerOrDefault();
+
+    Customer GetCustomer();
 }

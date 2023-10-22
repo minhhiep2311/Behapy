@@ -36,7 +36,7 @@ public class CartController : Controller
     [HttpPost]
     public void Add(int productId)
     {
-        var customer = _customerService.GetCustomer();
+        var customer = _customerService.GetCustomerOrDefault();
         if (customer == null) throw new Exception("Not logged in");
 
         var product = _context.Products
@@ -72,7 +72,7 @@ public class CartController : Controller
     [HttpDelete]
     public void Delete(int productId)
     {
-        var customer = _customerService.GetCustomer();
+        var customer = _customerService.GetCustomerOrDefault();
         if (customer == null) throw new Exception("Not logged in");
 
         var product = _context.Products
