@@ -4,6 +4,7 @@ using Behapy.Presentation.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Behapy.Presentation.Migrations
 {
     [DbContext(typeof(BehapyDbContext))]
-    partial class BehapyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231021161350_AddAddressToOrders")]
+    partial class AddAddressToOrders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,14 +54,14 @@ namespace Behapy.Presentation.Migrations
                         new
                         {
                             Id = "08db1e18-c46f-4e76-8e77-69430f54d796",
-                            ConcurrencyStamp = "30e09f49-b12f-4c05-9b5c-f6a4e2184e1b",
+                            ConcurrencyStamp = "6a011bf3-017b-46eb-ad78-437ee4aca410",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "08db1e1a-7953-4790-8ebe-272e34a8fe18",
-                            ConcurrencyStamp = "f424d22c-f52b-4cc6-a5b0-d74b4637d31b",
+                            ConcurrencyStamp = "3f0d5700-79dc-460e-8626-886ad186de98",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -146,7 +148,7 @@ namespace Behapy.Presentation.Migrations
                         {
                             Id = "08db0f36-7dbb-436f-88e5-f1be70b3bda6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "43d4a23d-b762-42ba-81da-bd66ee853eaa",
+                            ConcurrencyStamp = "b6e30251-525f-411e-907e-6e744374fd30",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
@@ -154,9 +156,9 @@ namespace Behapy.Presentation.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEA7Eh1JfOEIsh7eE8CdmWZzYWMrHHhEwCo+nMuofWnCUdOkzz7q7kf9qgSK9lDbowA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIGWWAER0K6V4H6GyzLC6FoHz97MDkFEDB7r0Sxwpa9d14/M02+K+HUAJbu1LFhxyw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "dd85a02a-9935-419b-967e-513906257594",
+                            SecurityStamp = "869069ba-80bd-4acb-b1d7-4124f4cece58",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });
@@ -279,7 +281,7 @@ namespace Behapy.Presentation.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CancelledAt")
+                    b.Property<DateTime>("CancelledAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreateAt")
@@ -346,7 +348,7 @@ namespace Behapy.Presentation.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int?>("PromotionId")
@@ -399,6 +401,7 @@ namespace Behapy.Presentation.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -408,18 +411,6 @@ namespace Behapy.Presentation.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PaymentTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Thanh toán khi nhận hàng"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Chuyển khoản ngân hàng"
-                        });
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.Product", b =>
@@ -774,9 +765,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasOne("Behapy.Presentation.Models.Product", "Product")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductId");
 
                     b.HasOne("Behapy.Presentation.Models.Promotion", "Promotion")
                         .WithMany("OrderDetails")
