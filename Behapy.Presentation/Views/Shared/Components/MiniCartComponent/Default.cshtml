@@ -1,4 +1,5 @@
-﻿@model List<Behapy.Presentation.Models.CartItem>?
+﻿@using Behapy.Presentation.Extensions
+@model List<Behapy.Presentation.Models.CartItem>?
 
 <div class="offcanvas-minicart_wrapper" id="miniCart">
   <div class="harmic-offcanvas-body">
@@ -25,7 +26,7 @@
               </a>
               <div class="product-item_content">
                 <a asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId" class="product-item_title">@item.Product.Name</a>
-                <span class="product-item_quantity">@item.Amount x @item.Product.Price</span>
+                <span class="product-item_quantity">@item.Amount x @item.Product.Price.ToMoney()</span>
               </div>
             </li>
           }
@@ -34,12 +35,12 @@
 
       <div class="minicart-item_total">
         <span>Tổng cộng</span>
-        <span id="mini-cart-total" class="amount">@Model.Sum(item => item.Product.Price * item.Amount)</span>
+        <span id="mini-cart-total" class="amount">@Model.Sum(item => item.Product.Price * item.Amount).ToMoney()</span>
       </div>
 
       <div class="group-btn_wrap d-grid gap-2">
-        <a asp-controller="Cart" asp-action="Index" class="btn btn-secondary btn-primary-hover">Xem giỏ hàng</a>
-        <a href="checkout.html" class="btn btn-secondary btn-primary-hover">
+        <a asp-controller="Cart" class="btn btn-secondary btn-primary-hover">Xem giỏ hàng</a>
+        <a asp-controller="Checkout" class="btn btn-secondary btn-primary-hover">
           Thanh toán
         </a>
       </div>
@@ -48,7 +49,7 @@
     {
       <div>
         Để xem được Giỏ hàng, bạn cần
-        <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a>
+        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary">Đăng nhập</a>
       </div>
     }
   </div>

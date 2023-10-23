@@ -1,4 +1,5 @@
-﻿@model Behapy.Presentation.Models.Product
+﻿@using Behapy.Presentation.Extensions
+@model Behapy.Presentation.Models.Product
 
 @{
   ViewData["Title"] = "Details";
@@ -78,7 +79,7 @@
               <div class="single-product-content">
                 <h2 class="title">@Model.Name</h2>
                 <div class="price-box pb-1">
-                  <span class="new-price text-danger">@Model.Price</span>
+                  <span class="new-price text-danger">@Model.Price.ToMoney()</span>
                   @*<span class="old-price text-primary">$90.00</span>*@
                 </div>
                 @*<div class="rating-box-wrap pb-7">

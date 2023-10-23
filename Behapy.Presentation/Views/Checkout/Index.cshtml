@@ -1,0 +1,127 @@
+@using Behapy.Presentation.Extensions
+@using Behapy.Presentation.Models
+@using Behapy.Presentation.Services.Interfaces
+@model Behapy.Presentation.ViewModels.CheckoutViewModel
+
+@inject ICartService CartService
+
+@{
+  ViewData["Title"] = "Checkout";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+
+  var cartItems = await CartService.GetItems(User) ?? new List<CartItem>();
+  var total = cartItems.Sum(item => item.Product.Price * item.Amount);
+}
+
+<main class="main-content">
+  <div class="checkout-area section-space-y-axis-100">
+    <div class="container">
+      <form asp-action="Index">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+          <div class="col-lg-6 col-12">
+            <div class="checkbox-form">
+              <h3>Chi tiết đơn hàng</h3>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="checkout-form-list">
+                    <label asp-for="FullName"></label>
+                    <input asp-for="FullName" type="text" readonly/>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="myniceselect country-select clearfix">
+                    <label asp-for="PaymentTypeId"></label>
+                    <select asp-for="PaymentTypeId" asp-items="ViewBag.PaymentTypes" class="myniceselect nice-select wide">
+                    </select>
+                    <span asp-validation-for="PaymentTypeId" class="text-danger"></span>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="checkout-form-list">
+                    <label asp-for="Address"></label>
+                    <input asp-for="Address" type="text" readonly/>
+                  </div>
+                </div>
+              </div>
+
+              <div class="different-address">
+                <div class="ship-different-title">
+                  <h3>
+                    <input asp-for="UseAnotherAddress" id="ship-box"/>
+                    <label asp-for="UseAnotherAddress" for="ship-box"></label>
+                  </h3>
+                </div>
+                <div id="ship-box-info" class="row">
+                  <div class="col-md-12">
+                    <div class="checkout-form-list">
+                      <label asp-for="AnotherAddress"></label>
+                      <input asp-for="AnotherAddress" type="text"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="order-notes">
+                  <div class="checkout-form-list checkout-form-list-2">
+                    <label asp-for="Note">Ghi chú</label>
+                    <textarea asp-for="Note" id="checkout-mess" cols="30" rows="10" placeholder="Ghi chú của bạn về đơn hàng"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6 col-12">
+            <div class="your-order">
+              <h3>Đơn hàng</h3>
+              <div class="your-order-table table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th class="cart-product-name">Sản phẩm</th>
+                      <th class="cart-product-total">Tổng cộng</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach (var item in cartItems)
+                    {
+                      <tr class="cart_item">
+                        <td class="cart-product-name">
+                          @item.Product.Name
+                          <strong class="product-quantity">× @item.Amount</strong>
+                        </td>
+                        <td class="cart-product-total">
+                          <span class="amount">@item.Product.Price.ToMoney()</span>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+
+                  <tfoot>
+                    <tr class="order-total">
+                      <th>Tổng đơn hàng</th>
+                      <td>
+                        <strong>
+                          <span class="amount">@total.ToMoney()</span>
+                        </strong>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+
+              <div class="payment-method">
+                <div class="payment-accordion">
+                  <div class="order-button-payment">
+                    <input value="Đặt hàng" type="submit"/>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>

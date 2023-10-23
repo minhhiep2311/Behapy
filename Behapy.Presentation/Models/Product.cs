@@ -33,15 +33,15 @@ public class Product
     [Display(Name = "Số lượng")]
     public int Amount { get; set; }
 
-
     [Display(Name = "Danh mục")]
     public int CategoryId { get; set; }
+
     public Category? Category { get; set; }
 
     [Display(Name = "Khuyến mãi")]
     public int? PromotionId { get; set; }
+
     public Promotion? Promotion { get; set; }
-    
 
     public List<OrderDetail> OrderDetails { get; set; } = new();
     public List<CartItem> CartItems { get; set; } = new();

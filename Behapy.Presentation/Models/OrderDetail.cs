@@ -10,6 +10,7 @@ public class OrderDetail
     public decimal Discount { get; set; }
 
     public int Amount { get; set; }
+
     public int OrderNumber { get; set; }
 
     [Precision(18, 2)]
@@ -21,6 +22,6 @@ public class OrderDetail
     public int? PromotionId { get; set; }
     public Promotion? Promotion { get; set; }
 
-    public int? ProductId { get; set; }
-    public Product? Product { get; set; }
+    public int ProductId { get; set; }
+    public Product Product { get; set; } = null!;
 }
