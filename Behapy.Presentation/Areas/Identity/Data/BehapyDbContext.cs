@@ -83,5 +83,18 @@ public class BehapyDbContext : IdentityDbContext<User, Role, string>
                 RoleId = "08db1e18-c46f-4e76-8e77-69430f54d796"
             }
         );
+
+        builder.Entity<PaymentType>().HasData(
+            new PaymentType
+            {
+                Id = 1,
+                Name = "Thanh toán khi nhận hàng"
+            },
+            new PaymentType
+            {
+                Id = 2,
+                Name = "Chuyển khoản ngân hàng"
+            }
+        );
     }
 }
