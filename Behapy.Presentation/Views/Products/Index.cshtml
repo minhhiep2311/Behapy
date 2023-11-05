@@ -38,51 +38,51 @@
         </div>*@
     </div>
 
-    <div class="shop-area section-space-y-axis-100">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <!-- Top bar -->
-                    <div class="product-topbar">
-                        <ul>
-                            <li class="product-view-wrap">
-                                <ul class="nav" role="tablist">
-                                    <li class="grid-view" role="presentation">
-                                        <a class="active"
-                                           id="grid-view-tab"
-                                           data-bs-toggle="tab"
-                                           href="#grid-view"
-                                           role="tab"
-                                           aria-selected="true">
-                                            <i class="fa fa-th"></i>
-                                        </a>
-                                    </li>
-                                    <li class="list-view" role="presentation">
-                                        <a id="list-view-tab"
-                                           data-bs-toggle="tab"
-                                           href="#list-view"
-                                           role="tab"
-                                           aria-selected="true">
-                                            <i class="fa fa-th-list"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="page-count">
-                                <span>23</span> Product Found of <span>50</span> 
-                            </li>
-                            <li class="short">
-                                <form asp-controller="Products" asp-action="Index" method="get">
-                                    <select class="nice-select wide rounded-0" id="sort-select" name="sortOrder" onchange="onFilterChange()">
-                                        <option value="" selected>-- Tất cả --</option>
-                                        <option value="latest" selected='@ViewBag.SortOrder == "latest"'>Mới nhất</option>
-                                        <option value="high-price" selected='@ViewBag.SortOrder == "high-price"'>Giá giảm dần</option>
-                                        <option value="low-price" selected='@ViewBag.SortOrder == "low-price"'>Giá tăng dần</option>
-                                    </select>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
+  <div class="shop-area section-space-y-axis-100">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <!-- Top bar -->
+          <div class="product-topbar">
+            <ul>
+              <li class="product-view-wrap">
+                <ul class="nav" role="tablist">
+                  <li class="grid-view" role="presentation">
+                    <a class="active"
+                       id="grid-view-tab"
+                       data-bs-toggle="tab"
+                       href="#grid-view"
+                       role="tab"
+                       aria-selected="true">
+                      <i class="fa fa-th"></i>
+                    </a>
+                  </li>
+                  <li class="list-view" role="presentation">
+                    <a id="list-view-tab"
+                       data-bs-toggle="tab"
+                       href="#list-view"
+                       role="tab"
+                       aria-selected="true">
+                      <i class="fa fa-th-list"></i>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="page-count">
+                <span>23</span> Product Found of <span>50</span>
+              </li>
+              <li class="short">
+                <form asp-controller="Products" asp-action="Index" method="get">
+                  <select class="nice-select wide rounded-0" id="sort-select" name="sortOrder" onchange="onFilterChange()">
+                    <option value="" selected>-- Tất cả --</option>
+                    <option value="latest" selected='@(ViewBag.SortOrder == "latest")'>Mới nhất</option>
+                    <option value="high-price" selected='@(ViewBag.SortOrder == "high-price")'>Giá giảm dần</option>
+                    <option value="low-price" selected='@(ViewBag.SortOrder == "low-price")'>Giá tăng dần</option>
+                  </select>
+                </form>
+              </li>
+            </ul>
+          </div>
 
                     <!-- Content -->
                     <div class="tab-content text-charcoal pt-8">
@@ -101,13 +101,7 @@
                                     var pt6 = i != 0 ? "pt-6" : "";
                                     var ptsm0 = i == 1 ? "pt-sm-0" : "";
                                     var ptlg0 = i is 2 or 3 ? "pt-lg-0" : "";
-
                                     i++;
-
-                                    @*var item = Model[i];*@
-                                    @* var pt6 = ViewBag.SortedProducts.IndexOf(item) != 0 ? "pt-6" : "";
-                                var ptsm0 = ViewBag.SortedProducts.IndexOf(item) == 1 ? "pt-sm-0" : "";
-                                var ptlg0 = ViewBag.SortedProducts.IndexOf(item) == 2 || ViewBag.SortedProducts.IndexOf(item) == 3 ? "pt-lg-0" : "";*@
 
                                     <div class="col-lg-3 col-sm-6 @pt6 @ptsm0 @ptlg0">
                                         <div class="product-item">
