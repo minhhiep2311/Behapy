@@ -1,0 +1,58 @@
+@using Behapy.Presentation.Extensions
+@model List<Behapy.Presentation.Models.Order>
+
+@{
+  ViewData["Title"] = "Orders";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main class="main-content">
+  <div class="cart-area section-space-y-axis-100">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="table-content table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Mã đơn hàng</th>
+                  <th>Ngày đặt hàng</th>
+                  <th>Số lượng sản phẩm</th>
+                  <th>Giá trị</th>
+                </tr>
+              </thead>
+
+              <tbody id="cart-table-content">
+                @for (var i = 0; i < Model.Count; i++)
+                {
+                  var item = Model[i];
+
+                  <tr>
+                    <td class="index">@(i + 1)</td>
+                    <td class="product-thumbnail">
+                      <a asp-controller="Orders" asp-action="Details" asp-route-id="@item.Id">
+                        @item.Id
+                      </a>
+                    </td>
+                    <td class="product-thumbnail">
+                      <span class="amount">
+                        @item.CreateAt
+                      </span>
+                    </td>
+                    <td class="product-price">
+                      <span class="amount">@item.OrderDetails.Count()</span>
+                    </td>
+                    <td class="product-price">
+                      <span class="amount">@item.TotalMoney.ToMoney()</span>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

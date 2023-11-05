@@ -24,14 +24,21 @@ public class CustomerService : ICustomerService
         _context.SaveChanges();
     }
 
-    public Customer? GetCustomer()
+    public Customer? GetCustomerOrDefault()
     {
-        var userId = _contextAccessor.HttpContext?.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)
+        var userId = _contextAccessor.HttpContext?.User.Claims
+            .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)
             ?.Value;
-        if (userId == null) return null;
+        if (userId == null)
+            return null;
 
         return _context.Customers
             .AsNoTracking()
             .FirstOrDefault(c => c.UserId == userId);
+    }
+
+    public Customer GetCustomer()
+    {
+        return GetCustomerOrDefault() ?? throw new Exception("Not logged in");
     }
 }

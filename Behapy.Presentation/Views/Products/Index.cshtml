@@ -1,5 +1,6 @@
 ﻿@*@model List<Behapy.Presentation.Models.Product>*@
 @using Behapy.Presentation.Models
+@using Behapy.Presentation.Extensions
 @model IEnumerable<Behapy.Presentation.Models.Product>
 
 @{
@@ -72,7 +73,7 @@
                 <span>23</span> Product Found of <span>50</span>
               </li>
               <li class="short">
-                <form asp-controller="Products" asp-action="Index" method="get">
+                <form asp-controller="Products" method="get">
                   <select class="nice-select wide rounded-0" id="sort-select" name="sortOrder" onchange="onFilterChange()">
                     <option value="" selected>-- Tất cả --</option>
                     <option value="latest" selected='@(ViewBag.SortOrder == "latest")'>Mới nhất</option>
@@ -127,7 +128,7 @@
                                             <div class="product-content">
                                                 <a class="product-name" asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
                                                 <div class="price-box pb-1">
-                                                    <span class="new-price">@item.Price</span>
+                                                    <span class="new-price">@item.Price.ToMoney()</span>
                                                 </div>
                                                 <div class="rating-box">
                                                     <ul>
@@ -186,7 +187,7 @@
                                                     @item.Name
                                                 </a>
                                                 <div class="price-box pb-1">
-                                                    <span class="new-price">@item.Price</span>
+                                                    <span class="new-price">@item.Price.ToMoney()</span>
                                                 </div>
                                                 <div class="rating-box pb-2">
                                                     <ul>
@@ -217,10 +218,10 @@
                                     @if(pager.CurrentPage > 1)
                                     {
                                         <li class="page-item">
-                                            <a class="page-link" asp-controller="Products" asp-action="Index" asp-route-pg="1">Đầu</a>
+                                            <a class="page-link" asp-controller="Products" asp-route-pg="1">Đầu</a>
                                         </li>
                                         <li class="page-item">
-                                            <a class="page-link" asp-controller="Products" asp-action="Index" asp-route-pg="@(pager.CurrentPage - 1)" aria-label="Trước">
+                                            <a class="page-link" asp-controller="Products" asp-route-pg="@(pager.CurrentPage - 1)" aria-label="Trước">
                                                 <span class="fa fa-chevron-left"></span>
                                             </a>
                                         </li>
@@ -229,7 +230,7 @@
                                     @for(var pge = pager.StartPage; pge <= pager.EndPage; pge++)
                                     {
                                         <li class="page-item @(pge == pager.CurrentPage ? "active" :"" )">
-                                            <a class="page-link" asp-controller="Products" asp-action="Index" asp-route-pg="@pge" >@pge</a>
+                                            <a class="page-link" asp-controller="Products" asp-route-pg="@pge" >@pge</a>
                                         </li>
                                     }
 
@@ -237,12 +238,12 @@
                                     {
                                       
                                         <li class="page-item">
-                                            <a class="page-link" asp-controller="Products" asp-action="Index" asp-route-pg="@(pager.CurrentPage + 1)" aria-label="Previous">
+                                            <a class="page-link" asp-controller="Products" asp-route-pg="@(pager.CurrentPage + 1)" aria-label="Previous">
                                                 <span class="fa fa-chevron-right"></span>
                                             </a>
                                         </li>
                                         <li class="page-item">
-                                            <a class="page-link" asp-controller="Products" asp-action="Index" asp-route-pg="@pager.EndPage">Cuối</a>
+                                            <a class="page-link" asp-controller="Products" asp-route-pg="@pager.EndPage">Cuối</a>
                                         </li>
 
                                     }

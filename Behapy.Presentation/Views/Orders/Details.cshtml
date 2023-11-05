@@ -1,0 +1,93 @@
+@using Behapy.Presentation.Extensions
+@model Behapy.Presentation.Models.Order
+
+@{
+  ViewData["Title"] = "Orders";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main class="main-content">
+  <div class="checkout-area section-space-y-axis-100">
+    <div class="container">
+      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+      <div class="row">
+        <div class="col-lg-6 col-12">
+          <div class="checkbox-form">
+            <h3>Chi tiết đơn hàng</h3>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="checkout-form-list">
+                  <label asp-for="Customer.User.FullName"></label>
+                  <input asp-for="Customer.User.FullName" readonly/>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="checkout-form-list">
+                  <label asp-for="PaymentType.Name"></label>
+                  <input asp-for="PaymentType.Name" readonly/>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="checkout-form-list">
+                  <label asp-for="Address"></label>
+                  <input asp-for="Address" type="text" readonly/>
+                </div>
+              </div>
+            </div>
+
+            <div class="different-address">
+              <div class="order-notes">
+                <div class="checkout-form-list checkout-form-list-2">
+                  <label asp-for="Note"></label>
+                  <textarea asp-for="Note" id="checkout-mess" disabled></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 col-12">
+          <div class="your-order">
+            <h3>Đơn hàng</h3>
+            <div class="your-order-table table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="cart-product-name">Sản phẩm</th>
+                    <th class="cart-product-total">Tổng cộng</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach (var item in Model.OrderDetails)
+                  {
+                    <tr class="cart_item">
+                      <td class="cart-product-name">
+                        @item.Product.Name
+                        <strong class="product-quantity">× @item.Amount</strong>
+                      </td>
+                      <td class="cart-product-total">
+                        <span class="amount">@item.Product.Price.ToMoney()</span>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+
+                <tfoot>
+                  <tr class="order-total">
+                    <th>Tổng đơn hàng</th>
+                    <td>
+                      <strong>
+                        <span class="amount">@Model.TotalMoney.ToMoney()</span>
+                      </strong>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
