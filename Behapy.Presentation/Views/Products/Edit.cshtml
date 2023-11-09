@@ -108,16 +108,36 @@
             <div class="tab-pane fade" id="product-edit-option">
                 <div class="card">
                     <div class="card-body">
-                        <!-- ImageUrl -->
+                        <!-- Image -->
+                        <div class="form-group">
+                            <div class="custom-file">
+                                <label for="Image" class="custom-file-label">Chọn ảnh</label>
+                                <input id="Image" type="file" class="custom-file-input">
+
+                                <input asp-for="ImageUrl" class="d-none">
+                                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                            </div>
+
+                            <div class="input-progress" data-status="0">
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                            <div class="input-progress-result" id="ImageUrlResult"></div>
+                        </div>
+
+
+
+                        @*<!-- ImageUrl -->
                         <div class="form-group">
                             <label asp-for="ImageUrl" class="font-weight-semibold"></label>
                             <input asp-for="ImageUrl" class="form-control" />
                             <span asp-validation-for="ImageUrl" class="text-danger"></span>
-                        </div>
+                        </div>*@
 
                         <!-- Promotion -->
                         <div class="form-group">
-                            <label asp-for="PromotionId" class="font-weight-semibold"></label>
+                            <label asp-for="PromotionId" class="font-weight-semibold" ></label>
                             <select asp-for="PromotionId" class="form-control" asp-items="ViewBag.PromotionId"></select>
                             <span asp-validation-for="PromotionId" class="text-danger"></span>
                         </div>
@@ -139,6 +159,13 @@
 
 
 @section Scripts {
+    <!-- image kit -->
+    <script type="text/javascript" src="https://unpkg.com/imagekit-javascript/dist/imagekit.min.js"></script>
+
+    <script>
+        bindUploadEventToInputFile('#Image', '.input-progress', '@ViewBag.Token', '@ViewBag.Signature', '@ViewBag.Expire', 'Product');
+    </script>
+
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

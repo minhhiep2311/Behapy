@@ -202,6 +202,8 @@ public class ProductsController : Controller
             return RedirectToAction(nameof(Index));
         }
 
+        GetImageKitAuthenticationParameters();
+
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Id", product.PromotionId);
         return View(product);
