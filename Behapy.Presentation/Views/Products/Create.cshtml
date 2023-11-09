@@ -1,98 +1,243 @@
 ﻿@model Behapy.Presentation.Models.Product
 
 @{
-  ViewData["Title"] = "Create";
-  Layout = "~/Views/Shared/Admin/_Layout.cshtml";
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/Admin/_Layout.cshtml";
 }
 
 <div class="main-content">
-<h1>Thêm sản phẩm</h1>
-<hr />
-<div class="card">
-  <div class="card-body">
+    <div class="page-header">
+        <h2 class="header-title">Thêm sản phẩm</h2>
+        <div class="header-sub-title">
+            <nav class="breadcrumb breadcrumb-dash">
+                <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+                <a class="breadcrumb-item" asp-controller="Products" asp-action="Admin">Sản Phẩm</a>
+                <span class="breadcrumb-item active">Thêm Sản Phẩm</span>
+            </nav>
+        </div>
+    </div>
     <form asp-action="Create">
-      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-      <!-- Name -->
-      <div class="form-group">
-        <label asp-for="Name" class="control-label"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-      </div>
-
-      <!-- Price -->
-      <div class="form-group">
-        <label asp-for="Price" class="control-label"></label>
-
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text">VNĐ</span>
-          </div>
-          <input asp-for="Price" class="form-control" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="page-header no-gutters has-tab">
+            <div class="d-md-flex m-b-15 align-items-center justify-content-between">
+                <div class="m-b-15">
+                    <button type="submit" asp-controller="Products" asp-action="Create" class="btn btn-primary">
+                        <i class="anticon anticon-plus-circle m-r-5"></i>
+                        <span>Thêm sản phẩm</span>
+                    </button>
+                </div>
+            </div>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#product-edit-basic">Thông tin cơ bản</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#product-edit-option">Thông tin tùy chọn</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#product-edit-description">Mô tả</a>
+                </li>
+            </ul>
         </div>
+        <div class="tab-content m-t-15">
+            <div class="tab-pane fade show active" id="product-edit-basic">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Name -->
+                        <div class="form-group">
+                            <label asp-for="Name" class="control-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
 
-        <span asp-validation-for="Price" class="text-danger"></span>
-      </div>
+                        <!-- Price -->
+                        <div class="form-group">
+                            <label asp-for="Price" class="control-label"></label>
 
-      <!-- Is Active -->
-      <div class="form-group form-check">
-        <label class="form-check-label">
-          <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
-        </label>
-      </div>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">VNĐ</span>
+                                </div>
+                                <input asp-for="Price" class="form-control" />
+                            </div>
 
-      <!-- Description -->
-      <div class="form-group">
-        <label asp-for="Description" class="control-label"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-      </div>
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
 
-      <!-- Image -->
-      <div class="form-group">
-        <div class="custom-file">
-          <label for="Image" class="custom-file-label">Chọn ảnh</label>
-          <input id="Image" type="file" class="custom-file-input">
+                        <!-- Category -->
+                        <div class="form-group">
+                            <label asp-for="CategoryId" class="control-label"></label>
+                            <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+                        </div>
 
-          <input asp-for="ImageUrl" class="d-none">
-          <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                        <!-- Amount -->
+                        <div class="form-group">
+                            <label asp-for="Amount" class="control-label"></label>
+                            <input asp-for="Amount" class="form-control" />
+                            <span asp-validation-for="Amount" class="text-danger"></span>
+                        </div>
+
+                        <!-- Is Active -->
+                        <div class="form-group form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="product-edit-option">
+                <div class="card">
+                    <div class="card-body">
+
+                        <!-- Promotion -->
+                        <div class="form-group">
+                            <label asp-for="PromotionId" class=""></label>
+                            <select asp-for="PromotionId" class="form-control" asp-items="ViewBag.PromotionId"></select>
+                            <span asp-validation-for="PromotionId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Image -->
+                        <div class="form-group">
+                            <div class="custom-file">
+                                <label for="Image" class="custom-file-label">Chọn ảnh</label>
+                                <input id="Image" type="file" class="custom-file-input">
+
+                                <input asp-for="ImageUrl" class="d-none">
+                                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                            </div>
+
+                            <div class="input-progress" data-status="0">
+                            <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            </div>
+                            <div class="input-progress-result" id="ImageUrlResult"></div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="product-edit-description">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="editor"></div>
+                        <input type="hidden" id="Description" name="Description" asp-for="Description" />
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="input-progress" data-status="0">
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-        </div>
-        <div class="input-progress-result" id="ImageUrlResult"></div>
-      </div>
-
-      <!-- Category -->
-      <div class="form-group">
-        <label asp-for="CategoryId" class="control-label"></label>
-        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
-      </div>
-
-      <!-- Submit -->
-      <div class="form-group">
-        <input type="submit" value="Thêm" class="btn btn-primary" />
-      </div>
     </form>
-  </div>
+
+    @*
+    <h1>Thêm sản phẩm</h1>
+    <hr />
+    <div class="card">
+    <div class="card-body">
+    <form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <!-- Name -->
+    <div class="form-group">
+    <label asp-for="Name" class="control-label"></label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <!-- Price -->
+    <div class="form-group">
+    <label asp-for="Price" class="control-label"></label>
+
+    <div class="input-group">
+    <div class="input-group-prepend">
+    <span class="input-group-text">VNĐ</span>
+    </div>
+    <input asp-for="Price" class="form-control" />
+    </div>
+
+    <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <!-- Is Active -->
+    <div class="form-group form-check">
+    <label class="form-check-label">
+    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+    </label>
+    </div>
+
+    <!-- Description -->
+    <div class="form-group">
+    <label asp-for="Description" class="control-label"></label>
+    <textarea asp-for="Description" class="form-control"></textarea>
+    <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <!-- Image -->
+    <div class="form-group">
+    <div class="custom-file">
+    <label for="Image" class="custom-file-label">Chọn ảnh</label>
+    <input id="Image" type="file" class="custom-file-input">
+
+    <input asp-for="ImageUrl" class="d-none">
+    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+    </div>
+
+    <div class="input-progress" data-status="0">
+    <div class="progress">
+    <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    </div>
+    <div class="input-progress-result" id="ImageUrlResult"></div>
+    </div>
+
+    <!-- Category -->
+    <div class="form-group">
+    <label asp-for="CategoryId" class="control-label"></label>
+    <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+    </div>
+
+    <!-- Submit -->
+    <div class="form-group">
+    <input type="submit" value="Thêm" class="btn btn-primary" />
+    </div>
+    </form>
+    </div>
+    </div>
+
+    <div>
+    <a asp-action="Admin">Quay lại</a>
+    </div>*@
 </div>
 
-<div>
-  <a asp-action="Index">Quay lại</a>
-</div>
-</div>
 @section Scripts {
-  <!-- image kit -->
-  <script type="text/javascript" src="https://unpkg.com/imagekit-javascript/dist/imagekit.min.js"></script>
+    <!-- image kit -->
+    <script type="text/javascript" src="https://unpkg.com/imagekit-javascript/dist/imagekit.min.js"></script>
 
-  @{
-    await Html.RenderPartialAsync("_ValidationScriptsPartial");
-  }
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
-  <script>
-    bindUploadEventToInputFile('#Image', '.input-progress', '@ViewBag.Token', '@ViewBag.Signature', '@ViewBag.Expire', 'Product');
-  </script>
+    <script>
+        bindUploadEventToInputFile('#Image', '.input-progress', '@ViewBag.Token', '@ViewBag.Signature', '@ViewBag.Expire', 'Product');
+    </script>
+
+
+    <script>
+
+        var hiddenInput = document.getElementById('Description');
+        var quill = new Quill('#editor', {
+            theme: 'snow',
+            placeholder: 'Mô tả',
+        });
+
+        // Đồng bộ dữ liệu từ trình soạn thảo Quill vào hidden input khi có sự thay đổi
+        quill.on('text-change', function () {
+            // Lấy nội dung văn bản có các thẻ HTML
+            hiddenInput.value = quill.root.innerHTML;
+        });
+
+        // Đồng bộ dữ liệu từ hidden input vào trình soạn thảo Quill
+        quill.root.innerHTML = hiddenInput.value;
+    </script>
 }
