@@ -37,6 +37,9 @@ public class ProductsController : Controller
                 (string.IsNullOrWhiteSpace(searchText) || EF.Functions.Like(p.Name, $"%{searchText}%"))
             );
 
+        int categoryProductCount = await products.CountAsync();
+
+        var totalProducts = await _context.Products.CountAsync();
 
         switch (sortOrder)
         {
@@ -58,6 +61,9 @@ public class ProductsController : Controller
         var pager = new Pager(recsCount, pg, pageSize);
         var recSkip = (pg - 1) * pageSize;
         ViewBag.Pager = pager;
+
+        ViewBag.CategoryProductCount = categoryProductCount;
+        ViewBag.TotalProducts = totalProducts;
 
         return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
     }
