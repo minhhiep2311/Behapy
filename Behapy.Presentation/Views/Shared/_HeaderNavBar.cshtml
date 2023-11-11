@@ -146,32 +146,18 @@
                             <nav class="main-nav">
                                 <ul>
                                     <li class="drop-holder">
-                                        <a href="javascript:void(0)">
+                                        <a asp-controller="Home">
                                             Home
-                                            <i class="fa fa-chevron-down"></i>
                                         </a>
-                                        <ul class="drop-menu">
-                                            <li>
-                                                <a href="/">Home One</a>
-                                            </li>
-                                            <li>
-                                                <a href="index-2.html">Home Two</a>
-                                            </li>
-                                        </ul>
                                     </li>
                                     <li>
                                         <a asp-controller="About">About</a>
                                     </li>
                                     <li class="drop-holder">
-                                        <a href="javascript:void(0)">
+                                        <a asp-controller="Products">
                                             Shop
-                                            <i class="fa fa-chevron-down"></i>
                                         </a>
-                                        <ul class="drop-menu ">
-                                            <li>
-                                                <a asp-controller="Products">Shop Pages</a>
-                                            </li>
-                                        </ul>
+                                        
                                     </li>
                                     <li class="drop-holder">
                                         <a href="javascript:void(0)">
@@ -230,7 +216,7 @@
                                         </ul>
                                     </li>
                                     <li>
-                                        <a href="contact.html">Contact</a>
+                                        <a asp-controller="Contact">Contact</a>
                                     </li>
                                 </ul>
                             </nav>
