@@ -3,205 +3,228 @@
 @model List<Behapy.Presentation.Models.Product>
 
 @{
-    ViewData["Title"] = "Admin";
-    Layout = "~/Views/Shared/Admin/_Layout.cshtml";
+  ViewData["Title"] = "Admin";
+  Layout = "~/Views/Shared/Admin/_Layout.cshtml";
 
-
-    Pager pager = new Pager();
-    int pageNo = 0;
-    if (ViewBag.Pager != null)
-    {
-        pager = ViewBag.Pager;
-        pageNo = pager.CurrentPage;
-    }
-
-    int index = (pageNo - 1) * pager.PageSize + 1;
+  var pager = new Pager();
+  var pageNo = 0;
+  if (ViewBag.Pager != null)
+  {
+    pager = ViewBag.Pager;
+    pageNo = pager.CurrentPage;
+  }
 }
 
 <!-- Content Wrapper START -->
 <div class="main-content">
-    <div class="page-header">
-        <h2 class="header-title">Sản Phẩm</h2>
-        <div class="header-sub-title">
-            <nav class="breadcrumb breadcrumb-dash">
-                <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang Chủ</a>
-                <span class="breadcrumb-item active" href="#">Sản phẩm</span>
-                @* <a class="breadcrumb-item" href="#">E-commerce</a>
+  <div class="page-header">
+    <h2 class="header-title">Sản Phẩm</h2>
+    <div class="header-sub-title">
+      <nav class="breadcrumb breadcrumb-dash">
+        <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang Chủ</a>
+        <span class="breadcrumb-item active" href="#">Sản phẩm</span>
+        @* <a class="breadcrumb-item" href="#">E-commerce</a>
                 <span class="breadcrumb-item active">Orders List</span>*@
-            </nav>
-        </div>
+      </nav>
     </div>
-    <div class="card">
-        <div class="card-body">
-            <div class="row m-b-30">
-                <div class="col-6 text-left">
-                    <div class="d-md-flex">
-                        @using (Html.BeginForm("Admin", "Products", FormMethod.Get))
-                        {
-                            <div class="row">
-                                <div class="col-md-12">
-
-                                    @Html.DropDownList("categoryId", ViewData["CategoryId"] as SelectList, "Tất cả danh mục", new { @class = "form-control", onchange = "this.form.submit();" })
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-                <div class="col-6 text-right">
-                    <a class="btn btn-primary" asp-controller="Products" asp-action="Create">
-                        <i class="anticon anticon-plus-circle m-r-5"></i>
-                        <span>Thêm sản phẩm</span>
-                    </a>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-hover e-commerce-table">
-                    <thead>
-                        <tr>
-                            <th>
-                                <div class="checkbox">
-                                    <input id="checkAll" type="checkbox" />
-                                    <label for="checkAll" class="m-b-0"></label>
-                                </div>
-                            </th>
-                            <th>STT</th>
-                            <th>Sản phẩm</th>
-                            <th>Giá</th>
-                            <th>Tồn kho</th>
-                            <th>Trạng thái</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                  
-                    <tbody>
-                        @foreach (var item in Model)
-                        //@for (var i = 1; i < Model.Count; i++)
-                        {
-                            //var item = Model[i];
-                            <tr>
-                                <td>
-                                    <div class="checkbox">
-                                        <input id="check-item-7" type="checkbox" />
-                                        <label for="check-item-7" class="m-b-0"></label>
-                                    </div>
-                                </td>
-                                <td>@index</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img class="img-fluid rounded"
-                                             src="@item.ImageUrl"
-                                             style="max-width: 60px"
-                                             alt="@item.Name" />
-                                        <h6 class="m-b-0 m-l-10">@item.Name</h6>
-                                    </div>
-                                </td>
-                                <td>@item.Price.ToMoney()</td>
-                                <td>@item.Amount</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        @if (item.IsActive)
-                                        {
-                                            <div class="badge badge-success badge-dot m-r-10"></div>
-                                            <div>Đang kinh doanh</div>
-                                        }
-                                        else
-                                        {
-                                            <div class="badge badge-danger badge-dot m-r-10"></div>
-                                            <div>Ngừng kinh doanh</div>
-                                        }
-                                    </div>
-                                </td>
-                                <td class="text-right">
-                                    <!--data-toggle="modal" data-target="#DeleteModal"-->
-                                    <button onclick="location.href='@Url.Action("Edit", "Products", new { id = item.Id })'"
-                                            class="btn btn-icon btn-hover btn-sm btn-rounded pull-right">
-                                        <i class="anticon anticon-edit"></i>
-                                    </button>
-                                    <button data-toggle="modal" data-target="#DeleteModal" class="btn btn-icon btn-hover btn-sm btn-rounded">
-                                        <i class="anticon anticon-delete"></i>
-                                    </button>
-
-                                </td>
-                            </tr>
-                            index++;
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    @*<!--Delete Modal -->
-    <div class="modal fade" id="DeleteModal">
-    <div class="modal-dialog">
-    <div class="modal-content">
-    <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalLabel">Xác nhận xóa</h5>
-    <button type="button" class="close" data-dismiss="modal">
-    <i class="anticon anticon-close"></i>
-    </button>
-    </div>
-    <div class="modal-body">
-    Bạn có chắc chắn muốn xóa "@Model.Name" không?
-    </div>
-    <div class="modal-footer">
-    <form asp-action="Delete" asp-route-id="@Model.Id">
-    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-    <input type="submit" value="Xác nhận xóa" class="btn btn-tone btn-danger" />
-    </form>
-
-    </div>
-    </div>
-    </div>
-    </div>
-    <!--Delete Modal End-->*@
-    <!-- Pagination -->
-    <div class="pagination-area pt-10">
-        <nav aria-label="Page navigation example">
-            @if (pager.TotalPages > 0)
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="row m-b-30">
+        <div class="col-6 text-left">
+          <div class="d-md-flex">
+            @using (Html.BeginForm("Admin", "Products", FormMethod.Get))
             {
-                <ul class="pagination justify-content-center">
-                    @if (pager.CurrentPage > 1)
-                    {
-                        <li class="page-item">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="1" asp-route-categoryId="@ViewData["Category"]">Đầu</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage - 1)" asp-route-categoryId="@ViewData["Category"]" aria-label="Trước">
-                                <span class="fa fa-chevron-left"></span>
-                            </a>
-                        </li>
-                    }
+              <div class="row">
+                <div class="col-md-12">
 
-                    @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
-                    {
-                        <li class="page-item @(pge == pager.CurrentPage ? "active" :"" )">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@pge" asp-route-categoryId="@ViewData["Category"]">@pge</a>
-                        </li>
-                    }
-
-                    @if (pager.CurrentPage < pager.TotalPages)
-                    {
-
-                        <li class="page-item">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage + 1)" asp-route-categoryId="@ViewData["Category"]"  aria-label="Previous">
-                                <span class="fa fa-chevron-right"></span>
-                            </a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@pager.EndPage" asp-route-categoryId="@ViewData["Category"]">Cuối</a>
-                        </li>
-
-                    }
-                </ul>
+                  @Html.DropDownList("categoryId", ViewData["CategoryId"] as SelectList, "Tất cả danh mục", new { @class = "form-control", onchange = "this.form.submit();" })
+                </div>
+              </div>
             }
+          </div>
+        </div>
+        <div class="col-6 text-right">
+          <a class="btn btn-primary" asp-controller="Products" asp-action="Create">
+            <i class="anticon anticon-plus-circle m-r-5"></i>
+            <span>Thêm sản phẩm</span>
+          </a>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover e-commerce-table">
+          <thead>
+            <tr>
+              <th>
+                <div class="checkbox">
+                  <input id="checkAll" type="checkbox"/>
+                  <label for="checkAll" class="m-b-0"></label>
+                </div>
+              </th>
+              <th>STT</th>
+              <th>Sản phẩm</th>
+              <th>Giá</th>
+              <th>Tồn kho</th>
+              <th>Trạng thái</th>
+              <th></th>
+            </tr>
+          </thead>
 
-        </nav>
+          <tbody>
+            @for (
+              int i = 0, index = (pageNo - 1) * pager.PageSize + 1;
+              i < Model.Count;
+              i++, index++
+              )
+            {
+              var item = Model[i];
+
+              <tr>
+                <td>
+                  <div class="checkbox">
+                    <input id="check-item-7" type="checkbox"/>
+                    <label for="check-item-7" class="m-b-0"></label>
+                  </div>
+                </td>
+                <td>@index</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <img class="img-fluid rounded"
+                         src="@item.ImageUrl"
+                         style="max-width: 60px"
+                         alt="@item.Name"/>
+                    <h6 class="m-b-0 m-l-10">@item.Name</h6>
+                  </div>
+                </td>
+                <td>@item.Price.ToMoney()</td>
+                <td>@item.Amount</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    @if (item.IsActive)
+                    {
+                      <div class="badge badge-success badge-dot m-r-10"></div>
+                      <div>Đang kinh doanh</div>
+                    }
+                    else
+                    {
+                      <div class="badge badge-danger badge-dot m-r-10"></div>
+                      <div>Ngừng kinh doanh</div>
+                    }
+                  </div>
+                </td>
+                <td class="text-right">
+                  <button onclick="location.href='@Url.Action("Edit", "Products", new { id = item.Id })'"
+                          class="btn btn-icon btn-hover btn-sm btn-rounded pull-right">
+                    <i class="anticon anticon-edit"></i>
+                  </button>
+                  <button data-toggle="modal" data-target="#DeleteModal" data-product-id="@item.Id" data-product-name="@item.Name" class="btn btn-icon btn-hover btn-sm btn-rounded">
+                    <i class="anticon anticon-delete"></i>
+                  </button>
+
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
-    <!-- Pagination end -->
+  </div>
+
+  <!--Delete Modal -->
+  <div class="modal fade" id="DeleteModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Xác nhận xóa</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <i class="anticon anticon-close"></i>
+          </button>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+          <button onclick="deleteProduct(this)" data-product-id="" class="confirm-delete btn btn-tone btn-danger">
+            Xác nhận xóa
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Delete Modal End-->
+
+  <!-- Pagination -->
+  <div class="pagination-area pt-10">
+    <nav aria-label="Page navigation example">
+      @if (pager.TotalPages > 0)
+      {
+        <ul class="pagination justify-content-center">
+          @if (pager.CurrentPage > 1)
+          {
+            <li class="page-item">
+              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="1" asp-route-categoryId="@ViewData["Category"]">Đầu</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage - 1)" asp-route-categoryId="@ViewData["Category"]" aria-label="Trước">
+                <span class="fa fa-chevron-left"></span>
+              </a>
+            </li>
+          }
+
+          @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+          {
+            <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+              <a asp-controller="Products" asp-action="Admin" asp-route-pg="@pge" asp-route-categoryId="@ViewData["Category"]" class="page-link">
+                @pge
+              </a>
+            </li>
+          }
+
+          @if (pager.CurrentPage < pager.TotalPages)
+          {
+            <li class="page-item">
+              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage + 1)" asp-route-categoryId="@ViewData["Category"]" aria-label="Previous">
+                <span class="fa fa-chevron-right"></span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@pager.EndPage" asp-route-categoryId="@ViewData["Category"]">Cuối</a>
+            </li>
+          }
+        </ul>
+      }
+    </nav>
+  </div>
+  <!-- Pagination end -->
 
 </div>
 <!-- Content Wrapper END -->
+
 @section Scripts {
-
-
+  <script>
+    $(document).on('show.bs.modal', '#DeleteModal', function (event) {
+        const modal = $(this);
+        const button = $(event.relatedTarget);
+        const productId = button.data('productId');
+        const productName = button.data('productName');
+        
+        console.log(button.data);
+        console.log(modal.find('.modal-body'))
+  
+        modal.find('.modal-body').text(`Bạn có chắc chắn muốn xóa ${productName} không?`)
+        modal.find('.modal-footer .confirm-delete').data('productId', productId);
+    })
+    
+    function deleteProduct(btn) {
+        const productId = $(btn).data('productId');
+        console.log(productId);
+        $.ajax({
+            url: `/Products/Delete/${productId}`,
+            type: 'DELETE',
+            contentType: 'application/json',
+            success: function () {
+              document.location.reload();
+            },
+        });
+    }
+  </script>
 }

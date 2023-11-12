@@ -215,30 +215,9 @@ public class ProductsController : Controller
         return View(product);
     }
 
-    // GET: Products/Delete/5
-    public async Task<IActionResult> Delete(int? id)
-    {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var product = await _context.Products
-            .Include(p => p.Category)
-            .Include(p => p.Promotion)
-            .FirstOrDefaultAsync(m => m.Id == id);
-        if (product == null)
-        {
-            return NotFound();
-        }
-
-        return View(product);
-    }
-
     // POST: Products/Delete/5
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
+    [HttpDelete]
+    public async Task<IActionResult> Delete(int id)
     {
         var product = await _context.Products.FindAsync(id);
         if (product != null)
