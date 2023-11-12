@@ -37,6 +37,9 @@ public class ProductsController : Controller
                 (string.IsNullOrWhiteSpace(searchText) || EF.Functions.Like(p.Name, $"%{searchText}%"))
             );
 
+        int categoryProductCount = await products.CountAsync();
+
+        var totalProducts = await _context.Products.CountAsync();
 
         switch (sortOrder)
         {
@@ -59,17 +62,42 @@ public class ProductsController : Controller
         var recSkip = (pg - 1) * pageSize;
         ViewBag.Pager = pager;
 
+        ViewBag.CategoryProductCount = categoryProductCount;
+        ViewBag.TotalProducts = totalProducts;
+
         return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
     }
 
     //GET: Products/Admin
-    public async Task<IActionResult> Admin()
+    public async Task<IActionResult> Admin(int pg, int? categoryId)
     {
         var products = _context.Products
             .Include(p => p.Category)
-            .Include(p => p.Promotion);
+            .Include(p => p.Promotion)
+             .AsQueryable();
 
-        return View(await products.ToListAsync());
+        //Filter 
+        if (categoryId.HasValue)
+        {
+            products = products.Where(p => p.CategoryId == categoryId);
+        }
+
+        //Pagination
+        const int pageSize = 8;
+
+        if (pg < 1) pg = 1;
+        var recsCount = products.Count();
+        var pager = new Pager(recsCount, pg, pageSize);
+        var recSkip = (pg - 1) * pageSize;
+        ViewBag.Pager = pager;
+
+
+        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+
+        ViewData["Category"] = categoryId;
+
+
+        return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
     }
 
     // GET: Products/Details/5
@@ -111,7 +139,7 @@ public class ProductsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-        [Bind("Id,Name,Price,IsActive,Description,ImageUrl,CategoryId")]
+        [Bind("Id,Name,Price,IsActive,Description,ImageUrl,CategoryId,PromotionId,Amount")]
         Product product)
     {
         if (ModelState.IsValid)
@@ -124,6 +152,7 @@ public class ProductsController : Controller
         GetImageKitAuthenticationParameters();
 
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
+        ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name", product.PromotionId);
 
         return View(product);
     }
@@ -142,8 +171,8 @@ public class ProductsController : Controller
             return NotFound();
         }
 
-        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
-        ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Id", product.PromotionId);
+        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
+        ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name", product.PromotionId);
         return View(product);
     }
 
@@ -151,7 +180,7 @@ public class ProductsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id,
-        [Bind("Id,Name,Price,IsActive,Description,ImageUrl,Discount,CreatedAt,CategoryId,PromotionId")]
+        [Bind("Id,Name,Price,IsActive,Description,ImageUrl,Discount,CreatedAt,CategoryId,PromotionId,Amount")]
         Product product)
     {
         if (id != product.Id)
@@ -178,6 +207,8 @@ public class ProductsController : Controller
 
             return RedirectToAction(nameof(Index));
         }
+
+        GetImageKitAuthenticationParameters();
 
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Id", product.PromotionId);
@@ -216,7 +247,7 @@ public class ProductsController : Controller
         }
 
         await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Admin));
     }
 
     // POST: Products/Search

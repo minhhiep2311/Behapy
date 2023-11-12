@@ -1,0 +1,98 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main class="main-content">
+
+    <!-- Begin Shipping Area -->
+    <div class="shipping-area section-space-y-axis-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="shipping-item">
+                        <div class="shipping-img">
+                            <img src="~/images/shop/shipping/icon/plane.png" alt="Shipping Icon">
+                        </div>
+                        <div class="shipping-content">
+                            <h5 class="title">Free Shipping</h5>
+                            <p class="short-desc mb-0">Ưu đãi giao hàng tận nhà miễn phí</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 pt-6 pt-md-0">
+                    <div class="shipping-item">
+                        <div class="shipping-img">
+                            <img src="~/images/shop/shipping/icon/earphones.png" alt="Shipping Icon">
+                        </div>
+                        <div class="shipping-content">
+                            <h5 class="title">Online Support</h5>
+                            <p class="short-desc mb-0">Cung cấp hỗ trợ trực tuyến 24/7</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 pt-6 pt-lg-0">
+                    <div class="shipping-item">
+                        <div class="shipping-img">
+                            <img src="~/images/shop/shipping/icon/shield.png" alt="Shipping Icon">
+                        </div>
+                        <div class="shipping-content">
+                            <h5 class="title">Secure Payment</h5>
+                            <p class="short-desc mb-0">Hệ thống thanh toán hoàn toàn an toàn</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Shipping Area End Here -->
+
+    <div class="contact-with-map">
+        <div class="contact-map">
+            <iframe class="contact-map-size" 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d59594.82323596791!2d105.77347325258764!3d21.005602822168733!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135acf886764d5f%3A0x1683ebcffad6f608!2zUC4gTGluaCDEkMOgbSwgxJDhuqFpIEtpbSwgSG_DoG5nIE1haSwgSMOgIE7hu5lpLCBWaWV0bmFt!5e0!3m2!1sen!2s!4v1699697360819!5m2!1sen!2s" 
+            allowfullscreen="" 
+            loading="lazy"></iframe>
+
+        </div>
+        <div class="contact-form-area section-space-bottom-100">
+            <div class="container">
+                <div class="contact-form-wrap">
+                    <form id="contact-form"
+                          class="contact-form"
+                          action="https://whizthemes.com/mail-php/mamunur/harmic/harmic.php">
+                        <h4 class="contact-form-title pb-2 mb-7">
+                            Liên hệ với chúng tôi
+                        </h4>
+                        <div class="form-field">
+                            <input type="text"
+                                   name="con_name"
+                                   placeholder="Name*"
+                                   class="input-field" />
+                        </div>
+                        <div class="form-field mt-6">
+                            <input type="text"
+                                   name="con_email"
+                                   placeholder="Email*"
+                                   class="input-field" />
+                        </div>
+                        <div class="form-field mt-6">
+                            <textarea name="con_message"
+                                      placeholder="Message"
+                                      class="textarea-field"></textarea>
+                        </div>
+                        <div class="button-wrap mt-8">
+                            <button type="submit"
+                                    value="submit"
+                                    class="btn btn btn-custom-size lg-size btn-primary btn-secondary-hover rounded-0"
+                                    name="submit">
+                                Gửi
+                            </button>
+                        </div>
+                        <p class="form-messege mt-3 mb-0"></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
