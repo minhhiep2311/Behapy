@@ -140,25 +140,23 @@
   }
 
   <script>
-        bindUploadEventToInputFile('#Image', '.input-progress', '@ViewBag.Token', '@ViewBag.Signature', '@ViewBag.Expire', 'Product');
-    </script>
-
+      bindUploadEventToInputFile('#Image', '.input-progress', '@ViewBag.Token', '@ViewBag.Signature', '@ViewBag.Expire', 'Product');
+  </script>
 
   <script>
+      const hiddenInput = document.getElementById('Description');
+      const quill = new Quill('#editor', {
+          theme: 'snow',
+          placeholder: 'Mô tả',
+      });
 
-        var hiddenInput = document.getElementById('Description');
-        var quill = new Quill('#editor', {
-            theme: 'snow',
-            placeholder: 'Mô tả',
-        });
+      // Đồng bộ dữ liệu từ trình soạn thảo Quill vào hidden input khi có sự thay đổi
+      quill.on('text-change', function () {
+          // Lấy nội dung văn bản có các thẻ HTML
+          hiddenInput.value = quill.root.innerHTML;
+      });
 
-        // Đồng bộ dữ liệu từ trình soạn thảo Quill vào hidden input khi có sự thay đổi
-        quill.on('text-change', function () {
-            // Lấy nội dung văn bản có các thẻ HTML
-            hiddenInput.value = quill.root.innerHTML;
-        });
-
-        // Đồng bộ dữ liệu từ hidden input vào trình soạn thảo Quill
-        quill.root.innerHTML = hiddenInput.value;
+      // Đồng bộ dữ liệu từ hidden input vào trình soạn thảo Quill
+      quill.root.innerHTML = hiddenInput.value;
     </script>
 }

@@ -94,8 +94,6 @@ function bindUploadEventToInputFile(selector, progressSelector, token, signature
 
     $(selector).change(async function () {
         const input = this;
-        console.log(input.files[0]);
-
         const fileSize = input.files[0].size;
 
         function customXHRCallBack(e) {

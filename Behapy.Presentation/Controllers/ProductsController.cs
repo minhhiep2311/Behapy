@@ -74,7 +74,7 @@ public class ProductsController : Controller
         var products = _context.Products
             .Include(p => p.Category)
             .Include(p => p.Promotion)
-             .AsQueryable();
+            .AsQueryable();
 
         //Filter 
         if (categoryId.HasValue)
@@ -160,6 +160,8 @@ public class ProductsController : Controller
     // GET: Products/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
+        GetImageKitAuthenticationParameters();
+
         if (id == null)
         {
             return NotFound();
