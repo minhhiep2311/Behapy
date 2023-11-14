@@ -176,7 +176,7 @@ public class ProductsController : Controller
         return View(product);
     }
 
-    // POST: Products/Edit/5LinkId=317598.
+    // POST: Products/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id,
@@ -205,7 +205,7 @@ public class ProductsController : Controller
                 throw;
             }
 
-            return RedirectToAction(nameof(Index));
+            return await Edit(id);
         }
 
         GetImageKitAuthenticationParameters();
