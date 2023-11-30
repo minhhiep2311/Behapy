@@ -1,4 +1,5 @@
 using Behapy.Presentation.Areas.Identity.Data;
+using Behapy.Presentation.Domain;
 using Behapy.Presentation.Services.Implementations;
 using Behapy.Presentation.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -30,7 +31,8 @@ builder.Services
         options.Password.RequiredLength = 6;
     })
     .AddRoles<Role>()
-    .AddEntityFrameworkStores<BehapyDbContext>();
+    .AddEntityFrameworkStores<BehapyDbContext>()
+    .AddErrorDescriber<LocalizedIdentityErrorDescriber>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(x => { x.LoginPath = "/Identity/Account/Login"; });
