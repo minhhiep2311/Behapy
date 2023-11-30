@@ -1,334 +1,74 @@
-﻿@using Behapy.Presentation.Extensions
-@using Behapy.Presentation.Models;
-@model List<Behapy.Presentation.Models.Employee>
+﻿@model List<Behapy.Presentation.Models.Employee>
 
 @{
-    ViewData["Title"] = "Admin";
-    Layout = "~/Views/Shared/Admin/_Layout.cshtml";
-
-
-    Pager pager = new Pager();
-    int pageNo = 0;
-    if (ViewBag.Pager != null)
-    {
-        pager = ViewBag.Pager;
-        pageNo = pager.CurrentPage;
-    }
-
-    int index = (pageNo - 1) * pager.PageSize + 1;
+  ViewData["Title"] = "Admin";
+  Layout = "~/Views/Shared/Admin/_Layout.cshtml";
 }
-
-
 
 <!-- Content Wrapper START -->
 <div class="main-content">
-    <div class="page-header">
-        <h2 class="header-title">Nhân viên</h2>
-        <div class="header-sub-title">
-            <nav class="breadcrumb breadcrumb-dash">
-                <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang Chủ</a>
-                <span class="breadcrumb-item active" href="#">Nhân viên</span>
-                @* <a class="breadcrumb-item" href="#">E-commerce</a>
+  <div class="page-header">
+    <h2 class="header-title">Nhân viên</h2>
+    <div class="header-sub-title">
+      <nav class="breadcrumb breadcrumb-dash">
+        <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang Chủ</a>
+        <span class="breadcrumb-item active" href="#">Nhân viên</span>
+        @* <a class="breadcrumb-item" href="#">E-commerce</a>
                 <span class="breadcrumb-item active">Orders List</span>*@
-            </nav>
-        </div>
+      </nav>
     </div>
-    <div class="card">
-        <div class="card-body">
-            <div class="row m-b-30">
-                 <div class="col-12 text-right p-r-70">
-                    <a class="btn btn-primary" asp-controller="Employees" asp-action="Create">
-                        <i class="anticon anticon-plus-circle m-r-5"></i>
-                           <span>Thêm nhân viên</span>
-                    </a>
-                 </div>
-            </div>   
-    <div class="row">
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="row m-b-30">
+        <div class="col-12 text-right p-r-50">
+          <a class="btn btn-primary" asp-controller="Employees" asp-action="Create">
+            <i class="anticon anticon-plus-circle"></i>
+            <span>Thêm nhân viên</span>
+          </a>
+        </div>
+      </div>
+      <div class="row">
         <div class="col-lg-11 mx-auto">
-            <!-- Card View -->
-            <div class="row" id="card-view">
-                @foreach (var item in Model){
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="m-t-20 text-center">
-                                <div class="avatar avatar-image"
-                                     style="height: 100px; width: 100px">
-                                        <img src="~/images/admin/others/thumb-1.jpg" alt="" />
-                                </div>
-                                <h4 class="m-t-30">@item.FullName</h4>
-                                <p>@item.Position</p>
-                            </div>
-                            <div class="text-center m-t-15">
-                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                    <i class="anticon anticon-facebook"></i>
-                                </button>
-                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                    <i class="anticon anticon-twitter"></i>
-                                </button>
-                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                    <i class="anticon anticon-instagram"></i>
-                                </button>
-                            </div>
-                                <div class="text-center m-t-30">
-                                    <button onclick="location.href='@Url.Action("Details", "Employees", new { id = item.Id })'" class="btn btn-primary btn-tone">
-                                        <i class="anticon anticon-mail"></i>
-                                        <span class="m-l-5">Contact</span>
-                                    </button>
-                                </div>
-                        </div>
+          <!-- Card View -->
+          <div class="row" id="card-view">
+            @foreach (var item in Model)
+            {
+              <div class="col-md-4">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="m-t-20 text-center">
+                      <div class="avatar avatar-image"
+                           style="height: 100px; width: 100px">
+                        <img src="~/images/admin/avatars/default-avatar.jpg" alt=""/>
+                      </div>
+                      <h4 class="m-t-30">@item.FullName</h4>
+                      <p>@item.Position</p>
                     </div>
-                </div>
-                }
-            </div>
-            <div class="row d-none" id="list-view">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Social</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="media align-items-center">
-                                                    <div class="avatar avatar-image">
-                                                        <img src="assets/images/avatars/thumb-1.jpg"
-                                                             alt="" />
-                                                    </div>
-                                                    <div class="media-body m-l-15">
-                                                        <h6 class="mb-0">Erin Gonzales</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>erin.gon@gmail.com</td>
-                                            <td>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-facebook"></i>
-                                                </button>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-twitter"></i>
-                                                </button>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-instagram"></i>
-                                                </button>
-                                            </td>
-                                            <td class="text-right">
-                                                <a href="profile.html"
-                                                   class="btn btn-primary btn-tone">
-                                                    <i class="anticon anticon-mail"></i>
-                                                    <span class="m-l-5">Contact</span>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="media align-items-center">
-                                                    <div class="avatar avatar-image">
-                                                        <img src="assets/images/avatars/thumb-2.jpg"
-                                                             alt="" />
-                                                    </div>
-                                                    <div class="media-body m-l-15">
-                                                        <h6 class="mb-0">Darryl Day</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>darryl.d@gmail.com</td>
-                                            <td>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-facebook"></i>
-                                                </button>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-twitter"></i>
-                                                </button>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-instagram"></i>
-                                                </button>
-                                            </td>
-                                            <td class="text-right">
-                                                <a href="profile.html"
-                                                   class="btn btn-primary btn-tone">
-                                                    <i class="anticon anticon-mail"></i>
-                                                    <span class="m-l-5">Contact</span>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="media align-items-center">
-                                                    <div class="avatar avatar-image">
-                                                        <img src="assets/images/avatars/thumb-3.jpg"
-                                                             alt="" />
-                                                    </div>
-                                                    <div class="media-body m-l-15">
-                                                        <h6 class="mb-0">Marshall Nichols</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>marshalln@gmail.com</td>
-                                            <td>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-facebook"></i>
-                                                </button>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-twitter"></i>
-                                                </button>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-instagram"></i>
-                                                </button>
-                                            </td>
-                                            <td class="text-right">
-                                                <a href="profile.html"
-                                                   class="btn btn-primary btn-tone">
-                                                    <i class="anticon anticon-mail"></i>
-                                                    <span class="m-l-5">Contact</span>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="media align-items-center">
-                                                    <div class="avatar avatar-image">
-                                                        <img src="assets/images/avatars/thumb-4.jpg"
-                                                             alt="" />
-                                                    </div>
-                                                    <div class="media-body m-l-15">
-                                                        <h6 class="mb-0">Virgil Gonzales</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>virgil14@gmail.com</td>
-                                            <td>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-facebook"></i>
-                                                </button>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-twitter"></i>
-                                                </button>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-instagram"></i>
-                                                </button>
-                                            </td>
-                                            <td class="text-right">
-                                                <a href="profile.html"
-                                                   class="btn btn-primary btn-tone">
-                                                    <i class="anticon anticon-mail"></i>
-                                                    <span class="m-l-5">Contact</span>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="media align-items-center">
-                                                    <div class="avatar avatar-image">
-                                                        <img src="assets/images/avatars/thumb-5.jpg"
-                                                             alt="" />
-                                                    </div>
-                                                    <div class="media-body m-l-15">
-                                                        <h6 class="mb-0">Nicole Wyne</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>nicolew@gmail.com</td>
-                                            <td>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-facebook"></i>
-                                                </button>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-twitter"></i>
-                                                </button>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-instagram"></i>
-                                                </button>
-                                            </td>
-                                            <td class="text-right">
-                                                <a href="profile.html"
-                                                   class="btn btn-primary btn-tone">
-                                                    <i class="anticon anticon-mail"></i>
-                                                    <span class="m-l-5">Contact</span>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="media align-items-center">
-                                                    <div class="avatar avatar-image">
-                                                        <img src="assets/images/avatars/thumb-6.jpg"
-                                                             alt="" />
-                                                    </div>
-                                                    <div class="media-body m-l-15">
-                                                        <h6 class="mb-0">Riley Newman</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>rileyn93@gmail.com</td>
-                                            <td>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-facebook"></i>
-                                                </button>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-twitter"></i>
-                                                </button>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-instagram"></i>
-                                                </button>
-                                            </td>
-                                            <td class="text-right">
-                                                <a href="profile.html"
-                                                   class="btn btn-primary btn-tone">
-                                                    <i class="anticon anticon-mail"></i>
-                                                    <span class="m-l-5">Contact</span>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="media align-items-center">
-                                                    <div class="avatar avatar-image">
-                                                        <img src="assets/images/avatars/thumb-7.jpg"
-                                                             alt="" />
-                                                    </div>
-                                                    <div class="media-body m-l-15">
-                                                        <h6 class="mb-0">Pamela Wanda</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>pamelaw@gmail.com</td>
-                                            <td>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-facebook"></i>
-                                                </button>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">t
-                                                    <i class="anticon anticon-twitter"></i>
-                                                </button>
-                                                <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                                                    <i class="anticon anticon-instagram"></i>
-                                                </button>
-                                            </td>
-                                            <td class="text-right">
-                                                <a href="profile.html"
-                                                   class="btn btn-primary btn-tone">
-                                                    <i class="anticon anticon-mail"></i>
-                                                    <span class="m-l-5">Contact</span>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                    <div class="text-center m-t-15">
+                      <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
+                        <i class="anticon anticon-facebook"></i>
+                      </button>
+                      <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
+                        <i class="anticon anticon-twitter"></i>
+                      </button>
+                      <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
+                        <i class="anticon anticon-instagram"></i>
+                      </button>
                     </div>
+                    <div class="text-center m-t-30">
+                      <a href='@Url.Action("Details", "Employees", new { id = item.Id })' class="btn btn-primary btn-tone">
+                        <i class="anticon anticon-mail"></i>
+                        <span class="m-l-5">Contact</span>
+                      </a>
+                    </div>
+                  </div>
                 </div>
-            </div>
+              </div>
+            }
+          </div>
         </div>
-         </div>
-     </div>
+      </div>
     </div>
+  </div>
 </div>
