@@ -1,0 +1,36 @@
+﻿@model List<Behapy.Presentation.Models.ServiceCategory>
+
+@{
+  ViewData["Title"] = "Index";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="banner-with-category mb-10">
+  <div class="banner-area section-space-top-95">
+    <div class="container">
+      <div class="row">
+        @for (var i = 0; i < Model.Count; i++)
+        {
+          var item = Model[i];
+          var pt6 = i != 0 ? "pt-6" : "";
+          var ptmd0 = i == 1 ? "pt-md-0" : "";
+          var ptlg0 = i is 2 or 3 ? "pt-lg-0" : "";
+
+          <div class="col-lg-4 col-md-6 @pt6 @ptmd0 @ptlg0">
+            <div class="banner-item">
+              <div class="banner-img img-zoom-effect">
+                <img class="img-full" src="~/images/shop/banner/inner-img/service1.png" alt="Banner Image">
+                <div class="inner-content">
+                  <h4 class="title text-white mb-5">@item.Name</h4>
+                  <div class="button-wrap">
+                    <a class="btn btn-primary btn-white-hover rounded-0" asp-action="ServicesByCategory" asp-controller="Services" asp-route-categoryId="@item.Id">Xem ngay</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

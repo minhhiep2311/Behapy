@@ -1,49 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Behapy.Presentation.Areas.Identity.Data;
 using Behapy.Presentation.Models;
-using Behapy.Presentation.Services.Interfaces;
+using Behapy.Presentation.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace Behapy.Presentation.Controllers
 {
     public class EmployeesController : Controller
     {
         private readonly BehapyDbContext _context;
-        private readonly IFileService _fileService;
+        private readonly UserManager<User> _userManager;
 
-        public EmployeesController(BehapyDbContext context, IFileService fileService)
+        public EmployeesController(BehapyDbContext context, UserManager<User> userManager)
         {
             _context = context;
-            _fileService = fileService;
+            _userManager = userManager;
         }
 
         // GET: Employees
         public async Task<IActionResult> Index()
         {
-              return _context.Employees != null ? 
-                          View(await _context.Employees.ToListAsync()) :
-                          Problem("Entity set 'BehapyDbContext.Employees'  is null.");
+            return View(await _context.Employees.ToListAsync());
         }
 
         // GET: Employees/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Employees == null)
-            {
+            if (id == null)
                 return NotFound();
-            }
 
             var employee = await _context.Employees
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (employee == null)
-            {
                 return NotFound();
-            }
 
             return View(employee);
         }
@@ -59,30 +49,61 @@ namespace Behapy.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FullName,Address,Position")] Employee employee)
+        public async Task<IActionResult> Create(
+            [Bind("Id,FullName,Address,Position,Email")]
+            CreateEmployeeModel employee)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(employee);
+
+            var model = new Employee
             {
-                _context.Add(employee);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                FullName = employee.FullName,
+                Address = employee.Address,
+                Position = employee.Position,
+            };
+
+            _context.Add(model);
+
+            var user = new User
+            {
+                Id = Guid.NewGuid().ToString(),
+                FullName = employee.FullName,
+                Email = employee.Email,
+                UserName = employee.Email
+            };
+
+            var createUserResult = await _userManager.CreateAsync(user, "123456");
+            if (!createUserResult.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, createUserResult.Errors.First().Description);
+                return View(employee);
             }
-            return View(employee);
+
+            var addToRoleResult = await _userManager.AddToRoleAsync(user, "Employee");
+            if (!addToRoleResult.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, addToRoleResult.Errors.First().Description);
+                return View(employee);
+            }
+
+            model.User = user;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Employees/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Employees == null)
-            {
+            if (id == null)
                 return NotFound();
-            }
 
             var employee = await _context.Employees.FindAsync(id);
             if (employee == null)
-            {
                 return NotFound();
-            }
+
             return View(employee);
         }
 
@@ -91,50 +112,39 @@ namespace Behapy.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FullName,Address,Position")] Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FullName,Address,Position,Email")] Employee employee)
         {
             if (id != employee.Id)
-            {
                 return NotFound();
+
+            if (!ModelState.IsValid)
+                return View(employee);
+
+            try
+            {
+                _context.Update(employee);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!EmployeeExists(employee.Id))
+                    return NotFound();
+                throw;
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(employee);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EmployeeExists(employee.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(employee);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Employees/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Employees == null)
-            {
+            if (id == null)
                 return NotFound();
-            }
 
             var employee = await _context.Employees
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (employee == null)
-            {
                 return NotFound();
-            }
 
             return View(employee);
         }
@@ -144,23 +154,17 @@ namespace Behapy.Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Employees == null)
-            {
-                return Problem("Entity set 'BehapyDbContext.Employees'  is null.");
-            }
             var employee = await _context.Employees.FindAsync(id);
             if (employee != null)
-            {
                 _context.Employees.Remove(employee);
-            }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool EmployeeExists(int id)
         {
-          return (_context.Employees?.Any(e => e.Id == id)).GetValueOrDefault();
+            return _context.Employees.Any(e => e.Id == id);
         }
     }
 }

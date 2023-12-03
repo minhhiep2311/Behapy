@@ -14,48 +14,9 @@
                 <div class="col-6">
                     <div class="header-top-left">
                         <ul class="dropdown-wrap text-matterhorn">
-                            <li class="dropdown">
-                                <button class="btn btn-link dropdown-toggle ht-btn"
-                                        type="button"
-                                        id="languageButton"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                    English
-                                </button>
-                                <ul class="dropdown-menu"
-                                    aria-labelledby="languageButton">
-                                    <li>
-                                        <a class="dropdown-item" href="#">French</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">Italian</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">Spanish</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <button class="btn btn-link dropdown-toggle ht-btn"
-                                        type="button"
-                                        id="currencyButton"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                    USD
-                                </button>
-                                <ul class="dropdown-menu"
-                                    aria-labelledby="currencyButton">
-                                    <li>
-                                        <a class="dropdown-item" href="#">GBP</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">ISO</a>
-                                    </li>
-                                </ul>
-                            </li>
                             <li>
-                                Call Us
-                                <a href="tel://3965410">3965410</a>
+                                Gọi ngay
+                                <a href="tel://033 806 6889">033 806 6889</a>
                             </li>
                         </ul>
                     </div>
@@ -63,7 +24,7 @@
                 <div class="col-6">
                     <div class="header-top-right text-matterhorn">
                         <p class="shipping mb-0">
-                            Free delivery on order over <span>$200</span>
+                            Miễn phí vận chuyển hóa đơn <span>500k</span>
                         </p>
                     </div>
                 </div>
@@ -146,77 +107,26 @@
                             <nav class="main-nav">
                                 <ul>
                                     <li class="drop-holder">
-                                        <a asp-controller="Home">
-                                            Home
+                                        <a asp-controller="Home" asp-action="Index">
+                                            Trang chủ
                                         </a>
                                     </li>
                                     <li>
-                                        <a asp-controller="About">About</a>
+                                        <a asp-controller="About" asp-action="Index">Giới thiệu</a>
                                     </li>
                                     <li class="drop-holder">
-                                        <a asp-controller="Products">
-                                            Shop
+                                        <a asp-controller="Products" asp-action="Index">
+                                            Cửa hàng
                                         </a>
                                         
                                     </li>
                                     <li class="drop-holder">
-                                        <a href="javascript:void(0)">
-                                            Pages
-                                            <i class="fa fa-chevron-down"></i>
+                                        <a asp-controller="Services" asp-action="Index">
+                                            Dịch vụ
                                         </a>
-                                        <ul class="drop-menu">
-                                            <li>
-                                                <a href="faq.html">Frequently Questions</a>
-                                            </li>
-                                            <li>
-                                                <a href="404.html">Error 404</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li class="drop-holder">
-                                        <a href="javascript:void(0)">
-                                            Blog
-                                            <i class="fa fa-chevron-down"></i>
-                                        </a>
-                                        <ul class="drop-menu">
-                                            <li class="sub-dropdown-holder">
-                                                <a href="javascript:void(0)">Blog Holder</a>
-                                                <ul class="drop-menu sub-dropdown">
-                                                    <li>
-                                                        <a href="blog.html">Blog Default</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="blog-left-sidebar.html">Blog Left Sidebar</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="blog-right-sidebar.html">Blog Right Sidebar</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="blog-list-left-sidebar.html">Blog List Left Sidebar</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="blog-list-right-sidebar.html">Blog List Right Sidebar</a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li class="sub-dropdown-holder">
-                                                <a href="javascript:void(0)">Blog Detail Holder</a>
-                                                <ul class="drop-menu sub-dropdown">
-                                                    <li>
-                                                        <a href="blog-detail.html">Blog Detail Default</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="blog-detail-left-sidebar.html">Blog Detail Left Sidebar</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="blog-detail-right-sidebar.html">Blog Detail Right Sidebar</a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>
                                     </li>
                                     <li>
-                                        <a asp-controller="Contact">Contact</a>
+                                        <a asp-controller="Contact" asp-action="Index">Liên hệ</a>
                                     </li>
                                 </ul>
                             </nav>
