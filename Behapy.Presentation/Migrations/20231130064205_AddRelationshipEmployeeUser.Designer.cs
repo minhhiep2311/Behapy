@@ -4,6 +4,7 @@ using Behapy.Presentation.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Behapy.Presentation.Migrations
 {
     [DbContext(typeof(BehapyDbContext))]
-    partial class BehapyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231130064205_AddRelationshipEmployeeUser")]
+    partial class AddRelationshipEmployeeUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,23 +54,16 @@ namespace Behapy.Presentation.Migrations
                         new
                         {
                             Id = "08db1e18-c46f-4e76-8e77-69430f54d796",
-                            ConcurrencyStamp = "af841e03-566c-49c4-b7e2-048b4e98d62d",
+                            ConcurrencyStamp = "a2bcfe94-b346-44ea-9e51-597e107157dc",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "08db1e1a-7953-4790-8ebe-272e34a8fe18",
-                            ConcurrencyStamp = "b5909a08-ea63-4c34-bfff-8570b8b1f534",
+                            ConcurrencyStamp = "4d59f571-3b4e-4a78-9588-aaa2ebc30453",
                             Name = "User",
                             NormalizedName = "USER"
-                        },
-                        new
-                        {
-                            Id = "dacb0904-8ed9-4728-af4e-cecf7b4c29e3",
-                            ConcurrencyStamp = "0eaaaafa-c676-4684-a52f-19c9839b5722",
-                            Name = "Employee",
-                            NormalizedName = "EMPLOYEE"
                         });
                 });
 
@@ -153,7 +148,7 @@ namespace Behapy.Presentation.Migrations
                         {
                             Id = "08db0f36-7dbb-436f-88e5-f1be70b3bda6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "06a07804-2db2-4bb5-a69a-e029aedbb4f3",
+                            ConcurrencyStamp = "ac74f5ed-3db8-4771-b14c-71ae8a8c581c",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
@@ -161,9 +156,9 @@ namespace Behapy.Presentation.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAENjpQ/WAqsLkuAURHoB8RnwSzKrZFwxkZojEtOUj64u2S8F5LJjLYcVauyeeml4Pbg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAECdMX7y4seQkwA88utD+qyat5KDJ1RBMHwRyHOcjIMAIjjvO0ewyw+EhnQB9vQ+Q+g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "679013ac-faa8-450e-aef4-ea4c9a257480",
+                            SecurityStamp = "390ff56b-d037-49d5-86fd-38a2ccc009ea",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });

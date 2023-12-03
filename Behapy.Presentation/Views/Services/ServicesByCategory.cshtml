@@ -2,38 +2,38 @@
 
 
 <div class="blog-area blog-column-2 section-space-y-axis-100">
-    <div class="container">
-        <div class="row">
-            @foreach (var service in Model)
-            {
-                <div class="col-md-6">
-                    <div class="blog-item">
-                        <div class="blog-img img-zoom-effect">
-                            <a href="blog-detail-left-sidebar.html">
-                                <img class="img-full" src="@service.ImageUrl" alt="Blog Image">
-                            </a>
-                        </div>
-                        <div class="blog-content">
-                            <div class="blog-meta text-dim-gray pb-3">
-                                <ul>
-                                    <li class="date">
-                                        <i class="fa fa-calendar-o me-2"></i> @service.CreatedAt.Date.ToString("dd/MM/yyyy")
-                                    </li>
-                                </ul>
-                            </div>
-                            <h5 class="title mb-4">
-                                <a href="blog-detail-left-sidebar.html">@service.Title</a>
-                            </h5>
-                            <p class="short-desc mb-5" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                              @service.Content
-                            </p>
-                            <div class="button-wrap">
-                                <a class="btn btn-custom-size lg-size btn-dark rounded-0" asp-action="Details" asp-route-id="@service.Id">Xem thêm</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
+  <div class="container">
+    <div class="row">
+      @foreach (var service in Model)
+      {
+        <div class="col-md-6">
+          <div class="blog-item">
+            <div class="blog-img img-zoom-effect">
+              <a href="#">
+                <img class="img-full" src="@service.ImageUrl" alt="Blog Image">
+              </a>
+            </div>
+            <div class="blog-content">
+              <div class="blog-meta text-dim-gray pb-3">
+                <ul>
+                  <li class="date">
+                    <i class="fa fa-calendar-o me-2"></i> @service.CreatedAt.Date.ToString("dd/MM/yyyy")
+                  </li>
+                </ul>
+              </div>
+              <h5 class="title mb-4">
+                <a href="#">@service.Title</a>
+              </h5>
+              <p class="short-desc mb-5" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                @service.Content
+              </p>
+              <div class="button-wrap">
+                <a class="btn btn-custom-size lg-size btn-dark rounded-0" asp-action="Details" asp-route-id="@service.Id">Xem thêm</a>
+              </div>
+            </div>
+          </div>
         </div>
+      }
     </div>
+  </div>
 </div>

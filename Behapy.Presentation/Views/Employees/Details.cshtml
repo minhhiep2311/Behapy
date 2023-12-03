@@ -1,0 +1,125 @@
+﻿@model Behapy.Presentation.Models.Employee
+
+@{
+  ViewData["Title"] = "Details";
+  Layout = "~/Views/Shared/Admin/_Layout.cshtml";
+}
+
+<div class="main-content">
+  <div class="page-header">
+    <div class="header-sub-title">
+      <nav class="breadcrumb breadcrumb-dash">
+        <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+        <a class="breadcrumb-item" asp-controller="Employees" asp-action="Index">Nhân viên</a>
+        <span class="breadcrumb-item active">Xem thông tin nhân viên</span>
+      </nav>
+    </div>
+  </div>
+  <div class="container">
+    <div class="card">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-md-7">
+            <div class="d-md-flex align-items-center">
+              <div class="text-center text-sm-left">
+                <div class="avatar avatar-image"
+                     style="width: 150px; height: 150px">
+                  <img src="~/images/admin/avatars/default-avatar.jpg" 
+                       alt="Avatar"/>
+                </div>
+              </div>
+              <div class="text-center text-sm-left m-v-15 p-l-30">
+                <h2 class="m-b-5">@Model.FullName</h2>
+                <p class="text-dark m-b-20">
+                  @Model.Position
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="row">
+              <div class="d-md-block d-none border-left col-1"></div>
+              <div class="col">
+                <ul class="list-unstyled m-t-10">
+                  <li class="row">
+                    <p class="col-sm-4 col-4 font-weight-semibold text-dark m-b-5">
+                      <i class="m-r-10 text-primary anticon anticon-mail"></i>
+                      <span>Email: </span>
+                    </p>
+                    <p class="col font-weight-semibold">
+                      @Model.User?.Email
+                    </p>
+                  </li>
+                  <li class="row">
+                    <p class="col-sm-4 col-4 font-weight-semibold text-dark m-b-5">
+                      <i class="m-r-10 text-primary anticon anticon-phone"></i>
+                      <span>Phone: </span>
+                    </p>
+                    <p class="col font-weight-semibold">
+                      @Model.User?.PhoneNumber
+                    </p>
+                  </li>
+                  <li class="row">
+                    <p class="col-sm-4 col-5 font-weight-semibold text-dark m-b-5">
+                      <i class="m-r-10 text-primary anticon anticon-compass"></i>
+                      <span>Quê quán: </span>
+                    </p>
+                    <p class="col font-weight-semibold">
+                      @Model.Address
+                    </p>
+                  </li>
+                </ul>
+                <div class="d-flex font-size-22 m-t-15">
+                  <a href="" class="text-gray p-r-20">
+                    <i class="anticon anticon-facebook"></i>
+                  </a>
+                  <a href="" class="text-gray p-r-20">
+                    <i class="anticon anticon-twitter"></i>
+                  </a>
+                  <a href="" class="text-gray p-r-20">
+                    <i class="anticon anticon-behance"></i>
+                  </a>
+                  <a href="" class="text-gray p-r-20">
+                    <i class="anticon anticon-dribbble"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row p-l-50">
+    <button onclick="location.href='@Url.Action("Edit", "Employees", new { id = @Model.Id })'"
+            class="btn btn-primary btn-tone m-r-10">
+      <i class="anticon anticon-edit"></i> <span>Chỉnh sửa</span>
+    </button>
+    <a class="btn btn-tone btn-danger m-r-5" data-toggle="modal" data-target="#DeleteModal">Xóa</a>
+  </div>
+</div>
+
+<!--Delete Modal -->
+<div class="modal fade" id="DeleteModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Xác nhận xóa</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <i class="anticon anticon-close"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        Xác nhận xóa thông tin nhân viên @Model.FullName?
+      </div>
+      <div class="modal-footer">
+        <form asp-action="Delete" asp-route-id="@Model.Id">
+          <input type="hidden" asp-for="Id"/>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+          <input type="submit" value="Xác nhận xóa" class="btn btn-tone btn-danger"/>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>

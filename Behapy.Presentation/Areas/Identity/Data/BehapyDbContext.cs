@@ -59,7 +59,8 @@ public class BehapyDbContext : IdentityDbContext<User, Role, string>
         // Seed data
         builder.Entity<Role>().HasData(
             new Role { Id = "08db1e18-c46f-4e76-8e77-69430f54d796", Name = "Admin", NormalizedName = "ADMIN" },
-            new Role { Id = "08db1e1a-7953-4790-8ebe-272e34a8fe18", Name = "User", NormalizedName = "USER" }
+            new Role { Id = "08db1e1a-7953-4790-8ebe-272e34a8fe18", Name = "User", NormalizedName = "USER" },
+            new Role { Id = "dacb0904-8ed9-4728-af4e-cecf7b4c29e3", Name = "Employee", NormalizedName = "EMPLOYEE" }
         );
 
         builder.Entity<User>().HasData(
