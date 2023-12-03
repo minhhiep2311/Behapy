@@ -74,6 +74,7 @@ public class ProductsController : Controller
         var products = _context.Products
             .Include(p => p.Category)
             .Include(p => p.Promotion)
+            .OrderByDescending(p => p.CreatedAt)
             .AsQueryable();
 
         //Filter 
@@ -84,18 +85,14 @@ public class ProductsController : Controller
 
         //Pagination
         const int pageSize = 8;
-
         if (pg < 1) pg = 1;
         var recsCount = products.Count();
         var pager = new Pager(recsCount, pg, pageSize);
         var recSkip = (pg - 1) * pageSize;
         ViewBag.Pager = pager;
 
-
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-
         ViewData["Category"] = categoryId;
-
 
         return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
     }
@@ -119,6 +116,7 @@ public class ProductsController : Controller
 
         return View(product);
     }
+
 
     // GET: Products/Create
     public IActionResult Create()
@@ -154,9 +152,10 @@ public class ProductsController : Controller
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name", product.PromotionId);
 
-        return View(product);
+        return RedirectToAction(nameof(Admin));
     }
 
+    
     // GET: Products/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
@@ -207,14 +206,14 @@ public class ProductsController : Controller
                 throw;
             }
 
-            return await Edit(id);
+            //return await Edit(id);
         }
 
         GetImageKitAuthenticationParameters();
 
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Id", product.PromotionId);
-        return View(product);
+        return RedirectToAction(nameof(Admin));
     }
 
     // POST: Products/Delete/5
@@ -237,6 +236,25 @@ public class ProductsController : Controller
     {
         return RedirectToAction("Index", new { category, q });
     }
+
+    //POST: Products/AddQuantity
+    [HttpPost]
+    public async Task<IActionResult> AddQuantity(int id, int quantityToAdd)
+    {
+        var product = await _context.Products.FindAsync(id);
+
+        if (product != null)
+        {
+            // Thêm số lượng mới vào số lượng hiện tại
+            product.Amount += quantityToAdd;
+
+            // Cập nhật dữ liệu trong cơ sở dữ liệu
+            await _context.SaveChangesAsync();
+        }
+
+        return RedirectToAction(nameof(Admin));
+    }
+
 
     private void GetImageKitAuthenticationParameters()
     {
