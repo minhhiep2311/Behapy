@@ -14,7 +14,7 @@ public class Product
     [Display(Name = "Giá tiền")]
     public decimal Price { get; set; }
 
-    [Display(Name = "Kích hoạt")]
+    [Display(Name = "Đang kinh doanh")]
     public bool IsActive { get; set; }
 
     [Display(Name = "Mô tả")]
