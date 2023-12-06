@@ -19,6 +19,7 @@ public class OrdersController : Controller
 
     // GET: Orders
     [Authorize]
+    [Authorize(Roles = "User")]
     public IActionResult Index()
     {
         var customerId = _customerService.GetCustomer().Id;
@@ -31,6 +32,7 @@ public class OrdersController : Controller
     }
 
     // GET: Orders/Details/5
+    [Authorize(Roles = "User")]
     public IActionResult Details(int? id)
     {
         if (id == null)
@@ -52,6 +54,7 @@ public class OrdersController : Controller
     }
 
     // GET: Orders/Success/5
+    [Authorize(Roles = "User")]
     public IActionResult Success(int? id)
     {
         if (id == null)

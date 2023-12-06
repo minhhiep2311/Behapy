@@ -47,6 +47,7 @@ public class CheckoutController : Controller
 
     // POST: Checkout
     [HttpPost]
+    [Authorize]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Index(
         [Bind("FullName,Address,PaymentTypeId,UseAnotherAddress,AnotherAddress,Note")]
