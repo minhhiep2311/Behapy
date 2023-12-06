@@ -1,3 +1,4 @@
+using AspNetCoreHero.ToastNotification;
 using Behapy.Presentation.Areas.Identity.Data;
 using Behapy.Presentation.Domain;
 using Behapy.Presentation.Services.Implementations;
@@ -19,6 +20,13 @@ var connectionString = builder.Configuration.GetConnectionString("BehapyDbContex
 
 builder.Services.AddDbContext<BehapyDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+builder.Services.AddNotyf(config =>
+{
+    config.DurationInSeconds = 3;
+    config.IsDismissable = true;
+    config.Position = NotyfPosition.TopRight;
+});
 
 builder.Services
     .AddIdentity<User, Role>(options =>
