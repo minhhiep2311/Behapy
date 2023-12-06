@@ -74,10 +74,16 @@ namespace Behapy.Presentation.Controllers
             };
 
             var createUserResult = await _userManager.CreateAsync(user, "123456");
-
             if (!createUserResult.Succeeded)
             {
                 ModelState.AddModelError(string.Empty, createUserResult.Errors.First().Description);
+                return View(employee);
+            }
+
+            var addToRoleResult = await _userManager.AddToRoleAsync(user, "Employee");
+            if (!addToRoleResult.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, addToRoleResult.Errors.First().Description);
                 return View(employee);
             }
 

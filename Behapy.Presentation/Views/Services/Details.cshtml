@@ -23,18 +23,18 @@
                                     </li>
                                 </ul>
                             </div>
-                            <h5 class="title mb-4">
-                                <a href="blog-detail-left-sidebar.html">@Model.Content</a>
-                            </h5>
-                            <p class="short-desc mb-4 mb-7">
-                               @Model.Content
-                            </p>
+                            <h2 class="title mb-4">
+                                @Model.Title
+                            </h2>
+                            <div class="short-desc mb-4 mb-7">
+                                @Html.Raw(Model.Content)
+                            </div>
                             <div class="tag-wtih-social">
                                 <div class="tag">
                                     <span class="title text-primary">Tags:</span>
                                     <ul>
                                         <li>
-                                            <a asp-controller="Services">@Model.Category.Name</a>
+                                            <a asp-controller="Services" asp-action="Index">@Model.Category.Name</a>
                                         </li>
                                      
                                     </ul>
@@ -66,4 +66,3 @@
         </div>
     </div>
 </main>
-
