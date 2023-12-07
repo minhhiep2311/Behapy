@@ -72,6 +72,7 @@ public class CartController : Controller
 
     // DELETE: Cart/Delete/5
     [HttpDelete]
+    [Authorize]
     public void Delete(int productId)
     {
         var customer = _customerService.GetCustomerOrDefault();

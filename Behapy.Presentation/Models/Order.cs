@@ -18,6 +18,7 @@ public class Order
 
     [Display(Name = "Ghi chú")]
     public string Note { get; set; } = null!;
+
     public string CurrentStatus { get; set; } = null!;
 
     [Display(Name = "Địa chỉ")]
@@ -25,10 +26,14 @@ public class Order
 
     [Display(Name = "Hình thức thanh toán")]
     public int PaymentTypeId { get; set; }
+
     public PaymentType PaymentType { get; set; } = null!;
 
-    public int CustomerId { get; set; }
-    public Customer Customer { get; set; } = null!;
+    public int? CustomerId { get; set; }
+    public Customer? Customer { get; set; }
+
+    public int? DistributorId { get; set; }
+    public Distributor? Distributor { get; set; }
 
     public int? PromotionId { get; set; }
     public Promotion? Promotion { get; set; }

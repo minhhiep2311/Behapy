@@ -13,6 +13,8 @@ public class BehapyDbContext : IdentityDbContext<User, Role, string>
     public virtual DbSet<CartItem> CartItems { get; set; } = null!;
     public virtual DbSet<Category> Categories { get; set; } = null!;
     public virtual DbSet<Customer> Customers { get; set; } = null!;
+    public virtual DbSet<Distributor> Distributors { get; set; } = null!;
+    public virtual DbSet<DistributorLevel> DistributorLevels { get; set; } = null!;
     public virtual DbSet<Employee> Employees { get; set; } = null!;
     public virtual DbSet<OrderDetail> OrderDetails { get; set; } = null!;
     public virtual DbSet<Order> Orders { get; set; } = null!;
@@ -95,6 +97,30 @@ public class BehapyDbContext : IdentityDbContext<User, Role, string>
             {
                 Id = 2,
                 Name = "Chuyển khoản ngân hàng"
+            }
+        );
+
+        builder.Entity<DistributorLevel>().HasData(
+            new DistributorLevel
+            {
+                Id = 1,
+                Name = "A1",
+                MoneyNeeded = 1_000_000,
+                NextLevel = 2
+            },
+            new DistributorLevel
+            {
+                Id = 2,
+                Name = "B1",
+                MoneyNeeded = 5_000_000,
+                NextLevel = 3
+            },
+            new DistributorLevel
+            {
+                Id = 3,
+                Name = "C1",
+                MoneyNeeded = 10_000_000,
+                NextLevel = null
             }
         );
     }
