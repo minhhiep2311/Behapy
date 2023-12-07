@@ -1,0 +1,116 @@
+﻿@using Behapy.Presentation.Models;
+@using Behapy.Presentation.Extensions
+@model List<Behapy.Presentation.Models.Order>
+
+@{
+  ViewData["Title"] = "Admin";
+  Layout = "~/Views/Shared/Admin/_Layout.cshtml";
+
+  var pager = new Pager();
+  if (ViewBag.Pager != null)
+  {
+    pager = ViewBag.Pager;
+  }
+}
+
+<!-- Content Wrapper START -->
+<div class="main-content">
+  <div class="page-header">
+    <h2 class="header-title">Đơn hàng</h2>
+    <div class="header-sub-title">
+      <nav class="breadcrumb breadcrumb-dash">
+        <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang Chủ</a>
+        <span class="breadcrumb-item active" href="#">Đơn hàng</span>
+      </nav>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="row m-b-30">
+        <div class="col-6"></div>
+        <div class="col-6 text-right">
+          <a class="btn btn-primary" asp-controller="Orders" asp-action="Details">
+            <i class="anticon anticon-plus-circle m-r-5"></i>
+            <span>Tạo đơn hàng</span>
+          </a>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover e-commerce-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tên khách hàng</th>
+              <th>Giá</th>
+              <th>Giảm giá</th>
+              <th>Địa chỉ</th>
+              <th>Trạng thái</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @foreach (var item in Model)
+            {
+              <tr>
+                <td>#@item.Id </td>
+                <td>@item.Orderer()</td>
+                <td>@item.TotalMoney.ToMoney()</td>
+                <td>@item.Discount</td>
+                <td>@item.Address</td>
+                <td>@item.CurrentStatus</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Pagination -->
+  <div class="pagination-area pt-10">
+    <nav aria-label="Page navigation example">
+      @if (pager.TotalPages > 0)
+      {
+        <ul class="pagination justify-content-center">
+          @if (pager.CurrentPage > 1)
+          {
+            <li class="page-item">
+              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="1" asp-route-categoryId="@ViewData["Category"]">Đầu</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage - 1)" asp-route-categoryId="@ViewData["Category"]" aria-label="Trước">
+                <span class="fa fa-chevron-left"></span>
+              </a>
+            </li>
+          }
+
+          @for (var p = pager.StartPage; p <= pager.EndPage; p++)
+          {
+            <li class="page-item @(p == pager.CurrentPage ? "active" : "")">
+              @{ var pge = p; }
+              <a asp-controller="Products" asp-action="Admin" asp-route-pg="@pge" asp-route-categoryId="@ViewData["Category"]" class="page-link">
+                @pge
+              </a>
+            </li>
+          }
+
+          @if (pager.CurrentPage < pager.TotalPages)
+          {
+            <li class="page-item">
+              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage + 1)" asp-route-categoryId="@ViewData["Category"]" aria-label="Previous">
+                <span class="fa fa-chevron-right"></span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@pager.EndPage" asp-route-categoryId="@ViewData["Category"]">Cuối</a>
+            </li>
+          }
+        </ul>
+      }
+    </nav>
+  </div>
+  <!-- Pagination end -->
+
+</div>
+<!-- Content Wrapper END -->
