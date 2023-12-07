@@ -2,6 +2,7 @@
 using Behapy.Presentation.Areas.Identity.Data;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -72,6 +73,7 @@ public class ProductsController : Controller
     }
 
     //GET: Products/Admin
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Admin(int pg, int? categoryId)
     {
         var products = _context.Products
@@ -122,6 +124,7 @@ public class ProductsController : Controller
 
 
     // GET: Products/Create
+    [Authorize(Roles = "Admin,Employee")]
     public IActionResult Create()
     {
         GetImageKitAuthenticationParameters();
@@ -139,6 +142,7 @@ public class ProductsController : Controller
     // POST: Products/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Create(
         [Bind("Id,Name,Price,IsActive,Description,ImageUrl,CategoryId,PromotionId,Amount")]
         Product product)
@@ -159,8 +163,9 @@ public class ProductsController : Controller
         return RedirectToAction(nameof(Admin));
     }
 
-    
+
     // GET: Products/Edit/5
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Edit(int? id)
     {
         GetImageKitAuthenticationParameters();
@@ -184,6 +189,7 @@ public class ProductsController : Controller
     // POST: Products/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Edit(int id,
         [Bind("Id,Name,Price,IsActive,Description,ImageUrl,Discount,CreatedAt,CategoryId,PromotionId,Amount")]
         Product product)
@@ -224,6 +230,7 @@ public class ProductsController : Controller
 
     // POST: Products/Delete/5
     [HttpDelete]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Delete(int id)
     {
         var product = await _context.Products.FindAsync(id);
@@ -248,6 +255,7 @@ public class ProductsController : Controller
 
     //POST: Products/AddQuantity
     [HttpPost]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> AddQuantity(int id, int quantityToAdd)
     {
         var product = await _context.Products.FindAsync(id);
