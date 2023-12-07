@@ -1,4 +1,5 @@
-﻿using Behapy.Presentation.Areas.Identity.Data;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Behapy.Presentation.Areas.Identity.Data;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -12,11 +13,13 @@ public class ProductsController : Controller
 {
     private readonly BehapyDbContext _context;
     private readonly IFileService _fileService;
+    private readonly INotyfService _notyfService;
 
-    public ProductsController(BehapyDbContext context, IFileService fileService)
+    public ProductsController(BehapyDbContext context, IFileService fileService, INotyfService notyfService)
     {
         _context = context;
         _fileService = fileService;
+        _notyfService = notyfService;
     }
 
     // GET: Products
@@ -148,7 +151,8 @@ public class ProductsController : Controller
         {
             _context.Add(product);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            _notyfService.Success("Tạo mới thành công!");
+            //return RedirectToAction(nameof(Index));
         }
 
         GetImageKitAuthenticationParameters();
@@ -201,11 +205,13 @@ public class ProductsController : Controller
             {
                 _context.Update(product);
                 await _context.SaveChangesAsync();
+                _notyfService.Success("Cập nhật thành công!");
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!ProductExists(product.Id))
                 {
+                    _notyfService.Error("Có lỗi xảy ra!");
                     return NotFound();
                 }
 
@@ -231,9 +237,12 @@ public class ProductsController : Controller
         if (product != null)
         {
             _context.Products.Remove(product);
+            _notyfService.Success("Xóa thành công!");
         }
 
         await _context.SaveChangesAsync();
+       
+
         return RedirectToAction(nameof(Admin));
     }
 
@@ -258,6 +267,8 @@ public class ProductsController : Controller
 
             // Cập nhật dữ liệu trong cơ sở dữ liệu
             await _context.SaveChangesAsync();
+
+            _notyfService.Success("Thêm thành công!");
         }
 
         return RedirectToAction(nameof(Admin));

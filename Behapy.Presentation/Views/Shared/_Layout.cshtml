@@ -67,6 +67,7 @@
   <script src="~/js/site.js"></script>
   <script src="~/js/shop/main.js"></script>
 
+  @await Component.InvokeAsync("Notyf")
   @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
