@@ -38,6 +38,6 @@ public class Order
     public int? PromotionId { get; set; }
     public Promotion? Promotion { get; set; }
 
-    public IEnumerable<OrderStatus> OrderStatuses { get; set; } = new List<OrderStatus>();
-    public IEnumerable<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+    public List<OrderStatus> OrderStatuses { get; set; } = new();
+    public IEnumerable<OrderDetail> OrderDetails { get; set; } = Enumerable.Empty<OrderDetail>();
 }

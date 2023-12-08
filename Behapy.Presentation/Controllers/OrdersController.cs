@@ -1,4 +1,5 @@
 ﻿using Behapy.Presentation.Areas.Identity.Data;
+using Behapy.Presentation.Constants;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -32,7 +33,7 @@ public class OrdersController : Controller
         return View(items);
     }
 
-    //GET: Products/Admin
+    //GET: Orders/Admin
     [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Admin(int pg)
     {
@@ -50,9 +51,6 @@ public class OrdersController : Controller
         var pager = new Pager(recsCount, pg);
         var recSkip = (pg - 1) * pager.PageSize;
         ViewBag.Pager = pager;
-
-        // ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-        // ViewData["Category"] = categoryId;
 
         return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
     }
@@ -94,5 +92,49 @@ public class OrdersController : Controller
             return NotFound();
 
         return View(order);
+    }
+
+    // POST: Orders/UpdateStatus
+    [HttpPost]
+    [Authorize(Roles = "Admin,Employee")]
+    public void UpdateStatus(int id, string status)
+    {
+        if (!OrderStatusConstant.ValidStatus(status))
+            throw new Exception("Invalid status");
+
+        var order = _context.Orders
+            .AsNoTracking()
+            .FirstOrDefault(p => p.Id == id);
+        if (order == null)
+            throw new Exception("Product not found");
+
+        UpdateStatus(order, status);
+
+        _context.Update(order);
+        _context.SaveChanges();
+    }
+
+    private static void UpdateStatus(Order order, string status)
+    {
+        switch (order.CurrentStatus)
+        {
+            case OrderStatusConstant.NeedToConfirm:
+            {
+                if (status != OrderStatusConstant.Confirmed && status != OrderStatusConstant.Denied)
+                    throw new Exception("Invalid status: Status should be Confirmed or Denied");
+                break;
+            }
+            default:
+                throw new Exception("Unhandled status: " + status);
+        }
+
+        var orderStatus = new OrderStatus
+        {
+            CreatedAt = DateTime.Now,
+            Status = status
+        };
+        
+        order.CurrentStatus = status;
+        order.OrderStatuses.Add(orderStatus);
     }
 }

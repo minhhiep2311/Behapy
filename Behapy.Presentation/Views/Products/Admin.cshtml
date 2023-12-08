@@ -3,227 +3,231 @@
 @model List<Behapy.Presentation.Models.Product>
 
 @{
-    ViewData["Title"] = "Admin";
-    Layout = "~/Views/Shared/Admin/_Layout.cshtml";
+  ViewData["Title"] = "Admin";
+  Layout = "~/Views/Shared/Admin/_Layout.cshtml";
 
-    var pager = new Pager();
-    var pageNo = 0;
-    if (ViewBag.Pager != null)
-    {
-        pager = ViewBag.Pager;
-        pageNo = pager.CurrentPage;
-    }
+  var pager = new Pager();
+  var pageNo = 0;
+  if (ViewBag.Pager != null)
+  {
+    pager = ViewBag.Pager;
+    pageNo = pager.CurrentPage;
+  }
 }
 
 <!-- Content Wrapper START -->
 <div class="main-content">
-    <div class="page-header">
-        <h2 class="header-title">Sản Phẩm</h2>
-        <div class="header-sub-title">
-            <nav class="breadcrumb breadcrumb-dash">
-                <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang Chủ</a>
-                <span class="breadcrumb-item active" href="#">Sản phẩm</span>
-                @* <a class="breadcrumb-item" href="#">E-commerce</a>
+  <div class="page-header">
+    <h2 class="header-title">Sản Phẩm</h2>
+    <div class="header-sub-title">
+      <nav class="breadcrumb breadcrumb-dash">
+        <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang Chủ</a>
+        <span class="breadcrumb-item active" href="#">Sản phẩm</span>
+        @* <a class="breadcrumb-item" href="#">E-commerce</a>
                 <span class="breadcrumb-item active">Orders List</span>*@
-            </nav>
-        </div>
+      </nav>
     </div>
-    <div class="card">
-        <div class="card-body">
-            <div class="row m-b-30">
-                <div class="col-6 text-left">
-                    <div class="d-md-flex">
-                        @using (Html.BeginForm("Admin", "Products", FormMethod.Get))
-                        {
-                            <div class="row">
-                                <div class="col-md-12">
-                                    @Html.DropDownList("categoryId", ViewData["CategoryId"] as SelectList, "Tất cả danh mục", new { @class = "form-control", onchange = "this.form.submit();" })
-                                </div>
-                            </div>
-                        }
-                    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="row m-b-30">
+        <div class="col-6 text-left">
+          <div class="d-md-flex">
+            @using (Html.BeginForm("Admin", "Products", FormMethod.Get))
+            {
+              <div class="row">
+                <div class="col-md-12">
+                  @Html.DropDownList("categoryId", ViewData["CategoryId"] as SelectList, "Tất cả danh mục", new { @class = "form-control", onchange = "this.form.submit();" })
                 </div>
-                <div class="col-6 text-right">
-                    <a class="btn btn-primary" asp-controller="Products" asp-action="Create">
-                        <i class="anticon anticon-plus-circle m-r-5"></i>
-                        <span>Thêm sản phẩm</span>
-                    </a>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-hover e-commerce-table">
-                    <thead>
-                        <tr>
-                          @*  <th>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="col-6 text-right">
+          <a class="btn btn-primary" asp-controller="Products" asp-action="Create">
+            <i class="anticon anticon-plus-circle m-r-5"></i>
+            <span>Thêm sản phẩm</span>
+          </a>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover e-commerce-table">
+          <thead>
+            <tr>
+              @*  <th>
                                 <div class="checkbox">
                                     <input id="checkAll" type="checkbox" />
                                     <label for="checkAll" class="m-b-0"></label>
                                 </div>
                             </th>*@
-                            <th>STT</th>
-                            <th>Sản phẩm</th>
-                            <th>Giá</th>
-                            <th>Tồn kho</th>
-                            <th>Trạng thái</th>
-                            <th></th>
-                        </tr>
-                    </thead>
+              <th>STT</th>
+              <th>Sản phẩm</th>
+              <th>Giá</th>
+              <th>Tồn kho</th>
+              <th>Trạng thái</th>
+              <th></th>
+            </tr>
+          </thead>
 
-                    <tbody>
-                        @for (
-                        int i = 0, index = (pageNo - 1) * pager.PageSize + 1;
-                        i < Model.Count;
-                        i++, index++
-                        )
-                        {
-                            var item = Model[i];
+          <tbody>
+            @for (
+              int i = 0, index = (pageNo - 1) * pager.PageSize + 1;
+              i < Model.Count;
+              i++, index++
+              )
+            {
+              var item = Model[i];
 
-                            <tr>
-                              @*  <td>
+              <tr>
+                @*  <td>
                                     <div class="checkbox">
                                         <input id="check-item-7" type="checkbox" />
                                         <label for="check-item-7" class="m-b-0"></label>
                                     </div>
                                 </td>*@
-                                <td>@index</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img class="img-fluid rounded"
-                                             src="@item.ImageUrl"
-                                             style="max-width: 60px"
-                                             alt="@item.Name" />
-                                        <h6 class="m-b-0 m-l-10">@item.Name</h6>
-                                    </div>
-                                </td>
-                                <td>@item.Price.ToMoney()</td>
-                                <td>@item.Amount</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        @if (item.IsActive)
-                                        {
-                                            <div class="badge badge-success badge-dot m-r-10"></div>
-                                            <div>Đang kinh doanh</div>
-                                        }
-                                        else
-                                        {
-                                            <div class="badge badge-danger badge-dot m-r-10"></div>
-                                            <div>Ngừng kinh doanh</div>
-                                        }
-                                    </div>
-                                </td>
-                                <td class="text-right">
-                                    <button data-toggle="modal" data-target="#quantityModal" data-product-id="@item.Id" class="btn btn-icon btn-hover btn-sm btn-rounded">
-                                        <i class="anticon anticon-plus-circle"></i>
-                                    </button>
-                                    <button onclick="location.href='@Url.Action("Edit", "Products", new { id = item.Id })'"
-                                            class="btn btn-icon btn-hover btn-sm btn-rounded pull-right">
-                                        <i class="anticon anticon-edit"></i>
-                                    </button>
-                                    <button data-toggle="modal" data-target="#DeleteModal" data-product-id="@item.Id" data-product-name="@item.Name" class="btn btn-icon btn-hover btn-sm btn-rounded">
-                                        <i class="anticon anticon-delete"></i>
-                                    </button>
-
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!--Add Quantity Modal -->
-    <div class="modal fade" id="quantityModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Thêm số lượng</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <form id="addQuantityForm">
-                        <input type="hidden" id="productId" />
-                        <input class="form-control" type="text" id="quantityInput" pattern="[0-9]*" oninput="validateInput()" placeholder="Số lượng sản phẩm" />
-                        <div id="error-message" class="text-danger"></div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-tone btn-primary" id="addQuantityButton" onclick="addQuantity()">Thêm</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--Add Quantity Modal End-->
-    <!--Delete Modal -->
-    <div class="modal fade" id="DeleteModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Xác nhận xóa</h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <i class="anticon anticon-close"></i>
-                    </button>
-                </div>
-                <div class="modal-body"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-                    <button onclick="deleteProduct(this)" data-product-id="" class="confirm-delete btn btn-tone btn-danger">
-                        Xác nhận xóa
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--Delete Modal End-->
-    <!-- Pagination -->
-    <div class="pagination-area pt-10">
-        <nav aria-label="Page navigation example">
-            @if (pager.TotalPages > 0)
-            {
-                <ul class="pagination justify-content-center">
-                    @if (pager.CurrentPage > 1)
+                <td>@index</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <img class="img-fluid rounded"
+                         src="@item.ImageUrl"
+                         style="max-width: 60px"
+                         alt="@item.Name"/>
+                    <h6 class="m-b-0 m-l-10">@item.Name</h6>
+                  </div>
+                </td>
+                <td>@item.Price.ToMoney()</td>
+                <td>@item.Amount</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    @if (item.IsActive)
                     {
-                        <li class="page-item">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="1" asp-route-categoryId="@ViewData["Category"]">Đầu</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage - 1)" asp-route-categoryId="@ViewData["Category"]" aria-label="Trước">
-                                <span class="fa fa-chevron-left"></span>
-                            </a>
-                        </li>
+                      <div class="badge badge-success badge-dot m-r-10"></div>
+                      <div>Đang kinh doanh</div>
                     }
-
-                    @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+                    else
                     {
-                        <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
-                            <a asp-controller="Products" asp-action="Admin" asp-route-pg="@pge" asp-route-categoryId="@ViewData["Category"]" class="page-link">
-                                @pge
-                            </a>
-                        </li>
+                      <div class="badge badge-danger badge-dot m-r-10"></div>
+                      <div>Ngừng kinh doanh</div>
                     }
+                  </div>
+                </td>
+                <td class="text-right">
+                  <button data-toggle="modal" data-target="#quantityModal" data-product-id="@item.Id" class="btn btn-icon btn-hover btn-sm btn-rounded">
+                    <i class="anticon anticon-plus-circle"></i>
+                  </button>
+                  <button onclick="location.href='@Url.Action("Edit", "Products", new { id = item.Id })'"
+                          class="btn btn-icon btn-hover btn-sm btn-rounded pull-right">
+                    <i class="anticon anticon-edit"></i>
+                  </button>
+                  <button data-toggle="modal" data-target="#DeleteModal" data-product-id="@item.Id" data-product-name="@item.Name" class="btn btn-icon btn-hover btn-sm btn-rounded">
+                    <i class="anticon anticon-delete"></i>
+                  </button>
 
-                    @if (pager.CurrentPage < pager.TotalPages)
-                    {
-                        <li class="page-item">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage + 1)" asp-route-categoryId="@ViewData["Category"]" aria-label="Previous">
-                                <span class="fa fa-chevron-right"></span>
-                            </a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@pager.EndPage" asp-route-categoryId="@ViewData["Category"]">Cuối</a>
-                        </li>
-                    }
-                </ul>
+                </td>
+              </tr>
             }
-        </nav>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <!-- Pagination end -->
+  </div>
+
+  <!--Add Quantity Modal -->
+  <div class="modal fade" id="quantityModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Thêm số lượng</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="addQuantityForm">
+            <input type="hidden" id="productId"/>
+            <input class="form-control" type="text" id="quantityInput" pattern="[0-9]*" oninput="validateInput()" placeholder="Số lượng sản phẩm"/>
+            <div id="error-message" class="text-danger"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+          <button type="button" class="btn btn-tone btn-primary" id="addQuantityButton" onclick="addQuantity()">Thêm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Add Quantity Modal End-->
+
+  <!--Delete Modal -->
+  <div class="modal fade" id="DeleteModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Xác nhận xóa</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <i class="anticon anticon-close"></i>
+          </button>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+          <button onclick="deleteProduct(this)" data-product-id="" class="confirm-delete btn btn-tone btn-danger">
+            Xác nhận xóa
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Delete Modal End-->
+
+  <!-- Pagination -->
+  <div class="pagination-area pt-10">
+    <nav aria-label="Page navigation example">
+      @if (pager.TotalPages > 0)
+      {
+        <ul class="pagination justify-content-center">
+          @if (pager.CurrentPage > 1)
+          {
+            <li class="page-item">
+              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="1" asp-route-categoryId="@ViewData["Category"]">Đầu</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage - 1)" asp-route-categoryId="@ViewData["Category"]" aria-label="Trước">
+                <span class="fa fa-chevron-left"></span>
+              </a>
+            </li>
+          }
+
+          @for (var p = pager.StartPage; p <= pager.EndPage; p++)
+          {
+            <li class="page-item @(p == pager.CurrentPage ? "active" : "")">
+              @{ var pge = p; }
+              <a asp-controller="Products" asp-action="Admin" asp-route-pg="@pge" asp-route-categoryId="@ViewData["Category"]" class="page-link">
+                @pge
+              </a>
+            </li>
+          }
+
+          @if (pager.CurrentPage < pager.TotalPages)
+          {
+            <li class="page-item">
+              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage + 1)" asp-route-categoryId="@ViewData["Category"]" aria-label="Previous">
+                <span class="fa fa-chevron-right"></span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@pager.EndPage" asp-route-categoryId="@ViewData["Category"]">Cuối</a>
+            </li>
+          }
+        </ul>
+      }
+    </nav>
+  </div>
+  <!-- Pagination end -->
 
 </div>
 <!-- Content Wrapper END -->
+
 @section Scripts {
-    <script>
+  <script>
         //Delete
         $(document).on('show.bs.modal', '#DeleteModal', function (event) {
             const modal = $(this);
@@ -231,16 +235,12 @@
             const productId = button.data('productId');
             const productName = button.data('productName');
 
-            console.log(button.data);
-            console.log(modal.find('.modal-body'))
-
             modal.find('.modal-body').text(`Bạn có chắc chắn muốn xóa ${productName} không?`)
             modal.find('.modal-footer .confirm-delete').data('productId', productId);
         })
 
         function deleteProduct(btn) {
             const productId = $(btn).data('productId');
-            console.log(productId);
             $.ajax({
                 url: `/Products/Delete/${productId}`,
                 type: 'DELETE',
@@ -253,9 +253,8 @@
 
         //Add Quantity
         function addQuantity() {
-            var quantityInput = $('#quantityInput');
-            var productId = $('#productId').val();
-            var quantityToAdd = $('#quantityInput').val();
+            const productId = $('#productId').val();
+            const quantityToAdd = $('#quantityInput').val();
 
             $.ajax({
                 url: '/Products/AddQuantity',
@@ -269,9 +268,9 @@
 
         //Check validation input
         function validateInput() {
-            var quantityInput = $('#quantityInput');
-            var errorMessage = $('#error-message');
-            var addQuantityButton = $('#addQuantityButton');
+            const quantityInput = $('#quantityInput');
+            const errorMessage = $('#error-message');
+            const addQuantityButton = $('#addQuantityButton');
 
 
             if (!quantityInput.val() || !/^[0-9]*$/.test(quantityInput.val())) {
@@ -285,8 +284,8 @@
 
 
         $(document).on('show.bs.modal', '#quantityModal', function (event) {
-            var button = $(event.relatedTarget);
-            var productId = button.data('product-id');
+            const button = $(event.relatedTarget);
+            const productId = button.data('product-id');
             $('#productId').val(productId);
         });
 

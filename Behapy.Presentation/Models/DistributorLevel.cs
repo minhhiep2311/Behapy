@@ -13,5 +13,5 @@ public class DistributorLevel
 
     public int? NextLevel { get; set; }
 
-    public IEnumerable<Distributor> Distributors { get; set; } = new List<Distributor>();
+    public IEnumerable<Distributor> Distributors { get; set; } = Enumerable.Empty<Distributor>();
 }
