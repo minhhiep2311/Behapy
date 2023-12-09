@@ -241,7 +241,6 @@ public class ProductsController : Controller
         }
 
         await _context.SaveChangesAsync();
-       
 
         return RedirectToAction(nameof(Admin));
     }
@@ -260,20 +259,19 @@ public class ProductsController : Controller
     {
         var product = await _context.Products.FindAsync(id);
 
-        if (product != null)
-        {
-            // Thêm số lượng mới vào số lượng hiện tại
-            product.Amount += quantityToAdd;
+        if (product == null)
+            return RedirectToAction(nameof(Admin));
 
-            // Cập nhật dữ liệu trong cơ sở dữ liệu
-            await _context.SaveChangesAsync();
+        // Thêm số lượng mới vào số lượng hiện tại
+        product.Amount += quantityToAdd;
 
-            _notyfService.Success("Thêm thành công!");
-        }
+        // Cập nhật dữ liệu trong cơ sở dữ liệu
+        await _context.SaveChangesAsync();
+
+        _notyfService.Success("Thêm thành công!");
 
         return RedirectToAction(nameof(Admin));
     }
-
 
     private void GetImageKitAuthenticationParameters()
     {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Behapy.Presentation.Models
+﻿namespace Behapy.Presentation.Models
 {
     public class Pager
     {
@@ -18,14 +16,13 @@ namespace Behapy.Presentation.Models
 
         public Pager(int totalItems, int page, int pageSize = 10)
         {
-            int totalPages = (int)Math.Ceiling((decimal)totalItems / (decimal)pageSize);
-            int currentPage = page;
-            int startPage = currentPage - 5;
-            int endPage = currentPage + 4;
+            var totalPages = (int)Math.Ceiling((decimal)totalItems / pageSize);
+            var startPage = page - 5;
+            var endPage = page + 4;
 
             if (startPage <= 0)
             {
-                endPage = endPage - (startPage - 1);
+                endPage -= (startPage - 1);
                 startPage = 1;
             }
 
@@ -40,7 +37,7 @@ namespace Behapy.Presentation.Models
             }
 
             TotalItems = totalItems;
-            CurrentPage = currentPage;
+            CurrentPage = page;
             PageSize = pageSize;
             TotalPages = totalPages;
             StartPage = startPage;

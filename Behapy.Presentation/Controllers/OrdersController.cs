@@ -1,4 +1,6 @@
 ﻿using Behapy.Presentation.Areas.Identity.Data;
+using Behapy.Presentation.Constants;
+using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +33,28 @@ public class OrdersController : Controller
         return View(items);
     }
 
+    //GET: Orders/Admin
+    [Authorize(Roles = "Admin,Employee")]
+    public async Task<IActionResult> Admin(int pg)
+    {
+        var products = _context.Orders
+            .Include(o => o.PaymentType)
+            .Include(o => o.Customer.User)
+            .Include(o => o.Distributor)
+            .Include(o => o.Promotion)
+            .OrderByDescending(o => o.CreateAt)
+            .AsQueryable();
+
+        //Pagination
+        if (pg < 1) pg = 1;
+        var recsCount = products.Count();
+        var pager = new Pager(recsCount, pg);
+        var recSkip = (pg - 1) * pager.PageSize;
+        ViewBag.Pager = pager;
+
+        return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
+    }
+
     // GET: Orders/Details/5
     [Authorize(Roles = "User")]
     public IActionResult Details(int? id)
@@ -45,7 +69,7 @@ public class OrdersController : Controller
             .Include(o => o.OrderDetails)
             .ThenInclude(od => od.Product)
             .Include(o => o.Customer)
-            .ThenInclude(c => c.User)
+            .ThenInclude(c => c!.User)
             .FirstOrDefault(o => o.Id == id && o.CustomerId == customerId);
         if (order == null)
             return NotFound();
@@ -68,5 +92,49 @@ public class OrdersController : Controller
             return NotFound();
 
         return View(order);
+    }
+
+    // POST: Orders/UpdateStatus
+    [HttpPost]
+    [Authorize(Roles = "Admin,Employee")]
+    public void UpdateStatus(int id, string status)
+    {
+        if (!OrderStatusConstant.ValidStatus(status))
+            throw new Exception("Invalid status");
+
+        var order = _context.Orders
+            .AsNoTracking()
+            .FirstOrDefault(p => p.Id == id);
+        if (order == null)
+            throw new Exception("Product not found");
+
+        UpdateStatus(order, status);
+
+        _context.Update(order);
+        _context.SaveChanges();
+    }
+
+    private static void UpdateStatus(Order order, string status)
+    {
+        switch (order.CurrentStatus)
+        {
+            case OrderStatusConstant.NeedToConfirm:
+            {
+                if (status != OrderStatusConstant.Confirmed && status != OrderStatusConstant.Denied)
+                    throw new Exception("Invalid status: Status should be Confirmed or Denied");
+                break;
+            }
+            default:
+                throw new Exception("Unhandled status: " + status);
+        }
+
+        var orderStatus = new OrderStatus
+        {
+            CreatedAt = DateTime.Now,
+            Status = status
+        };
+        
+        order.CurrentStatus = status;
+        order.OrderStatuses.Add(orderStatus);
     }
 }
