@@ -41,22 +41,17 @@ public class ProductsController : Controller
                 (string.IsNullOrWhiteSpace(searchText) || EF.Functions.Like(p.Name, $"%{searchText}%"))
             );
 
-        int categoryProductCount = await products.CountAsync();
+        var categoryProductCount = await products.CountAsync();
 
         var totalProducts = await _context.Products.CountAsync();
 
-        switch (sortOrder)
+        products = sortOrder switch
         {
-            case "latest":
-                products = products.OrderByDescending(p => p.CreatedAt);
-                break;
-            case "high-price":
-                products = products.OrderByDescending(p => p.Price);
-                break;
-            case "low-price":
-                products = products.OrderBy(p => p.Price);
-                break;
-        }
+            "latest" => products.OrderByDescending(p => p.CreatedAt),
+            "high-price" => products.OrderByDescending(p => p.Price),
+            "low-price" => products.OrderBy(p => p.Price),
+            _ => products
+        };
 
         const int pageSize = 8;
 
@@ -106,18 +101,14 @@ public class ProductsController : Controller
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
-        {
             return NotFound();
-        }
 
         var product = await _context.Products
             .Include(p => p.Category)
             .Include(p => p.Promotion)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (product == null)
-        {
             return NotFound();
-        }
 
         return View(product);
     }
@@ -152,7 +143,6 @@ public class ProductsController : Controller
             _context.Add(product);
             await _context.SaveChangesAsync();
             _notyfService.Success("Tạo mới thành công!");
-            //return RedirectToAction(nameof(Index));
         }
 
         GetImageKitAuthenticationParameters();
@@ -171,15 +161,11 @@ public class ProductsController : Controller
         GetImageKitAuthenticationParameters();
 
         if (id == null)
-        {
             return NotFound();
-        }
 
         var product = await _context.Products.FindAsync(id);
         if (product == null)
-        {
             return NotFound();
-        }
 
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name", product.PromotionId);
@@ -195,9 +181,7 @@ public class ProductsController : Controller
         Product product)
     {
         if (id != product.Id)
-        {
             return NotFound();
-        }
 
         if (ModelState.IsValid)
         {
@@ -209,16 +193,10 @@ public class ProductsController : Controller
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductExists(product.Id))
-                {
-                    _notyfService.Error("Có lỗi xảy ra!");
-                    return NotFound();
-                }
-
-                throw;
+                if (ProductExists(product.Id)) throw;
+                _notyfService.Error("Có lỗi xảy ra!");
+                return NotFound();
             }
-
-            //return await Edit(id);
         }
 
         GetImageKitAuthenticationParameters();
