@@ -1,22 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Behapy.Presentation.Areas.Identity.Data;
+using Behapy.Presentation.Services.Interfaces;
 
 namespace Behapy.Presentation.Controllers
 {
     public class ServicesController : Controller
     {
         private readonly BehapyDbContext _context;
+        private readonly IServiceService _serviceService;
 
-        public ServicesController(BehapyDbContext context)
+
+        public ServicesController(BehapyDbContext context, IServiceService serviceService)
         {
             _context = context;
+            _serviceService = serviceService;
         }
 
         // GET: Services
         public async Task<IActionResult> Index()
         {
-            var serviceCategories = await _context.ServiceCategories.ToListAsync();
+            var serviceCategories = await _serviceService.GetCategoryServices();
             return View(serviceCategories);
         }
 

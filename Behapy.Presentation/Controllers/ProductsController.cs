@@ -1,4 +1,4 @@
-﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Behapy.Presentation.Areas.Identity.Data;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
@@ -215,11 +215,9 @@ public class ProductsController : Controller
         if (product != null)
         {
             _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
             _notyfService.Success("Xóa thành công!");
         }
-
-        await _context.SaveChangesAsync();
-
         return RedirectToAction(nameof(Admin));
     }
 

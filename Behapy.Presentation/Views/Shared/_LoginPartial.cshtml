@@ -10,21 +10,21 @@
   
   <li>
     <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
-      Hello @userFullName
+      Xin chào @userFullName
     </a>
   </li>
   <li>
     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-      <button type="submit" class="dropdown-item" style="font-size: 14px">Logout</button>
+      <button type="submit" class="dropdown-item" style="font-size: 14px">Đăng xuất</button>
     </form>
   </li>
 }
 else
 {
   <li>
-    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Đăng ký</a>
   </li>
   <li>
-    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a>
   </li>
 }
