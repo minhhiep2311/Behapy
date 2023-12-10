@@ -1,0 +1,131 @@
+@using Behapy.Presentation.Extensions
+@model Behapy.Presentation.Models.Order
+
+@{
+  ViewData["Title"] = "AdminDetails";
+  Layout = "~/Views/Shared/Admin/_Layout.cshtml";
+}
+
+<div class="main-content">
+  <div class="page-header">
+    <h2 class="header-title">Chi tiết đơn hàng</h2>
+    <div class="header-sub-title">
+      <nav class="breadcrumb breadcrumb-dash">
+        <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+        <a class="breadcrumb-item" asp-controller="Orders" asp-action="Admin">Đơn hàng</a>
+        <span class="breadcrumb-item active">Chi tiết đơn hàng</span>
+      </nav>
+    </div>
+  </div>
+
+  <div class="m-t-15">
+    <div class="card">
+      <div class="card-body">
+        <!-- Customer -->
+        @if (Model.Customer != null)
+        {
+          <div class="form-group">
+            <label for="Customer" class="font-weight-semibold">Khách hàng</label>
+            <input class="form-control" type="text" id="Customer" name="Customer" value="@Model.Customer.User.FullName"
+                   readonly>
+          </div>
+        }
+
+        <!-- Distributor -->
+        @if (Model.Distributor != null)
+        {
+          <div class="form-group">
+            <label for="Distributor" class="font-weight-semibold">Nhà phân phối</label>
+            <input class="form-control" type="text" id="Distributor" name="Distributor"
+                   value="@Model.Distributor.FullName" readonly>
+          </div>
+        }
+
+        <!-- Address -->
+        <div class="form-group">
+          <label asp-for="Address" class="font-weight-semibold"></label>
+          <input class="form-control" type="text" id="Address" name="Address" value="@Model.Address" readonly>
+        </div>
+
+        <!-- CurrentStatus -->
+        <div class="form-group">
+          <label asp-for="CurrentStatus" class="font-weight-semibold"></label>
+          <input class="form-control" type="text" id="CurrentStatus" name="CurrentStatus" value="@Model.CurrentStatus"
+                 readonly>
+        </div>
+
+        <!-- Discount -->
+        <div class="form-group">
+          <label asp-for="Discount" class="font-weight-semibold"></label>
+          <input class="form-control" type="text" id="Discount" name="Discount" value="@Model.Discount" readonly>
+        </div>
+
+        <!-- PaymentType -->
+        <div class="form-group">
+          <label for="PaymentType" class="font-weight-semibold">Hình thức thanh toán</label>
+          <input class="form-control" type="text" id="PaymentType" name="PaymentType" value="@Model.PaymentType.Name"
+                 readonly>
+        </div>
+
+        <!-- CreateAt -->
+        <div class="form-group">
+          <label asp-for="CreateAt" class="font-weight-semibold"></label>
+          <input class="form-control" type="text" id="CreateAt" name="CreateAt"
+                 value="@Model.CreateAt.ToString("dd/MM/yyyy hh:mm:ss")" readonly>
+        </div>
+
+        <!-- CancelledAt -->
+        @if (Model.CancelledAt != null)
+        {
+          <div class="form-group">
+            <label asp-for="CancelledAt" class="font-weight-semibold"></label>
+            <input class="form-control" type="text" id="CancelledAt" name="DiscountCancelledAt"
+                   value="@Model.CancelledAt.Value.ToString("dd/MM/yyyy hh:mm:ss")" readonly>
+          </div>
+        }
+
+        <!-- Note -->
+        <div class="form-group">
+          <label asp-for="Note" class="font-weight-semibold"></label>
+          <input class="form-control" type="text" id="Note" name="Note" value="@Model.Note" readonly>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Product</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Price</th>
+                <th scope="col">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (var i = 0; i < Model.OrderDetails.Count; i++)
+              {
+                var item = Model.OrderDetails[i];
+
+                <tr>
+                  <th scope="row">@(i + 1)</th>
+                  <td>
+                    <img class="img-fluid rounded" src="@item.Product.ImageUrl" style="max-width: 60px"
+                         alt="@item.Product.Name"/>
+                    <span class="m-b-0 m-l-10">@item.Product.Name</span>
+                  </td>
+                  <td>@item.Price.ToMoney()</td>
+                  <td>@item.Amount</td>
+                  <td>@((item.Price * item.Amount).ToMoney())</td>
+                </tr>
+              }
+              <tr>
+                <th scope="row" colspan="4">Total</th>
+                <td>@Model.TotalMoney.ToMoney()</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

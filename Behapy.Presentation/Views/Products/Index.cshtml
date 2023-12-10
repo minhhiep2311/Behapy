@@ -311,15 +311,11 @@
         //Sort product
         const selectElement = document.getElementById("sort-select");
 
-
         function onFilterChange() {
             const selectedValue = selectElement.value;
             const currentUrl = window.location.href;
-            const updatedUrl = updateQueryStringParameter(currentUrl, 'sortOrder', selectedValue);
-            console.log(updatedUrl);
-            window.location.href = updatedUrl;
+            window.location.href = updateQueryStringParameter(currentUrl, 'sortOrder', selectedValue);
         }
-
 
         function updateQueryStringParameter(uri, key, value) {
             const re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");

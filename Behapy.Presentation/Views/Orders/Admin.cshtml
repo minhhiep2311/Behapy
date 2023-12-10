@@ -1,5 +1,6 @@
 ﻿@using Behapy.Presentation.Models;
 @using Behapy.Presentation.Extensions
+@using Behapy.Presentation.Constants
 @model List<Behapy.Presentation.Models.Order>
 
 @{
@@ -45,20 +46,38 @@
               <th>Giảm giá</th>
               <th>Địa chỉ</th>
               <th>Trạng thái</th>
-              <th></th>
+              <th>Tùy chọn</th>
             </tr>
           </thead>
 
           <tbody>
             @foreach (var item in Model)
             {
-              <tr>
+              <tr onclick="location.href='@Url.Action("AdminDetails", "Orders", new { id = item.Id })'" 
+                  style="cursor: pointer">
                 <td>#@item.Id </td>
                 <td>@item.Orderer()</td>
                 <td>@item.TotalMoney.ToMoney()</td>
                 <td>@item.Discount</td>
                 <td>@item.Address</td>
-                <td>@item.CurrentStatus</td>
+                <td>
+                  @item.CurrentStatus
+                </td>
+                <td>
+                  @if (item.CurrentStatus == OrderStatusConstant.NeedToConfirm)
+                  {
+                    <button data-toggle="modal" data-target="#confirmModal" data-order-id="@item.Id"
+                            data-order-status="@OrderStatusConstant.Confirmed"
+                            class="btn btn-success btn-sm btn-rounded ml-2">
+                      Xác nhận
+                    </button>
+                    <button data-toggle="modal" data-target="#denyModal" data-order-id="@item.Id"
+                            data-order-status="@OrderStatusConstant.Denied"
+                            class="btn btn-danger btn-sm btn-rounded ml-2">
+                      Từ chối
+                    </button>
+                  }
+                </td>
               </tr>
             }
           </tbody>
@@ -66,7 +85,53 @@
       </div>
     </div>
   </div>
-  
+
+  <!-- Confirm Modal -->
+  <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Xác nhận đơn hàng</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <i class="anticon anticon-close"></i>
+          </button>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+          <button onclick="updateStatus(this)" data-order-id="" data-order-status="@OrderStatusConstant.Confirmed"
+                  class="confirm-order btn btn-tone btn-success">
+            Xác nhận
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Add Quantity Modal End-->
+
+  <!-- Confirm Modal -->
+  <div class="modal fade" id="denyModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Từ chối đơn hàng</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <i class="anticon anticon-close"></i>
+          </button>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+          <button onclick="updateStatus(this)" data-order-id="" data-order-status="@OrderStatusConstant.Denied"
+                  class="deny-order btn btn-tone btn-danger">
+            Xác nhận
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Add Quantity Modal End-->
+
   <!-- Pagination -->
   <div class="pagination-area pt-10">
     <nav aria-label="Page navigation example">
@@ -76,10 +141,15 @@
           @if (pager.CurrentPage > 1)
           {
             <li class="page-item">
-              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="1" asp-route-categoryId="@ViewData["Category"]">Đầu</a>
+              <a asp-controller="Orders" asp-action="Admin" asp-route-pg="1"
+                 asp-route-categoryId="@ViewData["Category"]"
+                 class="page-link">
+                Đầu
+              </a>
             </li>
             <li class="page-item">
-              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage - 1)" asp-route-categoryId="@ViewData["Category"]" aria-label="Trước">
+              <a asp-controller="Orders" asp-action="Admin" asp-route-pg="@(pager.CurrentPage - 1)"
+                 asp-route-categoryId="@ViewData["Category"]" aria-label="Trước" class="page-link">
                 <span class="fa fa-chevron-left"></span>
               </a>
             </li>
@@ -89,7 +159,8 @@
           {
             <li class="page-item @(p == pager.CurrentPage ? "active" : "")">
               @{ var pge = p; }
-              <a asp-controller="Products" asp-action="Admin" asp-route-pg="@pge" asp-route-categoryId="@ViewData["Category"]" class="page-link">
+              <a asp-controller="Products" asp-action="Admin" asp-route-pg="@pge"
+                 asp-route-categoryId="@ViewData["Category"]" class="page-link">
                 @pge
               </a>
             </li>
@@ -98,12 +169,16 @@
           @if (pager.CurrentPage < pager.TotalPages)
           {
             <li class="page-item">
-              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage + 1)" asp-route-categoryId="@ViewData["Category"]" aria-label="Previous">
+              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage + 1)"
+                 asp-route-categoryId="@ViewData["Category"]" aria-label="Previous">
                 <span class="fa fa-chevron-right"></span>
               </a>
             </li>
             <li class="page-item">
-              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@pager.EndPage" asp-route-categoryId="@ViewData["Category"]">Cuối</a>
+              <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@pager.EndPage"
+                 asp-route-categoryId="@ViewData["Category"]">
+                Cuối
+              </a>
             </li>
           }
         </ul>
@@ -114,3 +189,37 @@
 
 </div>
 <!-- Content Wrapper END -->
+
+@section Scripts {
+  <script>
+        function setupChangeStatusModal(modalId, confirmBtn) {
+            $(document).on('show.bs.modal', modalId, function (event) {
+                const modal = $(this);
+                const button = $(event.relatedTarget);
+                const orderId = button.data('orderId');
+                const orderStatus = button.data('orderStatus');
+    
+                modal.find('.modal-body').text(`Đơn hàng #${orderId} sẽ được chuyển sang trạng thái "${orderStatus}"`)
+                modal.find(`.modal-footer ${confirmBtn}`).data('orderId', orderId);
+                modal.find(`.modal-footer ${confirmBtn}`).data('orderStatus', orderStatus);
+            })
+        }
+        
+        function updateStatus(btn) {
+            const id = $(btn).data('orderId');
+            const status = $(btn).data('orderStatus');
+
+            $.ajax({
+                url: '/Orders/UpdateStatus',
+                method: 'POST',
+                data: { id, status },
+                success: function () {
+                    document.location.reload();
+                },
+            });
+        }
+
+        setupChangeStatusModal('#confirmModal', '.confirm-order');
+        setupChangeStatusModal('#denyModal', '.deny-order');
+    </script>
+}
