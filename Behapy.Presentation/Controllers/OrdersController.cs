@@ -39,7 +39,7 @@ public class OrdersController : Controller
     {
         var products = _context.Orders
             .Include(o => o.PaymentType)
-            .Include(o => o.Customer.User)
+            .Include(o => o.Customer!.User)
             .Include(o => o.Distributor)
             .Include(o => o.Promotion)
             .OrderByDescending(o => o.CreateAt)
@@ -53,6 +53,27 @@ public class OrdersController : Controller
         ViewBag.Pager = pager;
 
         return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
+    }
+
+    // GET: Orders/AdminDetails/5
+    [Authorize(Roles = "Admin,Employee")]
+    public IActionResult AdminDetails(int? id)
+    {
+        if (id == null)
+            return NotFound();
+
+        var order = _context.Orders
+            .AsNoTracking()
+            .Include(o => o.PaymentType)
+            .Include(o => o.OrderDetails)
+            .ThenInclude(od => od.Product)
+            .Include(o => o.Customer)
+            .ThenInclude(c => c!.User)
+            .FirstOrDefault(o => o.Id == id);
+        if (order == null)
+            return NotFound();
+
+        return View(order);
     }
 
     // GET: Orders/Details/5

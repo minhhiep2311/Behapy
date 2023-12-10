@@ -53,7 +53,8 @@
           <tbody>
             @foreach (var item in Model)
             {
-              <tr>
+              <tr onclick="location.href='@Url.Action("AdminDetails", "Orders", new { id = item.Id })'" 
+                  style="cursor: pointer">
                 <td>#@item.Id </td>
                 <td>@item.Orderer()</td>
                 <td>@item.TotalMoney.ToMoney()</td>

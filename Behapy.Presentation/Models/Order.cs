@@ -7,26 +7,30 @@ public class Order
 {
     public int Id { get; set; }
 
+    [Display(Name = "Giảm giá")]
     [Precision(18, 2)]
     public decimal Discount { get; set; }
 
+    [Display(Name = "Tổng tiền")]
     [Precision(18, 2)]
     public decimal TotalMoney { get; set; }
 
+    [Display(Name = "Thời gian hủy")]
     public DateTime? CancelledAt { get; set; }
+
+    [Display(Name = "Thời gian tạo")]
     public DateTime CreateAt { get; set; }
 
     [Display(Name = "Ghi chú")]
     public string Note { get; set; } = null!;
 
+    [Display(Name = "Trạng thái")]
     public string CurrentStatus { get; set; } = null!;
 
     [Display(Name = "Địa chỉ")]
     public string Address { get; set; } = null!;
 
-    [Display(Name = "Hình thức thanh toán")]
     public int PaymentTypeId { get; set; }
-
     public PaymentType PaymentType { get; set; } = null!;
 
     public int? CustomerId { get; set; }
@@ -39,5 +43,5 @@ public class Order
     public Promotion? Promotion { get; set; }
 
     public List<OrderStatus> OrderStatuses { get; set; } = new();
-    public IEnumerable<OrderDetail> OrderDetails { get; set; } = Enumerable.Empty<OrderDetail>();
+    public List<OrderDetail> OrderDetails { get; set; } = new();
 }
