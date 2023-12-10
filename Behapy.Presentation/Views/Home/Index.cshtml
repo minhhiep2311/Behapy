@@ -1,8 +1,270 @@
-﻿@{
+﻿@model Behapy.Presentation.ViewModels.HomeViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<main class="main-content">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-area breadcrumb-height"
+         data-bg-image="/images/shop/layout/layout.jpg">
+    </div>
+    <!-- Breadcrumb End -->
+    <!-- Begin Shipping Area -->
+    <div class="shipping-area section-space-top-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6">
+                    <div class="shipping-item">
+                        <div class="shipping-img">
+                            <img src="~/images/shop/shipping/icon/plane.png" alt="Shipping Icon">
+                        </div>
+                        <div class="shipping-content">
+                            <h5 class="title">Free Shipping</h5>
+                            <p class="short-desc mb-0">Ưu đãi giao hàng tận nhà miễn phí</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 pt-6 pt-md-0">
+                    <div class="shipping-item">
+                        <div class="shipping-img">
+                            <img src="~/images/shop/shipping/icon/earphones.png" alt="Shipping Icon">
+                        </div>
+                        <div class="shipping-content">
+                            <h5 class="title">Online Support</h5>
+                            <p class="short-desc mb-0">Cung cấp hỗ trợ trực tuyến 24/7</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 pt-6 pt-lg-0">
+                    <div class="shipping-item">
+                        <div class="shipping-img">
+                            <img src="~/images/shop/shipping/icon/shield.png" alt="Shipping Icon">
+                        </div>
+                        <div class="shipping-content">
+                            <h5 class="title">Secure Payment</h5>
+                            <p class="short-desc mb-0">Hệ thống thanh toán hoàn toàn an toàn</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Shipping Area End Here -->
+    <!-- Begin Product Area -->
+    <div class="product-area section-space-top-100">
+        <div class="container">
+            <div class="section-title text-center pb-55">
+                <h2 class="title mb-0">Sản phẩm mới</h2>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="swiper-container product-slider swiper-arrow with-radius border-issue">
+                        <div class="swiper-wrapper">
+
+
+                            @for (var i = 0; i < Model.LatestProducts.Count; i++)
+                            {
+                                var product = Model.LatestProducts[i];
+                                <div class="swiper-slide">
+                                    <div class="product-item">
+                                        <div class="product-img img-zoom-effect">
+                                            <a href="single-product.html">
+                                                <img class="img-full"
+                                                     src="@product.ImageUrl"
+                                                     alt="Product Images" />
+                                            </a>
+                                            <div class="product-add-action">
+                                                <ul>
+                                                    <li>
+                                                        <a onclick="addToCart(@product.Id)" role="button">
+                                                            <i class="pe-7s-cart"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="wishlist.html">
+                                                            <i class="pe-7s-like"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="product-content">
+                                            <a class="product-name" href="single-product.html">@product.Name</a>
+                                            <div class="price-box pb-1">
+                                                <span class="new-price">@product.Price</span>
+                                            </div>
+                                            <div class="rating-box">
+                                                <ul>
+                                                    <li><i class="pe-7s-star"></i></li>
+                                                    <li><i class="pe-7s-star"></i></li>
+                                                    <li><i class="pe-7s-star"></i></li>
+                                                    <li><i class="pe-7s-star"></i></li>
+                                                    <li><i class="pe-7s-star"></i></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                        <!-- Add Arrows -->
+                        <div class="swiper-nav-wrap">
+                            <div class="swiper-button-next"></div>
+                        </div>
+                        <div class="swiper-button-prev"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Product Area End Here -->
+    <!-- Begin Banner Area -->
+    <div class="banner-area banner-with-parallax py-10"
+         data-bg-image="~/images/shop/banner/2-1-1920x523.jpg">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="parallax-img-wrap">
+                        <div class="papaya">
+                            <div class="scene fill">
+                                <div class="expand-width" data-depth="0.2">
+                                    <img src="~/images/shop/banner/inner-img/cuahang.jpg"
+                                         alt="Banner Images" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 align-self-center">
+                    <div class="banner-content text-white text-center text-md-start">
+                        <div class="section-title">
+                            <span class="sub-title">Sản phẩm ưu đãi</span>
+                            <h2 class="title font-size-60 mb-6">Giảm giá 20%</h2>
+                        </div>
+                        <div class="countdown-wrap">
+                            <div class="countdown item-4"
+                                 data-countdown="2022/01/01"
+                                 data-format="short">
+                                @* <div class="countdown__item me-3">
+                                <span class="countdown__time daysLeft"></span>
+                                <span class="countdown__text daysText"></span>
+                                </div>*@
+                                <div class="countdown__item me-3">
+                                    <span class="countdown__time hoursLeft"></span>
+                                    <span class="countdown__text hoursText"></span>
+                                </div>
+                                <div class="countdown__item me-3">
+                                    <span class="countdown__time minsLeft"></span>
+                                    <span class="countdown__text minsText"></span>
+                                </div>
+                                <div class="countdown__item">
+                                    <span class="countdown__time secsLeft"></span>
+                                    <span class="countdown__text secsText"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="button-wrap pt-10">
+                            <a class="btn btn-custom-size lg-size btn-white rounded-0"
+                               href="shop.html">Cửa hàng ngay</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Banner Area End Here -->
+    <!-- Service Here -->
+    <div class="container section-space-top-75">
+        <div class="banner-with-category mb-10">
+            <div class="section-title text-center">
+                <h2 class="title mb-0">Dịch vụ </h2>
+            </div>
+            <div class="banner-area mt-10">
+                <div class="container">
+                    <div class="row">
+                        @for (var i = 0; i < Model.ServiceCategories.Count; i++)
+                        {
+                            var item = Model.ServiceCategories[i];
+                            var pt6 = i != 0 ? "pt-6" : "";
+                            var ptmd0 = i == 1 ? "pt-md-0" : "";
+                            var ptlg0 = i is 2 or 3 ? "pt-lg-0" : "";
+
+                            <div class="col-lg-4 col-md-6 @pt6 @ptmd0 @ptlg0">
+                                <div class="banner-item">
+                                    <div class="banner-img img-zoom-effect">
+                                        <img class="img-full" src="~/images/shop/banner/inner-img/service1.png" alt="Banner Image">
+                                        <div class="inner-content">
+                                            <h4 class="title text-white mb-5">@item.Name</h4>
+                                            <div class="button-wrap">
+                                                <a class="btn btn-primary btn-white-hover rounded-0" asp-action="ServicesByCategory" asp-controller="Services" asp-route-categoryId="@item.Id">Xem ngay</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Service End Here -->
+</main>
+
+@section Scripts {
+    <script>
+        function addToCart(productId) {
+            $.ajax({
+                url: `Cart/Add?productId=${productId}`,
+                type: 'POST',
+                contentType: 'application/json',
+                success: function () {
+                    bootstrap.showToast({
+                        body: 'Đã thêm sản phẩm vào giỏ hàng!',
+                        zIndex: 999
+                    });
+                    updateMiniCart();
+                },
+            });
+        }
+
+        function updateMiniCart() {
+            $.ajax({
+                url: `Cart/GetAll/`,
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (res) {
+                    const listWrapper = $('.minicart-list').html('');
+
+                    for (const item of res) {
+                        const itemHtml = $('<li class="minicart-product"></li>');
+                        const removeBtn = $(`
+                                                  <a class="product-item_remove" href="#">
+                                                    <i class="pe-7s-close"></i>
+                                                  </a>
+                                                `);
+                        const img = `
+                                                  <a href="/Products/Details/${item.product.id}" class="product-item_img">
+                                                    <img class="img-full" src="${item.product.imageUrl}" alt="${item.product.name}"/>
+                                                  </a>
+                                                `;
+                        const content = `
+                                                  <div class="product-item_content">
+                                                    <a href="/Products/Details/${item.product.id}" class="product-item_title">${item.product.name}</a>
+                                                    <span class="product-item_quantity">${item.amount} x ${item.product.price}</span>
+                                                  </div>
+                                                `;
+
+                        itemHtml.append(removeBtn)
+                            .append(img)
+                            .append(content);
+
+                        listWrapper.append(itemHtml);
+                    }
+                },
+            });
+        }
+    </script>
+}
