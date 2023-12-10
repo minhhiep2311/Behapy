@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Behapy.Presentation.Areas.Identity.Data;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
 namespace Behapy.Presentation.Controllers
@@ -25,6 +26,7 @@ namespace Behapy.Presentation.Controllers
         }
 
         // GET: Employees/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -39,6 +41,7 @@ namespace Behapy.Presentation.Controllers
         }
 
         // GET: Employees/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -49,6 +52,7 @@ namespace Behapy.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(
             [Bind("Id,FullName,Address,Position,Email")]
             CreateEmployeeModel employee)
@@ -95,6 +99,7 @@ namespace Behapy.Presentation.Controllers
         }
 
         // GET: Employees/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -111,6 +116,7 @@ namespace Behapy.Presentation.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,FullName,Address,Position,Email")] Employee employee)
         {
@@ -136,6 +142,7 @@ namespace Behapy.Presentation.Controllers
         }
 
         // GET: Employees/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -152,6 +159,7 @@ namespace Behapy.Presentation.Controllers
         // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var employee = await _context.Employees.FindAsync(id);

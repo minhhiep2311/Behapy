@@ -1,4 +1,5 @@
 ﻿using Behapy.Presentation.Areas.Identity.Data;
+using Behapy.Presentation.Constants;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
 using Behapy.Presentation.ViewModels;
@@ -47,6 +48,7 @@ public class CheckoutController : Controller
 
     // POST: Checkout
     [HttpPost]
+    [Authorize]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Index(
         [Bind("FullName,Address,PaymentTypeId,UseAnotherAddress,AnotherAddress,Note")]
@@ -67,7 +69,7 @@ public class CheckoutController : Controller
             CustomerId = customer.Id,
             Address = address ?? "",
             Note = checkoutViewModel.Note ?? "",
-            CurrentStatus = "Need to confirm",
+            CurrentStatus = OrderStatusConstant.NeedToConfirm,
             PaymentTypeId = checkoutViewModel.PaymentTypeId,
             TotalMoney = cartItems.Sum(ci => ci.Product.Price * ci.Amount),
             OrderDetails = cartItems.Select((ci, idx) => new OrderDetail
@@ -79,7 +81,7 @@ public class CheckoutController : Controller
             }).ToList(),
             OrderStatuses = new List<OrderStatus>
             {
-                new() { Status = "Need to confirm", CreatedAt = DateTime.Now }
+                new() { Status = OrderStatusConstant.NeedToConfirm, CreatedAt = DateTime.Now }
             },
             CreateAt = DateTime.Now
         };

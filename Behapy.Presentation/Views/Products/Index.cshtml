@@ -15,9 +15,9 @@
 
 <main class="main-content">
   <!-- Breadcrumb -->
-  <div class="breadcrumb-area breadcrumb-height"
+ @* <div class="breadcrumb-area breadcrumb-height"
        data-bg-image="/images/shop/layout/layout.jpg">
-  </div>
+  </div>*@
 
   <div class="shop-area section-space-y-axis-100">
     <div class="container">
@@ -222,9 +222,10 @@
                     </li>
                   }
 
-                  @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+                  @for (var p = pager.StartPage; p <= pager.EndPage; p++)
                   {
-                    <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+                    <li class="page-item @(p == pager.CurrentPage ? "active" : "")">
+                      @{ var pge = p; }
                       <a class="page-link" asp-controller="Products" asp-route-pg="@pge" asp-route-categoryId="@ViewData["CategoryId"]" asp-route-sortOrder="@ViewData["SortOrder"]" asp-route-searchText="@ViewData["SearchText"]">@pge</a>
                     </li>
                   }
@@ -310,15 +311,11 @@
         //Sort product
         const selectElement = document.getElementById("sort-select");
 
-
         function onFilterChange() {
             const selectedValue = selectElement.value;
             const currentUrl = window.location.href;
-            const updatedUrl = updateQueryStringParameter(currentUrl, 'sortOrder', selectedValue);
-            console.log(updatedUrl);
-            window.location.href = updatedUrl;
+            window.location.href = updateQueryStringParameter(currentUrl, 'sortOrder', selectedValue);
         }
-
 
         function updateQueryStringParameter(uri, key, value) {
             const re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");

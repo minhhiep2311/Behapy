@@ -1,31 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Behapy.Presentation.Areas.Identity.Data;
-using Behapy.Presentation.Models;
+using Behapy.Presentation.Services.Interfaces;
 
 namespace Behapy.Presentation.Controllers
 {
     public class ServicesController : Controller
     {
         private readonly BehapyDbContext _context;
+        private readonly IServiceService _serviceService;
 
-        public ServicesController(BehapyDbContext context)
+
+        public ServicesController(BehapyDbContext context, IServiceService serviceService)
         {
             _context = context;
+            _serviceService = serviceService;
         }
 
         // GET: Services
         public async Task<IActionResult> Index()
         {
-            //var behapyDbContext = _context.Services.Include(s => s.Category);
-            //return View(await behapyDbContext.ToListAsync());
-
-            var serviceCategories = await _context.ServiceCategories.ToListAsync();
+            var serviceCategories = await _serviceService.GetCategoryServices();
             return View(serviceCategories);
         }
 
@@ -43,18 +38,14 @@ namespace Behapy.Presentation.Controllers
         // GET: Services/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Services == null)
-            {
+            if (id == null)
                 return NotFound();
-            }
 
             var service = await _context.Services
                 .Include(s => s.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (service == null)
-            {
                 return NotFound();
-            }
 
             return View(service);
         }

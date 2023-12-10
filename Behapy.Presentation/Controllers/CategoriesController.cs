@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Behapy.Presentation.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Behapy.Presentation.Controllers;
 
@@ -21,6 +22,7 @@ public class CategoriesController : Controller
     }
 
     // GET: Categories/Details/5
+    [Authorize]
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)

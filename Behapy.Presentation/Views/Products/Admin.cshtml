@@ -37,7 +37,6 @@
             {
               <div class="row">
                 <div class="col-md-12">
-
                   @Html.DropDownList("categoryId", ViewData["CategoryId"] as SelectList, "Tất cả danh mục", new { @class = "form-control", onchange = "this.form.submit();" })
                 </div>
               </div>
@@ -55,12 +54,12 @@
         <table class="table table-hover e-commerce-table">
           <thead>
             <tr>
-              <th>
-                <div class="checkbox">
-                  <input id="checkAll" type="checkbox"/>
-                  <label for="checkAll" class="m-b-0"></label>
-                </div>
-              </th>
+              @*  <th>
+                                <div class="checkbox">
+                                    <input id="checkAll" type="checkbox" />
+                                    <label for="checkAll" class="m-b-0"></label>
+                                </div>
+                            </th>*@
               <th>STT</th>
               <th>Sản phẩm</th>
               <th>Giá</th>
@@ -80,12 +79,12 @@
               var item = Model[i];
 
               <tr>
-                <td>
-                  <div class="checkbox">
-                    <input id="check-item-7" type="checkbox"/>
-                    <label for="check-item-7" class="m-b-0"></label>
-                  </div>
-                </td>
+                @*  <td>
+                                    <div class="checkbox">
+                                        <input id="check-item-7" type="checkbox" />
+                                        <label for="check-item-7" class="m-b-0"></label>
+                                    </div>
+                                </td>*@
                 <td>@index</td>
                 <td>
                   <div class="d-flex align-items-center">
@@ -113,6 +112,9 @@
                   </div>
                 </td>
                 <td class="text-right">
+                  <button data-toggle="modal" data-target="#quantityModal" data-product-id="@item.Id" class="btn btn-icon btn-hover btn-sm btn-rounded">
+                    <i class="anticon anticon-plus-circle"></i>
+                  </button>
                   <button onclick="location.href='@Url.Action("Edit", "Products", new { id = item.Id })'"
                           class="btn btn-icon btn-hover btn-sm btn-rounded pull-right">
                     <i class="anticon anticon-edit"></i>
@@ -130,12 +132,36 @@
     </div>
   </div>
 
+  <!--Add Quantity Modal -->
+  <div class="modal fade" id="quantityModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Thêm số lượng</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="addQuantityForm">
+            <input type="hidden" id="productId"/>
+            <input class="form-control" type="text" id="quantityInput" pattern="[0-9]*" oninput="validateInput()" placeholder="Số lượng sản phẩm"/>
+            <div id="error-message" class="text-danger"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+          <button type="button" class="btn btn-tone btn-primary" id="addQuantityButton" onclick="addQuantity()">Thêm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Add Quantity Modal End-->
+
   <!--Delete Modal -->
   <div class="modal fade" id="DeleteModal">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Xác nhận xóa</h5>
+          <h5 class="modal-title">Xác nhận xóa</h5>
           <button type="button" class="close" data-dismiss="modal">
             <i class="anticon anticon-close"></i>
           </button>
@@ -170,9 +196,10 @@
             </li>
           }
 
-          @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+          @for (var p = pager.StartPage; p <= pager.EndPage; p++)
           {
-            <li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+            <li class="page-item @(p == pager.CurrentPage ? "active" : "")">
+              @{ var pge = p; }
               <a asp-controller="Products" asp-action="Admin" asp-route-pg="@pge" asp-route-categoryId="@ViewData["Category"]" class="page-link">
                 @pge
               </a>
@@ -201,30 +228,71 @@
 
 @section Scripts {
   <script>
-    $(document).on('show.bs.modal', '#DeleteModal', function (event) {
-        const modal = $(this);
-        const button = $(event.relatedTarget);
-        const productId = button.data('productId');
-        const productName = button.data('productName');
-        
-        console.log(button.data);
-        console.log(modal.find('.modal-body'))
-  
-        modal.find('.modal-body').text(`Bạn có chắc chắn muốn xóa ${productName} không?`)
-        modal.find('.modal-footer .confirm-delete').data('productId', productId);
-    })
-    
-    function deleteProduct(btn) {
-        const productId = $(btn).data('productId');
-        console.log(productId);
-        $.ajax({
-            url: `/Products/Delete/${productId}`,
-            type: 'DELETE',
-            contentType: 'application/json',
-            success: function () {
-              document.location.reload();
-            },
+        //Delete
+        $(document).on('show.bs.modal', '#DeleteModal', function (event) {
+            const modal = $(this);
+            const button = $(event.relatedTarget);
+            const productId = button.data('productId');
+            const productName = button.data('productName');
+
+            modal.find('.modal-body').text(`Bạn có chắc chắn muốn xóa ${productName} không?`)
+            modal.find('.modal-footer .confirm-delete').data('productId', productId);
+        })
+
+        function deleteProduct(btn) {
+            const productId = $(btn).data('productId');
+            $.ajax({
+                url: `/Products/Delete/${productId}`,
+                type: 'DELETE',
+                contentType: 'application/json',
+                success: function () {
+                    document.location.reload();
+                },
+            });
+        }
+
+        //Add Quantity
+        function addQuantity() {
+            const productId = $('#productId').val();
+            const quantityToAdd = $('#quantityInput').val();
+
+            $.ajax({
+                url: '/Products/AddQuantity',
+                method: 'POST',
+                data: { id: productId, quantityToAdd: quantityToAdd },
+                success: function () {
+                    document.location.reload();
+                },
+            });
+        }
+
+        //Check validation input
+        function validateInput() {
+            const quantityInput = $('#quantityInput');
+            const errorMessage = $('#error-message');
+            const addQuantityButton = $('#addQuantityButton');
+
+
+            if (!quantityInput.val() || !/^[0-9]*$/.test(quantityInput.val())) {
+                errorMessage.text('Vui lòng nhập số nguyên dương hợp lệ.');
+                addQuantityButton.prop('disabled', true);
+            } else {
+                errorMessage.text('');
+                addQuantityButton.prop('disabled', false);
+            }
+        }
+
+
+        $(document).on('show.bs.modal', '#quantityModal', function (event) {
+            const button = $(event.relatedTarget);
+            const productId = button.data('product-id');
+            $('#productId').val(productId);
         });
-    }
-  </script>
+
+        // Disable button at default
+        $(document).on('shown.bs.modal', '#quantityModal', function () {
+            $('#addQuantityButton').prop('disabled', true);
+        });
+
+    </script>
 }

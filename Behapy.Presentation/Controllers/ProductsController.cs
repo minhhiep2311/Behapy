@@ -1,6 +1,8 @@
-﻿using Behapy.Presentation.Areas.Identity.Data;
+using AspNetCoreHero.ToastNotification.Abstractions;
+using Behapy.Presentation.Areas.Identity.Data;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +13,13 @@ public class ProductsController : Controller
 {
     private readonly BehapyDbContext _context;
     private readonly IFileService _fileService;
+    private readonly INotyfService _notyfService;
 
-    public ProductsController(BehapyDbContext context, IFileService fileService)
+    public ProductsController(BehapyDbContext context, IFileService fileService, INotyfService notyfService)
     {
         _context = context;
         _fileService = fileService;
+        _notyfService = notyfService;
     }
 
     // GET: Products
@@ -37,22 +41,17 @@ public class ProductsController : Controller
                 (string.IsNullOrWhiteSpace(searchText) || EF.Functions.Like(p.Name, $"%{searchText}%"))
             );
 
-        int categoryProductCount = await products.CountAsync();
+        var categoryProductCount = await products.CountAsync();
 
         var totalProducts = await _context.Products.CountAsync();
 
-        switch (sortOrder)
+        products = sortOrder switch
         {
-            case "latest":
-                products = products.OrderByDescending(p => p.CreatedAt);
-                break;
-            case "high-price":
-                products = products.OrderByDescending(p => p.Price);
-                break;
-            case "low-price":
-                products = products.OrderBy(p => p.Price);
-                break;
-        }
+            "latest" => products.OrderByDescending(p => p.CreatedAt),
+            "high-price" => products.OrderByDescending(p => p.Price),
+            "low-price" => products.OrderBy(p => p.Price),
+            _ => products
+        };
 
         const int pageSize = 8;
 
@@ -69,11 +68,13 @@ public class ProductsController : Controller
     }
 
     //GET: Products/Admin
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Admin(int pg, int? categoryId)
     {
         var products = _context.Products
             .Include(p => p.Category)
             .Include(p => p.Promotion)
+            .OrderByDescending(p => p.CreatedAt)
             .AsQueryable();
 
         //Filter 
@@ -84,18 +85,14 @@ public class ProductsController : Controller
 
         //Pagination
         const int pageSize = 8;
-
         if (pg < 1) pg = 1;
         var recsCount = products.Count();
         var pager = new Pager(recsCount, pg, pageSize);
         var recSkip = (pg - 1) * pageSize;
         ViewBag.Pager = pager;
 
-
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-
         ViewData["Category"] = categoryId;
-
 
         return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
     }
@@ -104,23 +101,21 @@ public class ProductsController : Controller
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
-        {
             return NotFound();
-        }
 
         var product = await _context.Products
             .Include(p => p.Category)
             .Include(p => p.Promotion)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (product == null)
-        {
             return NotFound();
-        }
 
         return View(product);
     }
 
+
     // GET: Products/Create
+    [Authorize(Roles = "Admin,Employee")]
     public IActionResult Create()
     {
         GetImageKitAuthenticationParameters();
@@ -138,6 +133,7 @@ public class ProductsController : Controller
     // POST: Products/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Create(
         [Bind("Id,Name,Price,IsActive,Description,ImageUrl,CategoryId,PromotionId,Amount")]
         Product product)
@@ -146,7 +142,7 @@ public class ProductsController : Controller
         {
             _context.Add(product);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            _notyfService.Success("Tạo mới thành công!");
         }
 
         GetImageKitAuthenticationParameters();
@@ -154,24 +150,22 @@ public class ProductsController : Controller
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name", product.PromotionId);
 
-        return View(product);
+        return RedirectToAction(nameof(Admin));
     }
 
+
     // GET: Products/Edit/5
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Edit(int? id)
     {
         GetImageKitAuthenticationParameters();
 
         if (id == null)
-        {
             return NotFound();
-        }
 
         var product = await _context.Products.FindAsync(id);
         if (product == null)
-        {
             return NotFound();
-        }
 
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name", product.PromotionId);
@@ -181,14 +175,13 @@ public class ProductsController : Controller
     // POST: Products/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Edit(int id,
         [Bind("Id,Name,Price,IsActive,Description,ImageUrl,Discount,CreatedAt,CategoryId,PromotionId,Amount")]
         Product product)
     {
         if (id != product.Id)
-        {
             return NotFound();
-        }
 
         if (ModelState.IsValid)
         {
@@ -196,38 +189,35 @@ public class ProductsController : Controller
             {
                 _context.Update(product);
                 await _context.SaveChangesAsync();
+                _notyfService.Success("Cập nhật thành công!");
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductExists(product.Id))
-                {
-                    return NotFound();
-                }
-
-                throw;
+                if (ProductExists(product.Id)) throw;
+                _notyfService.Error("Có lỗi xảy ra!");
+                return NotFound();
             }
-
-            return await Edit(id);
         }
 
         GetImageKitAuthenticationParameters();
 
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Id", product.PromotionId);
-        return View(product);
+        return RedirectToAction(nameof(Admin));
     }
 
     // POST: Products/Delete/5
     [HttpDelete]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Delete(int id)
     {
         var product = await _context.Products.FindAsync(id);
         if (product != null)
         {
             _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+            _notyfService.Success("Xóa thành công!");
         }
-
-        await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Admin));
     }
 
@@ -236,6 +226,27 @@ public class ProductsController : Controller
     public IActionResult Search(string category, string q)
     {
         return RedirectToAction("Index", new { category, q });
+    }
+
+    //POST: Products/AddQuantity
+    [HttpPost]
+    [Authorize(Roles = "Admin,Employee")]
+    public async Task<IActionResult> AddQuantity(int id, int quantityToAdd)
+    {
+        var product = await _context.Products.FindAsync(id);
+
+        if (product == null)
+            return RedirectToAction(nameof(Admin));
+
+        // Thêm số lượng mới vào số lượng hiện tại
+        product.Amount += quantityToAdd;
+
+        // Cập nhật dữ liệu trong cơ sở dữ liệu
+        await _context.SaveChangesAsync();
+
+        _notyfService.Success("Thêm thành công!");
+
+        return RedirectToAction(nameof(Admin));
     }
 
     private void GetImageKitAuthenticationParameters()
