@@ -1,0 +1,71 @@
+@model Behapy.Presentation.Models.Promotion
+
+@{
+  ViewData["Title"] = "Edit";
+  Layout = "~/Views/Shared/Admin/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Promotion</h4>
+<hr/>
+<div class="row">
+  <div class="col-md-4">
+    <form asp-action="Edit">
+      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+      <input type="hidden" asp-for="Id"/>
+      <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control"/>
+        <span asp-validation-for="Name" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label asp-for="Value" class="control-label"></label>
+        <input asp-for="Value" class="form-control"/>
+        <span asp-validation-for="Value" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label asp-for="Unit" class="control-label"></label>
+        <select asp-for="Unit" class="form-control"></select>
+        <span asp-validation-for="Unit" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label asp-for="Voucher" class="control-label"></label>
+        <input asp-for="Voucher" class="form-control"/>
+        <span asp-validation-for="Voucher" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label asp-for="MaxDiscount" class="control-label"></label>
+        <input asp-for="MaxDiscount" class="form-control"/>
+        <span asp-validation-for="MaxDiscount" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label asp-for="MinOrderValue" class="control-label"></label>
+        <input asp-for="MinOrderValue" class="form-control"/>
+        <span asp-validation-for="MinOrderValue" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label asp-for="EndAt" class="control-label"></label>
+        <input asp-for="EndAt" class="form-control"/>
+        <span asp-validation-for="EndAt" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label asp-for="StartAt" class="control-label"></label>
+        <input asp-for="StartAt" class="form-control"/>
+        <span asp-validation-for="StartAt" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label asp-for="Type" class="control-label"></label>
+        <select asp-for="Type" class="form-control" asp-items="ViewBag.TypeId"></select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary"/>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div>
+  <a asp-action="Index">Back to List</a>
+</div>

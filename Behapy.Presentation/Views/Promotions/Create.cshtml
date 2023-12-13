@@ -1,0 +1,108 @@
+@model Behapy.Presentation.Models.Promotion
+
+@{
+  ViewData["Title"] = "Create";
+  Layout = "~/Views/Shared/Admin/_Layout.cshtml";
+}
+
+<div class="main-content">
+  <div class="page-header">
+    <h2 class="header-title">Thêm khuyến mãi</h2>
+    <div class="header-sub-title">
+      <nav class="breadcrumb breadcrumb-dash">
+        <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+        <a class="breadcrumb-item" asp-action="Index">Sản Phẩm</a>
+        <span class="breadcrumb-item active">Thêm khuyến mãi</span>
+      </nav>
+    </div>
+  </div>
+  <form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="m-t-15">
+      <div class="card">
+        <div class="card-body">
+          <!-- Name -->
+          <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control"/>
+            <span asp-validation-for="Name" class="text-danger"></span>
+          </div>
+
+          <!-- StartAt -->
+          <div class="form-group">
+            <label asp-for="StartAt" class="control-label"></label>
+            <input asp-for="StartAt" class="form-control"/>
+            <span asp-validation-for="StartAt" class="text-danger"></span>
+          </div>
+
+          <!-- EndAt -->
+          <div class="form-group">
+            <label asp-for="EndAt" class="control-label"></label>
+            <input asp-for="EndAt" class="form-control"/>
+            <span asp-validation-for="EndAt" class="text-danger"></span>
+          </div>
+
+          <!-- Value -->
+          <div class="form-group">
+            <label asp-for="Value" class="control-label"></label>
+
+            <div class="input-group">
+              <input asp-for="Value" class="form-control"/>
+              <select asp-for="Unit" class="form-control flex-grow-0 w-25" asp-items="ViewBag.Unit"></select>
+            </div>
+            <span asp-validation-for="Value" class="text-danger"></span>
+            <span asp-validation-for="Unit" class="text-danger"></span>
+          </div>
+
+          <!-- Voucher -->
+          <div class="form-group">
+            <label asp-for="Voucher" class="control-label"></label>
+            <input asp-for="Voucher" class="form-control"/>
+            <span asp-validation-for="Voucher" class="text-danger"></span>
+          </div>
+
+          <!-- MaxDiscount -->
+          <div class="form-group">
+            <label asp-for="MaxDiscount" class="control-label"></label>
+            <input asp-for="MaxDiscount" class="form-control"/>
+            <span asp-validation-for="MaxDiscount" class="text-danger"></span>
+          </div>
+
+          <!-- MinOrderValue -->
+          <div class="form-group">
+            <label asp-for="MinOrderValue" class="control-label"></label>
+            <input asp-for="MinOrderValue" class="form-control"/>
+            <span asp-validation-for="MinOrderValue" class="text-danger"></span>
+          </div>
+
+          <!-- Type -->
+          <div class="form-group">
+            <label asp-for="Type" class="control-label"></label>
+            <select asp-for="Type" class="form-control" asp-items="ViewBag.Type"></select>
+          </div>
+
+          <div class="form-group">
+            <input type="submit" value="Thêm" class="btn btn-primary"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+@section Scripts {
+  <script src="https://unpkg.com/imask"></script>
+  
+  <script>
+    const numberMask = {
+      mask: Number,
+      scale: 2,
+      thousandsSeparator: ',',
+      radix: '.',
+    }
+  
+    IMask(document.getElementById('Value'), numberMask);
+    IMask(document.getElementById('MaxDiscount'), numberMask);
+    IMask(document.getElementById('MinOrderValue'), numberMask);
+  </script>
+}
