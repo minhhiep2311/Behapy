@@ -169,6 +169,7 @@ public class ProductsController : Controller
 
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name", product.PromotionId);
+
         return View(product);
     }
 

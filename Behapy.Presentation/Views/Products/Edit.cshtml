@@ -155,6 +155,7 @@
 
   <!-- image kit -->
   <script type="text/javascript" src="https://unpkg.com/imagekit-javascript/dist/imagekit.min.js"></script>
+  <script src="https://unpkg.com/imask"></script>
 
   <script>
       bindUploadEventToInputFile('#Image', '.input-progress', '@ViewBag.Token', '@ViewBag.Signature', '@ViewBag.Expire', 'Product');
@@ -175,5 +176,15 @@
 
       // Đồng bộ dữ liệu từ hidden input vào trình soạn thảo Quill
       quill.root.innerHTML = hiddenInput.value;
+
+      const numberMask = {
+        mask: Number,
+        scale: 2,
+        thousandsSeparator: ',',
+        radix: '.',
+      }
+    
+      IMask(document.getElementById('Price'), numberMask);
+      IMask(document.getElementById('Discount'), numberMask);
     </script>
 }
