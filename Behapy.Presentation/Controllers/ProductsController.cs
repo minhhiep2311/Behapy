@@ -165,11 +165,11 @@ public class ProductsController : Controller
         if (product == null)
             return NotFound();
 
-        var products = _context.Promotions.Where(p => p.Type == PromotionType.Product);
+        var promotions = _context.Promotions.Where(p => p.Type == PromotionType.Product);
 
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
-        ViewData["ProductPromotionsId"] =
-            new MultiSelectList(products, "Id", "Name", product.ProductPromotions.Select(pp => pp.Id));
+        ViewData["ProductPromotionsId"] = new MultiSelectList(promotions, "Id", "Name",
+            product.ProductPromotions.Select(pp => pp.PromotionId));
 
         return View(product);
     }

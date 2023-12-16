@@ -3,7 +3,10 @@
 @{
   ViewData["Title"] = "Edit";
   Layout = "~/Views/Shared/Admin/_Layout.cshtml";
+
+  var productPromotionsId = (ViewBag.ProductPromotionsId as MultiSelectList)?.SelectedValues;
 }
+
 <div class="main-content">
   <div class="page-header">
     <h2 class="header-title">Chỉnh sửa sản phẩm</h2>
@@ -168,12 +171,10 @@
   </script>
 
   <script>
-      const x = @Html.Raw(Json.Serialize(ViewBag.ProductPromotionsId));
-      console.log(x);
-  
       $('.select2')
         .select2()
-        .val(@Html.Raw(Json.Serialize(ViewBag.ProductPromotionsId)));
+        .val(@Html.Raw(Json.Serialize(productPromotionsId)))
+        .change();
   
       const hiddenInput = document.getElementById('Description');
       const quill = new Quill('#editor', {
