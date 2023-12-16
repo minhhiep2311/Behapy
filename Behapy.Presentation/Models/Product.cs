@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Behapy.Presentation.Models;
 
@@ -38,10 +39,11 @@ public class Product
 
     public Category? Category { get; set; }
 
-    [Display(Name = "Khuyến mãi")]
-    public int? PromotionId { get; set; }
+    public List<ProductPromotion> ProductPromotions { get; set; } = new();
 
-    public Promotion? Promotion { get; set; }
+    [NotMapped]
+    [Display(Name = "Khuyến mãi")]
+    public int[] ProductPromotionsId { get; set; } = Array.Empty<int>();
 
     public List<OrderDetail> OrderDetails { get; set; } = new();
     public List<CartItem> CartItems { get; set; } = new();

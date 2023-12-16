@@ -69,3 +69,20 @@
 <div>
   <a asp-action="Index">Back to List</a>
 </div>
+
+@section Scripts {
+  <script src="https://unpkg.com/imask"></script>
+  
+  <script>
+    const numberMask = {
+      mask: Number,
+      scale: 2,
+      thousandsSeparator: ',',
+      radix: '.',
+    }
+  
+    IMask(document.getElementById('Value'), numberMask);
+    IMask(document.getElementById('MaxDiscount'), numberMask);
+    IMask(document.getElementById('MinOrderValue'), numberMask);
+  </script>
+}

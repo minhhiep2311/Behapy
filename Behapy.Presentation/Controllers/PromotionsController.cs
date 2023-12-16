@@ -70,7 +70,7 @@ public class PromotionsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-        [Bind("Id,Name,Value,Unit,Voucher,MaxDiscount,EndAt,StartAt,TypeId")]
+        [Bind("Id,Name,Value,Unit,Voucher,MaxDiscount,EndAt,StartAt,Type,MinOrderValue")]
         Promotion promotion)
     {
         if (ModelState.IsValid)
@@ -122,7 +122,7 @@ public class PromotionsController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id,
-        [Bind("Id,Name,Value,Unit,Voucher,MaxDiscount,EndAt,StartAt,TypeId")]
+        [Bind("Id,Name,Value,Unit,Voucher,MaxDiscount,EndAt,StartAt,Type,MinOrderValue")]
         Promotion promotion)
     {
         if (id != promotion.Id)

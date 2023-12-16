@@ -1,5 +1,6 @@
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Behapy.Presentation.Areas.Identity.Data;
+using Behapy.Presentation.Enums;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -35,7 +36,7 @@ public class ProductsController : Controller
 
         var products = _context.Products
             .Include(p => p.Category)
-            .Include(p => p.Promotion)
+            .Include(p => p.ProductPromotions)
             .Where(p =>
                 (categoryId == null || p.CategoryId == categoryId) &&
                 (string.IsNullOrWhiteSpace(searchText) || EF.Functions.Like(p.Name, $"%{searchText}%"))
@@ -73,7 +74,7 @@ public class ProductsController : Controller
     {
         var products = _context.Products
             .Include(p => p.Category)
-            .Include(p => p.Promotion)
+            .Include(p => p.ProductPromotions)
             .OrderByDescending(p => p.CreatedAt)
             .AsQueryable();
 
@@ -105,7 +106,7 @@ public class ProductsController : Controller
 
         var product = await _context.Products
             .Include(p => p.Category)
-            .Include(p => p.Promotion)
+            .Include(p => p.ProductPromotions)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (product == null)
             return NotFound();
@@ -138,17 +139,12 @@ public class ProductsController : Controller
         [Bind("Id,Name,Price,IsActive,Description,ImageUrl,CategoryId,PromotionId,Amount")]
         Product product)
     {
-        if (ModelState.IsValid)
-        {
-            _context.Add(product);
-            await _context.SaveChangesAsync();
-            _notyfService.Success("Tạo mới thành công!");
-        }
+        if (!ModelState.IsValid)
+            return RedirectToAction(nameof(Admin));
 
-        GetImageKitAuthenticationParameters();
-
-        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
-        ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name", product.PromotionId);
+        _context.Add(product);
+        await _context.SaveChangesAsync();
+        _notyfService.Success("Tạo mới thành công!");
 
         return RedirectToAction(nameof(Admin));
     }
@@ -163,12 +159,17 @@ public class ProductsController : Controller
         if (id == null)
             return NotFound();
 
-        var product = await _context.Products.FindAsync(id);
+        var product = await _context.Products
+            .Include(p => p.ProductPromotions)
+            .FirstOrDefaultAsync(p => p.Id == id);
         if (product == null)
             return NotFound();
 
+        var products = _context.Promotions.Where(p => p.Type == PromotionType.Product);
+
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
-        ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name", product.PromotionId);
+        ViewData["ProductPromotionsId"] =
+            new MultiSelectList(products, "Id", "Name", product.ProductPromotions.Select(pp => pp.Id));
 
         return View(product);
     }
@@ -178,32 +179,32 @@ public class ProductsController : Controller
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Edit(int id,
-        [Bind("Id,Name,Price,IsActive,Description,ImageUrl,Discount,CreatedAt,CategoryId,PromotionId,Amount")]
+        [Bind("Id,Name,Price,IsActive,Description,ImageUrl,Discount,CreatedAt,CategoryId,ProductPromotionsId,Amount")]
         Product product)
     {
         if (id != product.Id)
             return NotFound();
 
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
+            return RedirectToAction(nameof(Admin));
+
+        product.ProductPromotions = product.ProductPromotionsId
+            .Select(ppi => new ProductPromotion { ProductId = product.Id, PromotionId = ppi })
+            .ToList();
+
+        try
         {
-            try
-            {
-                _context.Update(product);
-                await _context.SaveChangesAsync();
-                _notyfService.Success("Cập nhật thành công!");
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (ProductExists(product.Id)) throw;
-                _notyfService.Error("Có lỗi xảy ra!");
-                return NotFound();
-            }
+            _context.Update(product);
+            await _context.SaveChangesAsync();
+            _notyfService.Success("Cập nhật thành công!");
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (ProductExists(product.Id)) throw;
+            _notyfService.Error("Có lỗi xảy ra!");
+            return NotFound();
         }
 
-        GetImageKitAuthenticationParameters();
-
-        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
-        ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Id", product.PromotionId);
         return RedirectToAction(nameof(Admin));
     }
 
@@ -213,12 +214,13 @@ public class ProductsController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var product = await _context.Products.FindAsync(id);
-        if (product != null)
-        {
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-            _notyfService.Success("Xóa thành công!");
-        }
+        if (product == null)
+            return RedirectToAction(nameof(Admin));
+
+        _context.Products.Remove(product);
+        await _context.SaveChangesAsync();
+        _notyfService.Success("Xóa thành công!");
+
         return RedirectToAction(nameof(Admin));
     }
 

@@ -39,8 +39,11 @@ public class Promotion : IValidatableObject
     [Display(Name = "Loại giảm giá")]
     public PromotionType Type { get; set; }
 
+    [Display(Name = "Ẩn khỏi danh sách")]
+    public bool IsHidden { get; set; } = false;
+
     public List<Order> Orders { get; set; } = new();
-    public List<Product> Products { get; set; } = new();
+    public List<ProductPromotion> ProductPromotions { get; set; } = new();
     public List<OrderDetail> OrderDetails { get; set; } = new();
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
