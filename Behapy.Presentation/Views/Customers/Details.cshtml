@@ -1,0 +1,156 @@
+﻿@model Behapy.Presentation.Models.Customer
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/Admin/_Layout.cshtml";
+}
+
+<div class="main-content">
+    <div class="page-header">
+        <h2 class="header-title">Khách hàng</h2>
+        <div class="header-sub-title">
+            <nav class="breadcrumb breadcrumb-dash">
+                <a class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang Chủ</a>
+                <span class="breadcrumb-item active" href="#">Chi tiết khách hàng</span>
+            </nav>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Thông tin cơ bản</h4>
+        </div>
+        <div class="card-body">
+            <div class="media align-items-center">
+                <div class="avatar avatar-image m-h-10 m-r-15"
+                     style="height: 80px; width: 80px">
+                    <img src="@Model.User.ImageUrl" alt="" />
+                </div>
+                <div class="m-l-20 m-r-20">
+                    <h5 class="m-b-5 font-size-18">@Model.User.FullName</h5>
+                    <p class="opacity-07 font-size-13 m-b-0">
+                        Ngày đăng kí: <br />
+                       @Model.User.CreatedAt
+                    </p>
+                </div>
+                <div class="text-right">
+                    <button class="btn btn-tone btn-primary">
+                        Thông tin đơn hàng
+                    </button>
+                </div>
+            </div>
+            <hr class="m-v-25" />
+            <form>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label class="font-weight-semibold" for="userName">Tài khoản:</label>
+                        <input type="text"
+                                disabled
+                               class="form-control"
+                               id="userName"
+                               placeholder="Tài khoản"
+                               value="@Model.User.UserName" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="font-weight-semibold" for="email">Email:</label>
+                        <input type="email"
+                               disabled
+                               class="form-control"
+                               id="email"
+                               placeholder="email"
+                               value="@Model.User.Email" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label class="font-weight-semibold"
+                               for="phoneNumber">Số điện thoại:</label>
+                        <input type="text"
+                               disabled
+                               class="form-control"
+                               id="phoneNumber"
+                               placeholder="Số điện thoại"
+                               value="@Model.User.PhoneNumber"/>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="font-weight-semibold" for="dob">Ngày sinh:</label>
+                        <input type="text"
+                               disabled
+                               class="form-control"
+                               id="dob"
+                               placeholder="Ngày sinh" 
+                               value="@Model.Birthday"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+   @* <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Change Password</h4>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label class="font-weight-semibold"
+                               for="oldPassword">Old Password:</label>
+                        <input type="password"
+                               class="form-control"
+                               id="oldPassword"
+                               placeholder="Old Password" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="font-weight-semibold"
+                               for="newPassword">New Password:</label>
+                        <input type="password"
+                               class="form-control"
+                               id="newPassword"
+                               placeholder="New Password" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="font-weight-semibold"
+                               for="confirmPassword">Confirm Password:</label>
+                        <input type="password"
+                               class="form-control"
+                               id="confirmPassword"
+                               placeholder="Confirm Password" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <button class="btn btn-primary m-t-30">
+                            Change
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>*@
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Chi tiết địa chỉ</h4>
+        </div>
+        <div class="card-body">
+            <form>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label class="font-weight-semibold"
+                               for="fullAddress">Địa chỉ:</label>
+                        <input type="text"
+                               disabled
+                               class="form-control"
+                               id="fullAddress"
+                               placeholder="Địa chỉ"
+                               value="@Model.Address" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="font-weight-semibold" for="stateCity">Tiểu bang & Thành phố:</label>
+                        <input type="text"
+                               disabled
+                               class="form-control"
+                               id="stateCity"
+                               placeholder="Tiểu bang & Thành phố"  />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
