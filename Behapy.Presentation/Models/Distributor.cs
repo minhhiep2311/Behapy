@@ -16,5 +16,6 @@ public class Distributor
     public string Position { get; set; } = null!;
 
     public int DistributorLevelId { get; set; }
-    public DistributorLevel DistributorLevel { get; set; } = null!;
+
+    public DistributorLevel? DistributorLevel { get; set; }
 }
