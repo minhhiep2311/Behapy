@@ -4,6 +4,7 @@ using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Behapy.Presentation.Controllers;
@@ -31,6 +32,37 @@ public class OrdersController : Controller
             .Include(o => o.OrderDetails)
             .ToList();
         return View(items);
+    }
+
+    // GET: Promotion/Create
+    public IActionResult Create()
+    {
+        ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Id");
+        return View();
+    }
+
+    // POST: Promotion/Create
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(
+        [Bind("Id,Name,Value,Unit,Voucher,MaxDiscount,EndAt,StartAt,TypeId")]
+        Order order)
+    {
+        if (ModelState.IsValid)
+        {
+            _context.Add(order);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Id", order.PaymentType);
+        ViewData["TypeId"] = new SelectList(_context.Customers, "Id", "Id", order.Customer);
+        ViewData["DistributorId"] = new SelectList(_context.Distributors, "Id", "Id", order.Distributor);
+        ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Id", order.Promotion);
+
+        return View(order);
     }
 
     //GET: Orders/Admin
@@ -154,7 +186,7 @@ public class OrdersController : Controller
             CreatedAt = DateTime.Now,
             Status = status
         };
-        
+
         order.CurrentStatus = status;
         order.OrderStatuses.Add(orderStatus);
     }

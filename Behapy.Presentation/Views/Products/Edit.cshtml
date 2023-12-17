@@ -3,7 +3,10 @@
 @{
   ViewData["Title"] = "Edit";
   Layout = "~/Views/Shared/Admin/_Layout.cshtml";
+
+  var productPromotionsId = (ViewBag.ProductPromotionsId as MultiSelectList)?.SelectedValues;
 }
+
 <div class="main-content">
   <div class="page-header">
     <h2 class="header-title">Chỉnh sửa sản phẩm</h2>
@@ -128,9 +131,11 @@
 
             <!-- Promotion -->
             <div class="form-group">
-              <label asp-for="PromotionId" class="font-weight-semibold"></label>
-              <select asp-for="PromotionId" class="form-control" asp-items="ViewBag.PromotionId"></select>
-              <span asp-validation-for="PromotionId" class="text-danger"></span>
+              <label asp-for="ProductPromotionsId" class="font-weight-semibold"></label>
+              <select asp-for="ProductPromotionsId" class="form-control select2" asp-items="ViewBag.ProductPromotionsId" 
+                      multiple="multiple">
+              </select>
+              <span asp-validation-for="ProductPromotionsId" class="text-danger"></span>
             </div>
           </div>
         </div>
@@ -147,6 +152,9 @@
   </form>
 </div>
 
+@section Styles {
+  <link href="~/js/admin/vendors/select2/select2.css" rel="stylesheet">
+}
 
 @section Scripts {
   @{
@@ -155,12 +163,19 @@
 
   <!-- image kit -->
   <script type="text/javascript" src="https://unpkg.com/imagekit-javascript/dist/imagekit.min.js"></script>
+  <script src="https://unpkg.com/imask"></script>
+  <script src="~/js/admin/vendors/select2/select2.min.js"></script>
 
   <script>
       bindUploadEventToInputFile('#Image', '.input-progress', '@ViewBag.Token', '@ViewBag.Signature', '@ViewBag.Expire', 'Product');
   </script>
 
   <script>
+      $('.select2')
+        .select2()
+        .val(@Html.Raw(Json.Serialize(productPromotionsId)))
+        .change();
+  
       const hiddenInput = document.getElementById('Description');
       const quill = new Quill('#editor', {
           theme: 'snow',
@@ -175,5 +190,15 @@
 
       // Đồng bộ dữ liệu từ hidden input vào trình soạn thảo Quill
       quill.root.innerHTML = hiddenInput.value;
+
+      const numberMask = {
+        mask: Number,
+        scale: 2,
+        thousandsSeparator: ',',
+        radix: '.',
+      }
+    
+      IMask(document.getElementById('Price'), numberMask);
+      IMask(document.getElementById('Discount'), numberMask);
     </script>
 }
