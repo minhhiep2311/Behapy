@@ -12,9 +12,6 @@ public class Distributor
     [Display(Name = "Địa chỉ")]
     public string Address { get; set; } = null!;
 
-    [Display(Name = "Vị trí")]
-    public string Position { get; set; } = null!;
-
     public int DistributorLevelId { get; set; }
 
     public DistributorLevel? DistributorLevel { get; set; }
