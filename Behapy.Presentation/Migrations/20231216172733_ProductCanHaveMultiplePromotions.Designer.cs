@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Behapy.Presentation.Migrations
 {
     [DbContext(typeof(BehapyDbContext))]
-    [Migration("20231216104259_ProductCanHaveMultiplePromotions")]
+    [Migration("20231216172733_ProductCanHaveMultiplePromotions")]
     partial class ProductCanHaveMultiplePromotions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,21 +54,21 @@ namespace Behapy.Presentation.Migrations
                         new
                         {
                             Id = "08db1e18-c46f-4e76-8e77-69430f54d796",
-                            ConcurrencyStamp = "afb5e653-020e-41c4-ae97-8e7e0acb272e",
+                            ConcurrencyStamp = "9e38ac1d-e061-43ac-8215-6212622c0bd0",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "08db1e1a-7953-4790-8ebe-272e34a8fe18",
-                            ConcurrencyStamp = "62e35c63-2fb7-4a31-9bbf-01ebb05427cc",
+                            ConcurrencyStamp = "b63b2519-7ab5-48b6-8221-fb880f710804",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = "dacb0904-8ed9-4728-af4e-cecf7b4c29e3",
-                            ConcurrencyStamp = "daa5ceaf-830a-43e0-b6f2-5ff5639a4149",
+                            ConcurrencyStamp = "e9235103-8681-404e-b513-9e9c6155ecf2",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -155,7 +155,7 @@ namespace Behapy.Presentation.Migrations
                         {
                             Id = "08db0f36-7dbb-436f-88e5-f1be70b3bda6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bfa0e826-32fb-448e-ae3e-ba589b0362da",
+                            ConcurrencyStamp = "d99708a8-9fee-4099-8f18-5f8600409067",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
@@ -163,9 +163,9 @@ namespace Behapy.Presentation.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBYOs5SDcNVLv5tf2dq33jYLYvrqPQ+SbLeuYw+OVAW3eumbS2lfHUyd7X7u/fQ53Q==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEOq4KJd2VyGsRzKVRYVPYpxqOty9T6aQpBIDVr16Jt/Ah1ei9IZPCaH/ThfKEDLSA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a68ef5fc-d588-43ad-9904-e75f1b50fcaa",
+                            SecurityStamp = "db2d45a1-be7b-40f0-9fc2-7a385204326c",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });
@@ -586,7 +586,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.HasIndex("PromotionId");
 
-                    b.ToTable("ProductPromotion");
+                    b.ToTable("ProductPromotions");
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.Promotion", b =>
@@ -938,7 +938,7 @@ namespace Behapy.Presentation.Migrations
             modelBuilder.Entity("Behapy.Presentation.Models.ProductPromotion", b =>
                 {
                     b.HasOne("Behapy.Presentation.Models.Product", "Product")
-                        .WithMany("ProductPromotion")
+                        .WithMany("ProductPromotions")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1051,7 +1051,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.Navigation("OrderDetails");
 
-                    b.Navigation("ProductPromotion");
+                    b.Navigation("ProductPromotions");
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.Promotion", b =>
