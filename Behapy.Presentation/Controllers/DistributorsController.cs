@@ -23,7 +23,7 @@ namespace Behapy.Presentation.Controllers
         public async Task<IActionResult> Index(int pg = 1)
         {
             var distributors = _context.Distributors
-                                .Include(d => d.DistributorLevel);
+                                .Include(d => d.DistributorLevel).OrderBy(d => d.DistributorLevelId);
 
             const int pageSize = 8;
 
@@ -67,7 +67,7 @@ namespace Behapy.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FullName,Address,Position,DistributorLevelId")] Distributor distributor)
+        public async Task<IActionResult> Create([Bind("FullName,Address,Position,DistributorLevelId")] Distributor distributor)
         {
             if (ModelState.IsValid)
             {

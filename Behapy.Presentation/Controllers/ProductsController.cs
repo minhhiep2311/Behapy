@@ -187,13 +187,29 @@ public class ProductsController : Controller
 
         if (!ModelState.IsValid)
             return RedirectToAction(nameof(Admin));
-
-        product.ProductPromotions = product.ProductPromotionsId
-            .Select(ppi => new ProductPromotion { ProductId = product.Id, PromotionId = ppi })
-            .ToList();
+        
+        var oldProduct = _context.Products
+            .Include(p => p.ProductPromotions)
+            .FirstOrDefault(p => p.Id == id);
+        if (oldProduct == null)
+            return RedirectToAction(nameof(Admin));
 
         try
         {
+            var newProductPromotionsId = product.ProductPromotionsId
+                .Select(ppi => new ProductPromotion { ProductId = product.Id, PromotionId = ppi })
+                .ToList();
+
+            foreach (var pp in oldProduct.ProductPromotions.Where(pp => !newProductPromotionsId.Contains(pp)))
+            {
+                product.ProductPromotions.Remove(pp);
+            }
+
+            foreach (var pp in newProductPromotionsId.Where(pp => !oldProduct.ProductPromotions.Contains(pp)))
+            {
+                product.ProductPromotions.Remove(pp);
+            }
+
             _context.Update(product);
             await _context.SaveChangesAsync();
             _notyfService.Success("Cập nhật thành công!");

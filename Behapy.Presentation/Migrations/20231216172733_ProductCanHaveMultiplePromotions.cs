@@ -28,7 +28,7 @@ namespace Behapy.Presentation.Migrations
                 defaultValue: false);
 
             migrationBuilder.CreateTable(
-                name: "ProductPromotion",
+                name: "ProductPromotions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -38,15 +38,15 @@ namespace Behapy.Presentation.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductPromotion", x => x.Id);
+                    table.PrimaryKey("PK_ProductPromotions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductPromotion_Products_ProductId",
+                        name: "FK_ProductPromotions_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductPromotion_Promotions_PromotionId",
+                        name: "FK_ProductPromotions_Promotions_PromotionId",
                         column: x => x.PromotionId,
                         principalTable: "Promotions",
                         principalColumn: "Id",
@@ -58,44 +58,44 @@ namespace Behapy.Presentation.Migrations
                 keyColumn: "Id",
                 keyValue: "08db1e18-c46f-4e76-8e77-69430f54d796",
                 column: "ConcurrencyStamp",
-                value: "afb5e653-020e-41c4-ae97-8e7e0acb272e");
+                value: "9e38ac1d-e061-43ac-8215-6212622c0bd0");
 
             migrationBuilder.UpdateData(
                 table: "Roles",
                 keyColumn: "Id",
                 keyValue: "08db1e1a-7953-4790-8ebe-272e34a8fe18",
                 column: "ConcurrencyStamp",
-                value: "62e35c63-2fb7-4a31-9bbf-01ebb05427cc");
+                value: "b63b2519-7ab5-48b6-8221-fb880f710804");
 
             migrationBuilder.UpdateData(
                 table: "Roles",
                 keyColumn: "Id",
                 keyValue: "dacb0904-8ed9-4728-af4e-cecf7b4c29e3",
                 column: "ConcurrencyStamp",
-                value: "daa5ceaf-830a-43e0-b6f2-5ff5639a4149");
+                value: "e9235103-8681-404e-b513-9e9c6155ecf2");
 
             migrationBuilder.UpdateData(
                 table: "Users",
                 keyColumn: "Id",
                 keyValue: "08db0f36-7dbb-436f-88e5-f1be70b3bda6",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "bfa0e826-32fb-448e-ae3e-ba589b0362da", "AQAAAAEAACcQAAAAEBYOs5SDcNVLv5tf2dq33jYLYvrqPQ+SbLeuYw+OVAW3eumbS2lfHUyd7X7u/fQ53Q==", "a68ef5fc-d588-43ad-9904-e75f1b50fcaa" });
+                values: new object[] { "d99708a8-9fee-4099-8f18-5f8600409067", "AQAAAAEAACcQAAAAEEOq4KJd2VyGsRzKVRYVPYpxqOty9T6aQpBIDVr16Jt/Ah1ei9IZPCaH/ThfKEDLSA==", "db2d45a1-be7b-40f0-9fc2-7a385204326c" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductPromotion_ProductId",
-                table: "ProductPromotion",
+                name: "IX_ProductPromotions_ProductId",
+                table: "ProductPromotions",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductPromotion_PromotionId",
-                table: "ProductPromotion",
+                name: "IX_ProductPromotions_PromotionId",
+                table: "ProductPromotions",
                 column: "PromotionId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ProductPromotion");
+                name: "ProductPromotions");
 
             migrationBuilder.DropColumn(
                 name: "IsHidden",

@@ -21,6 +21,7 @@ public class BehapyDbContext : IdentityDbContext<User, Role, string>
     public virtual DbSet<OrderStatus> OrderStatuses { get; set; } = null!;
     public virtual DbSet<PaymentType> PaymentTypes { get; set; } = null!;
     public virtual DbSet<Product> Products { get; set; } = null!;
+    public virtual DbSet<ProductPromotion> ProductPromotions { get; set; } = null!;
     public virtual DbSet<Promotion> Promotions { get; set; } = null!;
     public virtual DbSet<ServiceCategory> ServiceCategories { get; set; } = null!;
     public virtual DbSet<Service> Services { get; set; } = null!;
@@ -103,22 +104,29 @@ public class BehapyDbContext : IdentityDbContext<User, Role, string>
             new DistributorLevel
             {
                 Id = 1,
-                Name = "A1",
-                MoneyNeeded = 1_000_000,
+                Name = "B4",
+                MoneyNeeded = 0,
                 NextLevel = 2
             },
             new DistributorLevel
             {
                 Id = 2,
-                Name = "B1",
-                MoneyNeeded = 5_000_000,
+                Name = "B3",
+                MoneyNeeded = 1_000_000,
                 NextLevel = 3
             },
             new DistributorLevel
             {
                 Id = 3,
-                Name = "C1",
-                MoneyNeeded = 10_000_000,
+                Name = "B2",
+                MoneyNeeded = 30_000_000,
+                NextLevel = 4
+            },
+            new DistributorLevel
+            {
+                Id = 4,
+                Name = "B1",
+                MoneyNeeded = 100_000_000,
                 NextLevel = null
             }
         );
