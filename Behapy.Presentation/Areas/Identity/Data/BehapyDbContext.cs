@@ -21,6 +21,7 @@ public class BehapyDbContext : IdentityDbContext<User, Role, string>
     public virtual DbSet<OrderStatus> OrderStatuses { get; set; } = null!;
     public virtual DbSet<PaymentType> PaymentTypes { get; set; } = null!;
     public virtual DbSet<Product> Products { get; set; } = null!;
+    public virtual DbSet<ProductPromotion> ProductPromotions { get; set; } = null!;
     public virtual DbSet<Promotion> Promotions { get; set; } = null!;
     public virtual DbSet<ServiceCategory> ServiceCategories { get; set; } = null!;
     public virtual DbSet<Service> Services { get; set; } = null!;

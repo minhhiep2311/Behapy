@@ -12,14 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Behapy.Presentation.Migrations
 {
     [DbContext(typeof(BehapyDbContext))]
-    [Migration("20231216181513_FixICollectionInDetributorLev")]
-    partial class FixICollectionInDetributorLev
+    [Migration("20231216172733_ProductCanHaveMultiplePromotions")]
+    partial class ProductCanHaveMultiplePromotions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.23")
+                .HasAnnotation("ProductVersion", "6.0.25")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -54,21 +54,21 @@ namespace Behapy.Presentation.Migrations
                         new
                         {
                             Id = "08db1e18-c46f-4e76-8e77-69430f54d796",
-                            ConcurrencyStamp = "5680adf7-2cef-460d-b541-bf4fb449cdf3",
+                            ConcurrencyStamp = "9e38ac1d-e061-43ac-8215-6212622c0bd0",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "08db1e1a-7953-4790-8ebe-272e34a8fe18",
-                            ConcurrencyStamp = "ddf722c3-b4d6-4dbe-817f-d089dafa49d8",
+                            ConcurrencyStamp = "b63b2519-7ab5-48b6-8221-fb880f710804",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = "dacb0904-8ed9-4728-af4e-cecf7b4c29e3",
-                            ConcurrencyStamp = "9c6b6136-6796-407a-99c2-f5cb6420b0eb",
+                            ConcurrencyStamp = "e9235103-8681-404e-b513-9e9c6155ecf2",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -155,7 +155,7 @@ namespace Behapy.Presentation.Migrations
                         {
                             Id = "08db0f36-7dbb-436f-88e5-f1be70b3bda6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7c9a8dcd-b6a2-42ad-a649-5df58bc32c11",
+                            ConcurrencyStamp = "d99708a8-9fee-4099-8f18-5f8600409067",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
@@ -163,9 +163,9 @@ namespace Behapy.Presentation.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEF7WgHTkik/n5eoHaGrQSNGQIMhdP2X35vnRsxTblv6XCnoNi/cRg/MDcQG0MU0u7w==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEOq4KJd2VyGsRzKVRYVPYpxqOty9T6aQpBIDVr16Jt/Ah1ei9IZPCaH/ThfKEDLSA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "57fc5939-209e-4463-a8f2-f63995ab4368",
+                            SecurityStamp = "db2d45a1-be7b-40f0-9fc2-7a385204326c",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });
@@ -559,16 +559,34 @@ namespace Behapy.Presentation.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("PromotionId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
+                    b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.ProductPromotion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PromotionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
                     b.HasIndex("PromotionId");
 
-                    b.ToTable("Products");
+                    b.ToTable("ProductPromotions");
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.Promotion", b =>
@@ -582,7 +600,14 @@ namespace Behapy.Presentation.Migrations
                     b.Property<DateTime>("EndAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("bit");
+
                     b.Property<decimal?>("MaxDiscount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("MinOrderValue")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
@@ -593,46 +618,26 @@ namespace Behapy.Presentation.Migrations
                     b.Property<DateTime>("StartAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("TypeId")
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Unit")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Value")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Voucher")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TypeId");
+                    b.HasIndex("Voucher")
+                        .IsUnique();
 
                     b.ToTable("Promotions");
-                });
-
-            modelBuilder.Entity("Behapy.Presentation.Models.PromotionType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PromotionTypes");
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.Service", b =>
@@ -927,24 +932,26 @@ namespace Behapy.Presentation.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Behapy.Presentation.Models.Promotion", "Promotion")
-                        .WithMany("Products")
-                        .HasForeignKey("PromotionId");
-
                     b.Navigation("Category");
-
-                    b.Navigation("Promotion");
                 });
 
-            modelBuilder.Entity("Behapy.Presentation.Models.Promotion", b =>
+            modelBuilder.Entity("Behapy.Presentation.Models.ProductPromotion", b =>
                 {
-                    b.HasOne("Behapy.Presentation.Models.PromotionType", "Type")
-                        .WithMany("Promotions")
-                        .HasForeignKey("TypeId")
+                    b.HasOne("Behapy.Presentation.Models.Product", "Product")
+                        .WithMany("ProductPromotions")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Type");
+                    b.HasOne("Behapy.Presentation.Models.Promotion", "Promotion")
+                        .WithMany("ProductPromotions")
+                        .HasForeignKey("PromotionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Promotion");
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.Service", b =>
@@ -1043,6 +1050,8 @@ namespace Behapy.Presentation.Migrations
                     b.Navigation("CartItems");
 
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("ProductPromotions");
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.Promotion", b =>
@@ -1051,12 +1060,7 @@ namespace Behapy.Presentation.Migrations
 
                     b.Navigation("Orders");
 
-                    b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("Behapy.Presentation.Models.PromotionType", b =>
-                {
-                    b.Navigation("Promotions");
+                    b.Navigation("ProductPromotions");
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.ServiceCategory", b =>
