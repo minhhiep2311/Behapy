@@ -1,5 +1,4 @@
-﻿@using Behapy.Presentation.Extensions
-@using Behapy.Presentation.Models;
+﻿@using Behapy.Presentation.Models;
 @model List<Behapy.Presentation.Models.Product>
 
 @{
@@ -7,11 +6,9 @@
   Layout = "~/Views/Shared/Admin/_Layout.cshtml";
 
   var pager = new Pager();
-  var pageNo = 0;
   if (ViewBag.Pager != null)
   {
     pager = ViewBag.Pager;
-    pageNo = pager.CurrentPage;
   }
 }
 
@@ -23,8 +20,6 @@
       <nav class="breadcrumb breadcrumb-dash">
         <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang Chủ</a>
         <span class="breadcrumb-item active" href="#">Sản phẩm</span>
-        @* <a class="breadcrumb-item" href="#">E-commerce</a>
-                <span class="breadcrumb-item active">Orders List</span>*@
       </nav>
     </div>
   </div>
@@ -51,83 +46,7 @@
         </div>
       </div>
       <div class="table-responsive">
-        <table class="table table-hover e-commerce-table">
-          <thead>
-            <tr>
-              @*  <th>
-                                <div class="checkbox">
-                                    <input id="checkAll" type="checkbox" />
-                                    <label for="checkAll" class="m-b-0"></label>
-                                </div>
-                            </th>*@
-              <th>STT</th>
-              <th>Sản phẩm</th>
-              <th>Giá</th>
-              <th>Tồn kho</th>
-              <th>Trạng thái</th>
-              <th></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            @for (
-              int i = 0, index = (pageNo - 1) * pager.PageSize + 1;
-              i < Model.Count;
-              i++, index++
-              )
-            {
-              var item = Model[i];
-
-              <tr>
-                @*  <td>
-                                    <div class="checkbox">
-                                        <input id="check-item-7" type="checkbox" />
-                                        <label for="check-item-7" class="m-b-0"></label>
-                                    </div>
-                                </td>*@
-                <td>@index</td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <img class="img-fluid rounded"
-                         src="@item.ImageUrl"
-                         style="max-width: 60px"
-                         alt="@item.Name"/>
-                    <h6 class="m-b-0 m-l-10">@item.Name</h6>
-                  </div>
-                </td>
-                <td>@item.Price.ToMoney()</td>
-                <td>@item.Amount</td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    @if (item.IsActive)
-                    {
-                      <div class="badge badge-success badge-dot m-r-10"></div>
-                      <div>Đang kinh doanh</div>
-                    }
-                    else
-                    {
-                      <div class="badge badge-danger badge-dot m-r-10"></div>
-                      <div>Ngừng kinh doanh</div>
-                    }
-                  </div>
-                </td>
-                <td class="text-right">
-                  <button data-toggle="modal" data-target="#quantityModal" data-product-id="@item.Id" class="btn btn-icon btn-hover btn-sm btn-rounded">
-                    <i class="anticon anticon-plus-circle"></i>
-                  </button>
-                  <button onclick="location.href='@Url.Action("Edit", "Products", new { id = item.Id })'"
-                          class="btn btn-icon btn-hover btn-sm btn-rounded pull-right">
-                    <i class="anticon anticon-edit"></i>
-                  </button>
-                  <button data-toggle="modal" data-target="#DeleteModal" data-product-id="@item.Id" data-product-name="@item.Name" class="btn btn-icon btn-hover btn-sm btn-rounded">
-                    <i class="anticon anticon-delete"></i>
-                  </button>
-
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
+        @await Html.PartialAsync("AdminList", Model)
       </div>
     </div>
   </div>
@@ -261,7 +180,13 @@
                 method: 'POST',
                 data: { id: productId, quantityToAdd: quantityToAdd },
                 success: function () {
-                    document.location.reload();
+                    bootstrap.showToast({
+                        body: 'Đã cập nhật số lượng!',
+                        zIndex: 999
+                    });
+                    $('#quantityModal').modal('hide');    
+                    $('#quantityInput').val('');
+                    console.log(bootstrap.showToast)
                 },
             });
         }
@@ -282,15 +207,10 @@
             }
         }
 
-
         $(document).on('show.bs.modal', '#quantityModal', function (event) {
             const button = $(event.relatedTarget);
             const productId = button.data('product-id');
             $('#productId').val(productId);
-        });
-
-        // Disable button at default
-        $(document).on('shown.bs.modal', '#quantityModal', function () {
             $('#addQuantityButton').prop('disabled', true);
         });
 
