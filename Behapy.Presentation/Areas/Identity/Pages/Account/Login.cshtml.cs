@@ -100,14 +100,16 @@ public class LoginModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(string returnUrl = null)
     {
-        returnUrl ??= Url.Content("~/");
-
         ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
         if (!ModelState.IsValid) return Page();
 
         var user = await _userManager.FindByEmailAsync(Input.Email);
         var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe, false);
+        var redirectToAdminPage =
+            (await _userManager.GetRolesAsync(user)).FirstOrDefault(r => r is "Admin" or "Employee") != null;
+
+        returnUrl ??= redirectToAdminPage ? Url.Content("~/Dashboard") : Url.Content("~/");
 
         if (result.Succeeded)
         {

@@ -1,0 +1,79 @@
+@using Behapy.Presentation.Models
+@using Behapy.Presentation.Extensions
+@model List<Behapy.Presentation.Models.Product>
+
+@{
+  var pager = new Pager();
+  var pageNo = 0;
+  if (ViewBag.Pager != null)
+  {
+    pager = ViewBag.Pager;
+    pageNo = pager.CurrentPage;
+  }
+}
+
+<table class="table table-hover e-commerce-table">
+  <thead>
+    <tr>
+      <th>STT</th>
+      <th>Sản phẩm</th>
+      <th>Giá</th>
+      <th>Tồn kho</th>
+      <th>Trạng thái</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    @for (
+      int i = 0, index = (pageNo - 1) * pager.PageSize + 1;
+      i < Model.Count;
+      i++, index++
+      )
+    {
+      var item = Model[i];
+
+      <tr>
+        <td>@index</td>
+        <td>
+          <div class="d-flex align-items-center">
+            <img class="img-fluid rounded"
+                 src="@item.ImageUrl"
+                 style="max-width: 60px"
+                 alt="@item.Name"/>
+            <h6 class="m-b-0 m-l-10">@item.Name</h6>
+          </div>
+        </td>
+        <td>@item.Price.ToMoney()</td>
+        <td>@item.Amount</td>
+        <td>
+          <div class="d-flex align-items-center">
+            @if (item.IsActive)
+            {
+              <div class="badge badge-success badge-dot m-r-10"></div>
+              <div>Đang kinh doanh</div>
+            }
+            else
+            {
+              <div class="badge badge-danger badge-dot m-r-10"></div>
+              <div>Ngừng kinh doanh</div>
+            }
+          </div>
+        </td>
+        <td class="text-right">
+          <button data-toggle="modal" data-target="#quantityModal" data-product-id="@item.Id" class="btn btn-icon btn-hover btn-sm btn-rounded">
+            <i class="anticon anticon-plus-circle"></i>
+          </button>
+          <button onclick="location.href='@Url.Action("Edit", "Products", new { id = item.Id })'"
+                  class="btn btn-icon btn-hover btn-sm btn-rounded pull-right">
+            <i class="anticon anticon-edit"></i>
+          </button>
+          <button data-toggle="modal" data-target="#DeleteModal" data-product-id="@item.Id" data-product-name="@item.Name" class="btn btn-icon btn-hover btn-sm btn-rounded">
+            <i class="anticon anticon-delete"></i>
+          </button>
+
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
