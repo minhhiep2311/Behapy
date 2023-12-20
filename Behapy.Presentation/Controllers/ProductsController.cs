@@ -98,6 +98,36 @@ public class ProductsController : Controller
         return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
     }
 
+    //GET: Products/Admin
+    [Authorize(Roles = "Admin,Employee")]
+    public async Task<IActionResult> AdminList(int pg, int? categoryId)
+    {
+        var products = _context.Products
+            .Include(p => p.Category)
+            .Include(p => p.ProductPromotions)
+            .OrderByDescending(p => p.CreatedAt)
+            .AsQueryable();
+
+        //Filter 
+        if (categoryId.HasValue)
+        {
+            products = products.Where(p => p.CategoryId == categoryId);
+        }
+
+        //Pagination
+        const int pageSize = 8;
+        if (pg < 1) pg = 1;
+        var recsCount = products.Count();
+        var pager = new Pager(recsCount, pg, pageSize);
+        var recSkip = (pg - 1) * pageSize;
+        ViewBag.Pager = pager;
+
+        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+        ViewData["Category"] = categoryId;
+
+        return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
+    }
+
     // GET: Products/Details/5
     public async Task<IActionResult> Details(int? id)
     {
@@ -262,8 +292,6 @@ public class ProductsController : Controller
 
         // Cập nhật dữ liệu trong cơ sở dữ liệu
         await _context.SaveChangesAsync();
-
-        _notyfService.Success("Thêm thành công!");
 
         return RedirectToAction(nameof(Admin));
     }
