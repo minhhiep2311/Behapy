@@ -31,7 +31,7 @@
             </div>
             <div class="m-l-15">
               <h2 class="m-b-0">3,685</h2>
-              <p class="m-b-0 text-muted">Orders</p>
+              <p class="m-b-0 text-muted">Đơn hàng</p>
             </div>
           </div>
         </div>
@@ -46,7 +46,7 @@
             </div>
             <div class="m-l-15">
               <h2 class="m-b-0">1,832</h2>
-              <p class="m-b-0 text-muted">Customers</p>
+              <p class="m-b-0 text-muted">Khách hàng</p>
             </div>
           </div>
         </div>
@@ -59,14 +59,14 @@
         <div class="card-body">
           <div
             class="d-flex justify-content-between align-items-center">
-            <h5>Total Revenue</h5>
+            <h5>Tổng doanh thu</h5>
             <div>
               <div class="btn-group">
                 <button class="btn btn-default active">
-                  <span>Month</span>
+                  <span>Tháng</span>
                 </button>
                 <button class="btn btn-default">
-                  <span>Year</span>
+                  <span>Năm</span>
                 </button>
               </div>
             </div>
@@ -80,7 +80,7 @@
     <div class="col-md-12 col-lg-4">
       <div class="card">
         <div class="card-body">
-          <h5 class="m-b-0">Customers</h5>
+          <h5 class="m-b-0">Khách hàng</h5>
           <div class="m-v-60 text-center" style="height: 200px">
             <canvas class="chart" id="customers-chart"></canvas>
           </div>
@@ -93,7 +93,7 @@
                   </span>
                   <div class="m-l-5">
                     <h4 class="m-b-0">350</h4>
-                    <p class="m-b-0 muted">New</p>
+                    <p class="m-b-0 muted">Mới</p>
                   </div>
                 </div>
               </div>
@@ -106,7 +106,7 @@
                   </span>
                   <div class="m-l-5">
                     <h4 class="m-b-0">450</h4>
-                    <p class="m-b-0 muted">Returning</p>
+                    <p class="m-b-0 muted">Quay lại</p>
                   </div>
                 </div>
               </div>
@@ -119,7 +119,7 @@
                   </span>
                   <div class="m-l-5">
                     <h4 class="m-b-0">100</h4>
-                    <p class="m-b-0 muted">Others</p>
+                    <p class="m-b-0 muted">Khác</p>
                   </div>
                 </div>
               </div>
@@ -136,8 +136,8 @@
           <div
             class="d-flex justify-content-between align-items-center">
             <div>
-              <h2 class="m-b-0">$17,267</h2>
-              <p class="m-b-0 text-muted">Avg.Profit</p>
+              <h2 class="m-b-0">17,267 VNĐ</h2>
+              <p class="m-b-0 text-muted">Trung bình doanh thu</p>
             </div>
             <div>
               <span class="badge badge-pill badge-cyan font-size-12">
@@ -156,12 +156,12 @@
         <div class="card-body">
           <div
             class="d-flex justify-content-between align-items-center">
-            <h5>Top Product</h5>
+            <h5>Sản phẩm bán chạy nhất</h5>
             <div>
               <a
                 href="javascript:void(0);"
                 class="btn btn-sm btn-default">
-                View All
+                Xem tất cả
               </a
               >
             </div>
@@ -171,10 +171,10 @@
               <table class="table table-hover">
                 <thead>
                   <tr>
-                    <th>Product</th>
-                    <th>Sales</th>
-                    <th>Earning</th>
-                    <th style="max-width: 70px">Stock Left</th>
+                    <th>Sản phẩm</th>
+                    <th>Số lượng đã bán</th>
+                    <th>Tổng tiền</th>
+                    <th style="max-width: 70px">Tồn kho</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -337,17 +337,18 @@
             type: 'line',
             data: {
               labels: [
-                '16th',
-                '17th',
-                '18th',
-                '19th',
-                '20th',
-                '21th',
-                '22th',
-                '23th',
-                '24th',
-                '25th',
-                '26th',
+                'T1',
+                'T2',
+                'T3',
+                'T4',
+                'T5',
+                'T5',
+                'T7',
+                'T8',
+                'T9',
+                'T10',
+                'T11',
+                'T12',
               ],
               datasets: [
                 {
@@ -453,7 +454,7 @@
           {
             type: 'bar',
             data: {
-              labels: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+              labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
               datasets: [
                 {
                   label: 'Series A',
