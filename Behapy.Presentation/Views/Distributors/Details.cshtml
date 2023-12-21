@@ -28,8 +28,7 @@
                 <div class="m-l-20 m-r-20">
                     <h5 class="m-b-5 font-size-18">@Model.FullName</h5>
                     <p class="opacity-07 font-size-13 m-b-0">
-                        Phân loại: <br />
-                       @Model.DistributorLevel.Name
+                        Phân loại: @Model.DistributorLevel.Name
                     </p>
                 </div>
                 <div class="text-right">
@@ -71,14 +70,6 @@
                                id="fullAddress"
                                placeholder="Địa chỉ"
                                value="@Model.Address" />
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="font-weight-semibold" for="stateCity">Tiểu bang & Thành phố:</label>
-                        <input type="text"
-                               disabled
-                               class="form-control"
-                               id="stateCity"
-                               placeholder="Tiểu bang & Thành phố"  />
                     </div>
                 </div>
             </form>
