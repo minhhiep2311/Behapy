@@ -76,7 +76,7 @@
                                 </td>
                                 <td>@item.DistributorLevel.Name</td>
                                 <td class="text-right">
-                                    <button data-toggle="modal" data-target="#quantityModal" data-product-id="@item.Id" class="btn btn-icon btn-hover btn-sm btn-rounded">
+                                    <button data-toggle="modal" data-target="#quantityModal" data-product-id="@item.Id" >
                                         <i class="anticon anticon-to-top"></i>
                                     </button>
                                     <button onclick="location.href='@Url.Action("Edit", "Distributors", new { id = item.Id })'"
