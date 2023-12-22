@@ -216,7 +216,7 @@ public class ProductsController : Controller
 
         if (!ModelState.IsValid)
             return RedirectToAction(nameof(Admin));
-        
+
         var oldProduct = _context.Products
             .Include(p => p.ProductPromotions)
             .FirstOrDefault(p => p.Id == id);
@@ -229,17 +229,10 @@ public class ProductsController : Controller
                 .Select(ppi => new ProductPromotion { ProductId = product.Id, PromotionId = ppi })
                 .ToList();
 
-            foreach (var pp in oldProduct.ProductPromotions.Where(pp => !newProductPromotionsId.Contains(pp)))
-            {
-                product.ProductPromotions.Remove(pp);
-            }
+            oldProduct.ProductPromotions.RemoveAll(pp => !newProductPromotionsId.Contains(pp));
+            oldProduct.ProductPromotions.AddRange(newProductPromotionsId.Where(pp => !oldProduct.ProductPromotions.Contains(pp)));
 
-            foreach (var pp in newProductPromotionsId.Where(pp => !oldProduct.ProductPromotions.Contains(pp)))
-            {
-                product.ProductPromotions.Remove(pp);
-            }
-
-            _context.Update(product);
+            _context.Update(oldProduct);
             await _context.SaveChangesAsync();
             _notyfService.Success("Cập nhật thành công!");
         }

@@ -67,13 +67,11 @@
                   {
                     <button data-toggle="modal" data-target="#confirmModal" data-order-id="@item.Id"
                             data-order-status="@OrderStatusConstant.Confirmed" 
-                            onclick="function s(e) {e.stopImmediatePropagation()}"
                             class="btn btn-success btn-sm btn-rounded ml-2">
                       Xác nhận
                     </button>
                     <button data-toggle="modal" data-target="#denyModal" data-order-id="@item.Id"
                             data-order-status="@OrderStatusConstant.Denied"
-                            onclick="function s(e) {e.stopPropagation()}"
                             class="btn btn-danger btn-sm btn-rounded ml-2">
                       Từ chối
                     </button>
