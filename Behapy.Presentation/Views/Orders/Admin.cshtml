@@ -53,10 +53,9 @@
           <tbody>
             @foreach (var item in Model)
             {
-              <tr onclick="location.href='@Url.Action("AdminDetails", "Orders", new { id = item.Id })'" 
-                  style="cursor: pointer">
-                <td>#@item.Id </td>
-                <td>@item.Orderer()</td>
+              <tr>
+                <td onclick="goToDetailsPage(@item.Id)" style="cursor: pointer">#@item.Id </td>
+                <td onclick="goToDetailsPage(@item.Id)" style="cursor: pointer">@item.Orderer()</td>
                 <td>@item.TotalMoney.ToMoney()</td>
                 <td>@item.Discount</td>
                 <td>@item.Address</td>
@@ -67,12 +66,14 @@
                   @if (item.CurrentStatus == OrderStatusConstant.NeedToConfirm)
                   {
                     <button data-toggle="modal" data-target="#confirmModal" data-order-id="@item.Id"
-                            data-order-status="@OrderStatusConstant.Confirmed"
+                            data-order-status="@OrderStatusConstant.Confirmed" 
+                            onclick="function s(e) {e.stopImmediatePropagation()}"
                             class="btn btn-success btn-sm btn-rounded ml-2">
                       Xác nhận
                     </button>
                     <button data-toggle="modal" data-target="#denyModal" data-order-id="@item.Id"
                             data-order-status="@OrderStatusConstant.Denied"
+                            onclick="function s(e) {e.stopPropagation()}"
                             class="btn btn-danger btn-sm btn-rounded ml-2">
                       Từ chối
                     </button>
@@ -217,6 +218,10 @@
                     document.location.reload();
                 },
             });
+        }
+        
+        function goToDetailsPage(id) {
+            location.href = `/Orders/AdminDetails/${id}`
         }
 
         setupChangeStatusModal('#confirmModal', '.confirm-order');
