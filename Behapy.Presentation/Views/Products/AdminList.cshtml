@@ -3,6 +3,8 @@
 @model List<Behapy.Presentation.Models.Product>
 
 @{
+  Layout = null;
+  
   var pager = new Pager();
   var pageNo = 0;
   if (ViewBag.Pager != null)

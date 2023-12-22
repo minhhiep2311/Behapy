@@ -60,7 +60,7 @@
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body">
-          <form id="addQuantityForm">
+          <form asp-controller="Products" asp-action="AddQuantity" asp-route-id="123" id="addQuantityForm">
             <input type="hidden" id="productId"/>
             <input class="form-control" type="text" id="quantityInput" pattern="[0-9]*" oninput="validateInput()" placeholder="Số lượng sản phẩm"/>
             <div id="error-message" class="text-danger"></div>
@@ -147,7 +147,7 @@
 
 @section Scripts {
   <script>
-        //Delete
+        // Delete modal
         $(document).on('show.bs.modal', '#DeleteModal', function (event) {
             const modal = $(this);
             const button = $(event.relatedTarget);
@@ -157,6 +157,25 @@
             modal.find('.modal-body').text(`Bạn có chắc chắn muốn xóa ${productName} không?`)
             modal.find('.modal-footer .confirm-delete').data('productId', productId);
         })
+
+        // Add quantity modal
+        $(document).on('show.bs.modal', '#quantityModal', function (event) {
+            const button = $(event.relatedTarget);
+            const productId = button.data('product-id');
+            $('#productId').val(productId);
+            $('#addQuantityButton').prop('disabled', true);
+        });
+
+        function reloadTable(productId, quantity) {
+            $.ajax({
+                url: `/Products/AdminList?pg=${@pager.CurrentPage}&categoryId=${@(ViewData["Category"] ?? "null")}`,
+                method: 'GET',
+                data: { id: productId, quantityToAdd: quantity },
+                success: function (res) {
+                    $('.table-responsive').html(res);
+                }
+            });
+        }
 
         function deleteProduct(btn) {
             const productId = $(btn).data('productId');
@@ -170,7 +189,7 @@
             });
         }
 
-        //Add Quantity
+        // Add Quantity
         function addQuantity() {
             const productId = $('#productId').val();
             const quantityToAdd = $('#quantityInput').val();
@@ -178,15 +197,17 @@
             $.ajax({
                 url: '/Products/AddQuantity',
                 method: 'POST',
-                data: { id: productId, quantityToAdd: quantityToAdd },
+                data: { id: productId, quantityToAdd },
                 success: function () {
                     bootstrap.showToast({
                         body: 'Đã cập nhật số lượng!',
-                        zIndex: 999
+                        zIndex: 9999
                     });
-                    $('#quantityModal').modal('hide');    
+
+                    $('#quantityModal').modal('hide');
                     $('#quantityInput').val('');
-                    console.log(bootstrap.showToast)
+                    
+                    reloadTable(productId, quantityToAdd);
                 },
             });
         }
@@ -206,13 +227,6 @@
                 addQuantityButton.prop('disabled', false);
             }
         }
-
-        $(document).on('show.bs.modal', '#quantityModal', function (event) {
-            const button = $(event.relatedTarget);
-            const productId = button.data('product-id');
-            $('#productId').val(productId);
-            $('#addQuantityButton').prop('disabled', true);
-        });
 
     </script>
 }

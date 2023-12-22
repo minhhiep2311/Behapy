@@ -122,7 +122,6 @@ public class ProductsController : Controller
         var recSkip = (pg - 1) * pageSize;
         ViewBag.Pager = pager;
 
-        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
         ViewData["Category"] = categoryId;
 
         return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
