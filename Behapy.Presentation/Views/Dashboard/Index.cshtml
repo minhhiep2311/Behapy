@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Behapy.Presentation.Models.CartItem>
+﻿@using Behapy.Presentation.Extensions
+@model IEnumerable<Behapy.Presentation.Models.CartItem>
 
 @{
   ViewData["Title"] = "Dashboard";
@@ -7,7 +8,7 @@
 
 <div class="main-content">
   <div class="row">
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-3">
       <div class="card">
         <div class="card-body">
           <div class="media align-items-center">
@@ -15,14 +16,14 @@
               <i class="anticon anticon-dollar"></i>
             </div>
             <div class="m-l-15">
-              <h2 class="m-b-0">23,523 VNĐ</h2>
+              <h2 class="m-b-0">@((ViewData["Revenue"] as decimal? ?? 0).ToMoney())</h2>
               <p class="m-b-0 text-muted">Doanh thu</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-3">
       <div class="card">
         <div class="card-body">
           <div class="media align-items-center">
@@ -30,14 +31,14 @@
               <i class="anticon anticon-profile"></i>
             </div>
             <div class="m-l-15">
-              <h2 class="m-b-0">3,685</h2>
+              <h2 class="m-b-0">@ViewData["OrdersCount"]</h2>
               <p class="m-b-0 text-muted">Đơn hàng</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-6 col-lg-3">
       <div class="card">
         <div class="card-body">
           <div class="media align-items-center">
@@ -45,8 +46,23 @@
               <i class="anticon anticon-user"></i>
             </div>
             <div class="m-l-15">
-              <h2 class="m-b-0">1,832</h2>
+              <h2 class="m-b-0">@ViewData["CustomersCount"]</h2>
               <p class="m-b-0 text-muted">Khách hàng</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+      <div class="card">
+        <div class="card-body">
+          <div class="media align-items-center">
+            <div class="avatar avatar-icon avatar-lg avatar-purple">
+              <i class="anticon anticon-user"></i>
+            </div>
+            <div class="m-l-15">
+              <h2 class="m-b-0">@ViewData["DistributorsCount"]</h2>
+              <p class="m-b-0 text-muted">Đối tác</p>
             </div>
           </div>
         </div>
@@ -54,7 +70,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-12 col-lg-8">
+    <div class="col-md-12">
       <div class="card">
         <div class="card-body">
           <div
@@ -77,57 +93,6 @@
         </div>
       </div>
     </div>
-    <div class="col-md-12 col-lg-4">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="m-b-0">Khách hàng</h5>
-          <div class="m-v-60 text-center" style="height: 200px">
-            <canvas class="chart" id="customers-chart"></canvas>
-          </div>
-          <div class="row border-top p-t-25">
-            <div class="col-4">
-              <div class="d-flex justify-content-center">
-                <div class="media align-items-center">
-                  <span
-                    class="badge badge-success badge-dot m-r-10">
-                  </span>
-                  <div class="m-l-5">
-                    <h4 class="m-b-0">350</h4>
-                    <p class="m-b-0 muted">Mới</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="d-flex justify-content-center">
-                <div class="media align-items-center">
-                  <span
-                    class="badge badge-secondary badge-dot m-r-10">
-                  </span>
-                  <div class="m-l-5">
-                    <h4 class="m-b-0">450</h4>
-                    <p class="m-b-0 muted">Quay lại</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="d-flex justify-content-center">
-                <div class="media align-items-center">
-                  <span
-                    class="badge badge-warning badge-dot m-r-10">
-                  </span>
-                  <div class="m-l-5">
-                    <h4 class="m-b-0">100</h4>
-                    <p class="m-b-0 muted">Khác</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
   <div class="row">
     <div class="col-md-12 col-lg-4">
@@ -136,13 +101,8 @@
           <div
             class="d-flex justify-content-between align-items-center">
             <div>
-              <h2 class="m-b-0">17,267 VNĐ</h2>
+              <h2 class="m-b-0">@(((ViewData["Revenue"] as decimal? ?? 0) / 12).ToMoney())</h2>
               <p class="m-b-0 text-muted">Trung bình doanh thu</p>
-            </div>
-            <div>
-              <span class="badge badge-pill badge-cyan font-size-12">
-                <span class="font-weight-semibold m-l-5">+5.7%</span>
-              </span>
             </div>
           </div>
           <div class="m-t-50" style="height: 375px">
@@ -178,141 +138,32 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>
-                      <div class="media align-items-center">
-                        <div class="avatar avatar-image rounded">
-                          <img
-                            src="~/images/admin/others/thumb-9.jpg"
-                            alt=""/>
-                        </div>
-                        <div class="m-l-10">
-                          <span>Gray Sofa</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>81</td>
-                    <td>$1,912.00</td>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <div class="progress progress-sm w-100 m-b-0">
-                          <div
-                            class="progress-bar bg-success"
-                            style="width: 82%">
+                  @foreach (var item in (ViewData["BestSeller"] as IEnumerable<dynamic>)!)
+                  {
+                    <tr>
+                      <td>
+                        <div class="media align-items-center">
+                          <div class="avatar avatar-image rounded">
+                            <img src="@item.Product.ImageUrl" alt="@item.Product.Name"/>
+                          </div>
+                          <div class="m-l-10">
+                            <span>@item.Product.Name</span>
                           </div>
                         </div>
-                        <div class="m-l-10">82</div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="media align-items-center">
-                        <div class="avatar avatar-image rounded">
-                          <img
-                            src="~/images/admin/others/thumb-10.jpg"
-                            alt=""/>
-                        </div>
-                        <div class="m-l-10">
-                          <span>Gray Sofa</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>26</td>
-                    <td>$1,377.00</td>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <div class="progress progress-sm w-100 m-b-0">
-                          <div
-                            class="progress-bar bg-success"
-                            style="width: 61%">
+                      </td>
+                      <td>@item.Count</td>
+                      <td>@((item.Sum is decimal ? (decimal)item.Sum : 0).ToMoney())</td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="progress progress-sm w-100 m-b-0">
+                            <div class="progress-bar bg-success" style="width: @(Math.Min(item.Product.Amount, 100))%">
+                            </div>
                           </div>
+                          <div class="m-l-10">@item.Product.Amount</div>
                         </div>
-                        <div class="m-l-10">61</div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="media align-items-center">
-                        <div class="avatar avatar-image rounded">
-                          <img
-                            src="~/images/admin/others/thumb-11.jpg"
-                            alt=""/>
-                        </div>
-                        <div class="m-l-10">
-                          <span>Wooden Rhino</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>71</td>
-                    <td>$9,212.00</td>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <div class="progress progress-sm w-100 m-b-0">
-                          <div
-                            class="progress-bar bg-danger"
-                            style="width: 23%">
-                          </div>
-                        </div>
-                        <div class="m-l-10">23</div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="media align-items-center">
-                        <div class="avatar avatar-image rounded">
-                          <img
-                            src="~/images/admin/others/thumb-12.jpg"
-                            alt=""/>
-                        </div>
-                        <div class="m-l-10">
-                          <span>Red Chair</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>79</td>
-                    <td>$1,298.00</td>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <div class="progress progress-sm w-100 m-b-0">
-                          <div
-                            class="progress-bar bg-warning"
-                            style="width: 54%">
-                          </div>
-                        </div>
-                        <div class="m-l-10">54</div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="media align-items-center">
-                        <div class="avatar avatar-image rounded">
-                          <img
-                            src="~/images/admin/others/thumb-13.jpg"
-                            alt=""/>
-                        </div>
-                        <div class="m-l-10">
-                          <span>Wristband</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>60</td>
-                    <td>$7,376.00</td>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <div class="progress progress-sm w-100 m-b-0">
-                          <div
-                            class="progress-bar bg-success"
-                            style="width: 76%">
-                          </div>
-                        </div>
-                        <div class="m-l-10">76</div>
-                      </div>
-                    </td>
-                  </tr>
+                      </td>
+                    </tr>
+                  }
                 </tbody>
               </table>
             </div>
@@ -325,41 +176,42 @@
 
 @section Scripts {
   <script src="~/js/admin/vendors/chartjs/Chart.min.js"></script>
-  
+
   <script>
     var themeColors;
+    
+    const revenueChartData = (@Html.Raw(Json.Serialize(ViewData["RevenueChart"]))).reduce((acc, curr) => {
+      acc[curr.month - 1] += curr.sum;
+      return acc;
+    }, Array.from({ length: 12 }).fill(0));
+    
+    const profitChartData = (@Html.Raw(Json.Serialize(ViewData["RevenueChart"]))).reduce((acc, curr) => {
+      if (curr.isDistributor) {
+        acc[0][curr.month - 1] += curr.sum;
+      } else {
+        acc[1][curr.month - 1] += curr.sum;
+      }
+      return acc;
+    }, [Array.from({ length: 12 }).fill(0), Array.from({ length: 12 }).fill(0)]);
 
     class DashboardDefault {
       static init() {
-        const revenueChartConfig = new Chart(
+        new Chart(
           document.getElementById('revenue-chart').getContext('2d'),
           {
             type: 'line',
             data: {
-              labels: [
-                'T1',
-                'T2',
-                'T3',
-                'T4',
-                'T5',
-                'T5',
-                'T7',
-                'T8',
-                'T9',
-                'T10',
-                'T11',
-                'T12',
-              ],
+              labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T5', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
               datasets: [
                 {
-                  label: 'Series A',
+                  label: 'Doanh thu',
                   backgroundColor: themeColors.transparent,
                   borderColor: themeColors.blue,
                   pointBackgroundColor: themeColors.blue,
                   pointBorderColor: themeColors.white,
                   pointHoverBackgroundColor: themeColors.blueLight,
                   pointHoverBorderColor: themeColors.blueLight,
-                  data: [30, 60, 40, 50, 40, 55, 85, 65, 75, 50, 70],
+                  data: revenueChartData
                 },
               ],
             },
@@ -375,6 +227,13 @@
               },
               tooltips: {
                 mode: 'index',
+                callbacks: {
+                  label: function(tooltipItem) {
+                    return Number(tooltipItem.yLabel)
+                      .toFixed(0)
+                      .replace(/./g, (c, i, a) => i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c);
+                  }
+                }
               },
               scales: {
                 xAxes: [
@@ -403,11 +262,16 @@
                     },
                     ticks: {
                       display: true,
-                      max: 100,
-                      stepSize: 20,
                       fontColor: themeColors.grayLight,
                       fontSize: 13,
                       padding: 10,
+                      callback: function(value) {
+                        if (parseInt(value) >= 1000){
+                          return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        } else {
+                          return value;
+                        }
+                      }
                     },
                   },
                 ],
@@ -416,40 +280,7 @@
           }
         );
   
-        const customersChartConfig = new Chart(
-          document.getElementById('customers-chart').getContext('2d'),
-          {
-            type: 'doughnut',
-            data: {
-              labels: ['New', 'Returning', 'Others'],
-              datasets: [
-                {
-                  label: 'Series A',
-                  backgroundColor: [
-                    themeColors.cyan,
-                    themeColors.purple,
-                    themeColors.gold,
-                  ],
-                  pointBackgroundColor: [
-                    themeColors.cyan,
-                    themeColors.purple,
-                    themeColors.gold,
-                  ],
-                  data: [350, 450, 100],
-                },
-              ],
-            },
-            options: {
-              legend: {
-                display: false,
-              },
-              cutoutPercentage: 75,
-              maintainAspectRatio: false,
-            },
-          }
-        );
-  
-        const avgProfitChartConfig = new Chart(
+        new Chart(
           document.getElementById('avg-profit-chart').getContext('2d'),
           {
             type: 'bar',
@@ -457,16 +288,16 @@
               labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
               datasets: [
                 {
-                  label: 'Series A',
+                  label: 'Đối tác',
                   backgroundColor: themeColors.blue,
                   borderWidth: 0,
-                  data: [38, 38, 30, 19, 56, 55, 31],
+                  data: profitChartData[0],
                 },
                 {
-                  label: 'Series B',
+                  label: 'Khách hàng',
                   backgroundColor: themeColors.blueLight,
                   borderWidth: 0,
-                  data: [55, 69, 90, 81, 86, 27, 77],
+                  data: profitChartData[1],
                 },
               ],
             },
@@ -477,6 +308,16 @@
               scaleShowVerticalLines: false,
               responsive: true,
               maintainAspectRatio: false,
+              tooltips: {
+                mode: 'index',
+                callbacks: {
+                  label: function(tooltipItem) {
+                    return Number(tooltipItem.yLabel)
+                      .toFixed(0)
+                      .replace(/./g, (c, i, a) => i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c);
+                  }
+                }
+              },
               scales: {
                 xAxes: [
                   {
@@ -516,11 +357,17 @@
                       zeroLineBorderDash: [3, 4],
                     },
                     ticks: {
-                      stepSize: 40,
                       display: true,
                       beginAtZero: true,
                       fontSize: 13,
                       padding: 10,
+                      callback: function(value) {
+                        if (parseInt(value) >= 1000){
+                          return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        } else {
+                          return value;
+                        }
+                      }
                     },
                   },
                 ],
