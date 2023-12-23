@@ -231,6 +231,14 @@ public class ProductsController : Controller
 
             oldProduct.ProductPromotions.RemoveAll(pp => !newProductPromotionsId.Contains(pp));
             oldProduct.ProductPromotions.AddRange(newProductPromotionsId.Where(pp => !oldProduct.ProductPromotions.Contains(pp)));
+            oldProduct.Name = product.Name;
+            oldProduct.Amount = product.Amount;
+            oldProduct.Price = product.Price;
+            oldProduct.CreatedAt = DateTime.Now;
+            oldProduct.CategoryId = product.CategoryId;
+            oldProduct.IsActive = product.IsActive;
+            oldProduct.ImageUrl = product.ImageUrl;
+            oldProduct.Description = product.Description;
 
             _context.Update(oldProduct);
             await _context.SaveChangesAsync();
