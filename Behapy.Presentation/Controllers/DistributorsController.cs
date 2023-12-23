@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Behapy.Presentation.Areas.Identity.Data;
@@ -23,7 +19,8 @@ namespace Behapy.Presentation.Controllers
         public async Task<IActionResult> Index(int pg = 1)
         {
             var distributors = _context.Distributors
-                                .Include(d => d.DistributorLevel).OrderBy(d => d.DistributorLevelId);
+                .Include(d => d.DistributorLevel)
+                .OrderBy(d => d.DistributorLevelId);
 
             const int pageSize = 8;
 
@@ -39,7 +36,7 @@ namespace Behapy.Presentation.Controllers
         // GET: Distributors/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Distributors == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -67,7 +64,8 @@ namespace Behapy.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FullName,Address,Position,DistributorLevelId")] Distributor distributor)
+        public async Task<IActionResult> Create(
+            [Bind("FullName,Address,Position,DistributorLevelId")] Distributor distributor)
         {
             if (ModelState.IsValid)
             {
@@ -75,7 +73,9 @@ namespace Behapy.Presentation.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DistributorLevelId"] = new SelectList(_context.DistributorLevels, "Id", "Name", distributor.DistributorLevelId);
+
+            ViewData["DistributorLevelId"] =
+                new SelectList(_context.DistributorLevels, "Id", "Name", distributor.DistributorLevelId);
             return View(distributor);
         }
 
@@ -92,7 +92,9 @@ namespace Behapy.Presentation.Controllers
             {
                 return NotFound();
             }
-            ViewData["DistributorLevelId"] = new SelectList(_context.DistributorLevels, "Id", "Name", distributor.DistributorLevelId);
+
+            ViewData["DistributorLevelId"] =
+                new SelectList(_context.DistributorLevels, "Id", "Name", distributor.DistributorLevelId);
             return View(distributor);
         }
 
@@ -101,7 +103,8 @@ namespace Behapy.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FullName,Address,Position,DistributorLevelId")] Distributor distributor)
+        public async Task<IActionResult> Edit(int id,
+            [Bind("Id,FullName,Address,Position,DistributorLevelId")] Distributor distributor)
         {
             if (id != distributor.Id)
             {
@@ -126,9 +129,12 @@ namespace Behapy.Presentation.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DistributorLevelId"] = new SelectList(_context.DistributorLevels, "Id", "Name", distributor.DistributorLevelId);
+
+            ViewData["DistributorLevelId"] =
+                new SelectList(_context.DistributorLevels, "Id", "Name", distributor.DistributorLevelId);
             return View(distributor);
         }
 
@@ -160,6 +166,7 @@ namespace Behapy.Presentation.Controllers
             {
                 return Problem("Entity set 'BehapyDbContext.Distributors'  is null.");
             }
+
             var distributor = await _context.Distributors.FindAsync(id);
             if (distributor != null)
             {
