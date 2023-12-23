@@ -33,11 +33,13 @@
         let toastHeader = ""
         const showHeader = this.props.header || this.props.headerSmall
         if (showHeader) {
-            toastHeader = `<div class="toast-header">
-                            <strong class="me-auto">${this.props.header}</strong>
-                            ${this.props.headerSmall ? `<small>${this.props.headerSmall}</small>` : ""}
-                            ${this.props.closeButton ? `<button type="button" class="btn-close ${this.props.closeButtonClass}" data-bs-dismiss="toast" aria-label="${this.props.closeButtonLabel}"></button>` : ""}
-                          </div>`
+            toastHeader = `
+                <div class="toast-header">
+                    <strong class="me-auto">${this.props.header}</strong>
+                    ${this.props.headerSmall ? `<small>${this.props.headerSmall}</small>` : ""}
+                    ${this.props.closeButton ? `<button type="button" class="btn-close ${this.props.closeButtonClass}" data-bs-dismiss="toast" aria-label="${this.props.closeButtonLabel}"></button>` : ""}
+                </div>
+            `
         }
         this.template =
             `<div class="${cssClass}" role="alert" aria-live="${this.props.ariaLive}" aria-atomic="true">
@@ -49,12 +51,13 @@
                   ${(!showHeader && this.props.closeButton) ? `<button type="button" class="btn-close me-2 mx-auto ${this.props.closeButtonClass}" style="margin-top: 0.69rem" data-bs-dismiss="toast" aria-label="${this.props.closeButtonLabel}"></button>` : ""}
               </div>
             </div>`
+        console.log(this.template);
         this.container = document.getElementById(this.containerId)
         if (!this.container) {
             this.container = document.createElement("div")
             this.container.id = this.containerId
             this.container.setAttribute("class", "toast-container position-fixed p-3 " + this.props.position)
-            this.container.style.zIndex = '999';
+            this.container.style.zIndex = '9999';
             document.body.appendChild(this.container)
         }
         this.element = createElement(this.template)
@@ -71,7 +74,6 @@
             animation: this.props.animation,
             autohide: this.props.delay > 0 && this.props.delay !== Infinity, // TODO remove 0 for infinity 2022-09-02
             delay: this.props.delay
-
         })
         this.toast.show()
 
