@@ -1,6 +1,8 @@
 ﻿function addToCart(productId) {
+    const amount = $('#item-amount').val();
+    
     $.ajax({
-        url: `/Cart/Add?productId=${productId}`,
+        url: `/Cart/Add?productId=${productId}&amount=${amount}`,
         type: 'POST',
         contentType: 'application/json',
         success: function () {
