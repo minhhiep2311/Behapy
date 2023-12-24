@@ -12,7 +12,13 @@ public class Distributor
     [Display(Name = "Địa chỉ")]
     public string Address { get; set; } = null!;
 
-    public int DistributorLevelId { get; set; }
+	[Display(Name = "Điện thoại")]
+	public string Phone { get; set; } = null!;
+
+	[Display(Name = "Tổng tiền mua hàng")]
+	public decimal TotalMoney { get; set; }
+
+	public int DistributorLevelId { get; set; }
 
     public DistributorLevel? DistributorLevel { get; set; }
 }
