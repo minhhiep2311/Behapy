@@ -56,7 +56,6 @@
                     <thead>
                         <tr>
                             <th>STT</th>
-                            <th>Tài khoản</th>
                             <th>Họ và tên</th>
                             <th>Gmail</th>
                             <th>Số điện thoại</th>
@@ -72,9 +71,8 @@
                         )
                         {
                             var item = Model[i];
-                            <tr onclick="location.href='@Url.Action("Details", "Customers", new { id = @item.Id })'">
+                            <tr onclick="location.href='@Url.Action("Details", "Customers", new { id = @item.Id })'" style="cursor: pointer">
                                 <td>@index</td>
-                                <td>@item.User.UserName</td>
                                 <td>@item.User.FullName</td>
                                 <td>@item.User.Email</td>
                                 <td>@item.User.PhoneNumber</td>
