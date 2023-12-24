@@ -36,8 +36,11 @@ public class CartController : Controller
 
     // POST: Cart/Add/5
     [HttpPost]
-    public void Add(int productId)
+    public void Add(int productId, int amount = 1)
     {
+        if (amount <= 0)
+            throw new Exception("Invalid amount");
+
         var customer = _customerService.GetCustomerOrDefault();
         if (customer == null) throw new Exception("Not logged in");
 
@@ -53,13 +56,13 @@ public class CartController : Controller
 
         if (cartItem != null)
         {
-            cartItem.Amount += 1;
+            cartItem.Amount += amount;
         }
         else
         {
             var model = new CartItem
             {
-                Amount = 1,
+                Amount = amount,
                 CustomerId = customer.Id,
                 ProductId = product.Id
             };

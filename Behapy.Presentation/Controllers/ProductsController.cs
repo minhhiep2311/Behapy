@@ -33,7 +33,6 @@ public class ProductsController : Controller
         ViewData["SearchText"] = searchText;
         ViewData["SortOrder"] = sortOrder;
 
-
         var products = _context.Products
             .Include(p => p.Category)
             .Include(p => p.ProductPromotions)
