@@ -2,7 +2,7 @@
 <div class="side-nav">
 	<div class="side-nav-inner">
 		<ul class="side-nav-menu scrollable">
-			<li class="nav-item dropdown open">
+			<li class="nav-item dropdown active" data-key="Dashboard">
 				<a class="dropdown-toggle" href="@Url.Action("Index", "Dashboard")">
 					<span class="icon-holder">
 						<i class="anticon anticon-bar-chart"></i>
@@ -10,7 +10,7 @@
 					<span class="title">Thống kê</span>
 				</a>
 			</li>
-			<li class="nav-item dropdown">
+			<li class="nav-item dropdown" data-key="Product">
 				<a class="dropdown-toggle" href="@Url.Action("Admin", "Products")">
 					<span class="icon-holder">
 						<i class="anticon anticon-shopping"></i>
@@ -18,44 +18,15 @@
 					<span class="title">Quản lý sản phẩm</span>
 				</a>
 			</li>
-			<li class="nav-item dropdown">
+			<li class="nav-item dropdown" data-key="Employee">
 				<a class="dropdown-toggle" href="@Url.Action("Index", "Employees")">
 					<span class="icon-holder">
 						<i class="anticon anticon-idcard"></i>
 					</span>
 					<span class="title">Quản lý nhân viên</span>
-					@*<span class="arrow">
-						<i class="arrow-icon"></i>
-					</span>*@
 				</a>
-				@*<ul class="dropdown-menu">
-					<li>
-						<a href="avatar.html">Avatar</a>
-					</li>
-					<li>
-						<a href="alert.html">Alert</a>
-					</li>
-					<li>
-						<a href="badge.html">Badge</a>
-					</li>
-					<li>
-						<a href="buttons.html">Buttons</a>
-					</li>
-					<li>
-						<a href="cards.html">Cards</a>
-					</li>
-					<li>
-						<a href="icons.html">Icons</a>
-					</li>
-					<li>
-						<a href="lists.html">Lists</a>
-					</li>
-					<li>
-						<a href="typography.html">Typography</a>
-					</li>
-				</ul>*@
 			</li>
-			<li class="nav-item dropdown">
+			<li class="nav-item dropdown" data-key="Distributor">
 				<a class="dropdown-toggle" asp-controller="Distributors" asp-action="Index" >
 					<span class="icon-holder">
 						<i class="anticon anticon-shop"></i>
@@ -63,29 +34,15 @@
 					<span class="title">Quản lý đối tác</span>
 				</a>
 			</li>
-			<li class="nav-item dropdown">
+			<li class="nav-item dropdown" data-key="Customer">
 				<a asp-controller="Customers" asp-action="Index" >
 					<span class="icon-holder">
 						<i class="anticon anticon-form"></i>
 					</span>
 					<span class="title">Quản lý khách hàng</span>
-					@*<span class="arrow">
-						<i class="arrow-icon"></i>
-					</span>*@
 				</a>
-				@*<ul class="dropdown-menu">
-					<li>
-						<a href="form-elements.html">Form Elements</a>
-					</li>
-					<li>
-						<a href="form-layouts.html">Form Layouts</a>
-					</li>
-					<li>
-						<a href="form-validation.html">Form Validation</a>
-					</li>
-				</ul>*@
 			</li>
-			<li class="nav-item dropdown open">
+			<li class="nav-item dropdown" data-key="Order">
 				<a class="dropdown-toggle" href="@Url.Action("Admin", "Orders")">
 					<span class="icon-holder">
 						<i class="anticon anticon-shopping-cart"></i>
@@ -93,7 +50,7 @@
 					<span class="title">Đơn hàng</span>
 				</a>
 			</li>
-			<li class="nav-item dropdown open">
+			<li class="nav-item dropdown" data-key="Promotion">
 				<a class="dropdown-toggle" href="@Url.Action("Index", "Promotions")">
 					<span class="icon-holder">
 						<i class="anticon anticon-gift"></i>
@@ -101,54 +58,62 @@
 					<span class="title">Mã giảm giá</span>
 				</a>
 			</li>
-			<li class="nav-item dropdown">
+			<li class="nav-item dropdown" data-key="Social" >
 				<a class="dropdown-toggle" href="javascript:void(0);">
 					<span class="icon-holder">
 						<i class="anticon anticon-book"></i>
 					</span>
 					<span class="title">Đăng bài all in one</span>
-					@*<span class="arrow">
-						<i class="arrow-icon"></i>
-					</span>*@
 				</a>
-				@*<ul class="dropdown-menu">
-					<li>
-						<a href="profile.html">Profile</a>
-					</li>
-					<li>
-						<a href="invoice.html">Invoice</a>
-					</li>
-					<li>
-						<a href="members.html">Members</a>
-					</li>
-					<li>
-						<a href="pricing.html">Pricing</a>
-					</li>
-					<li>
-						<a href="setting.html">Setting</a>
-					</li>
-					<li class="nav-item dropdown">
-						<a href="javascript:void(0);">
-							<span>Blog</span>
-							<span class="arrow">
-								<i class="arrow-icon"></i>
-							</span>
-						</a>
-						<ul class="dropdown-menu">
-							<li>
-								<a href="blog-grid.html">Blog Grid</a>
-							</li>
-							<li>
-								<a href="blog-list.html">Blog List</a>
-							</li>
-							<li>
-								<a href="blog-post.html">Blog Post</a>
-							</li>
-						</ul>
-					</li>
-				</ul>*@
 			</li>
 		</ul>
 	</div>
 </div>
 <!-- Side Nav END -->
+
+@* <script>
+	document.addEventListener("DOMContentLoaded", function () {
+		console.log("Script executed!");
+
+		const dropdownItems2 = document.querySelectorAll('.side-nav-menu .nav-item.dropdown[data-key]');
+		const linkItems2 = [...dropdownItems2];
+
+		console.log(dropdownItems2);
+		console.log(linkItems2);
+
+		// Check the state saved in sessionStorage for dropdown-items
+		linkItems2.forEach(function (item) {
+			const isActive = sessionStorage.getItem(item.getAttribute('data-key'));
+			if (isActive === 'true') {
+				item.classList.add('active');
+			}
+		});
+
+		console.log(sessionStorage);
+		// Add click event for each dropdown-item
+		linkItems2.forEach(function (item) {
+			item.addEventListener('click', function () {
+				// Save state to sessionStorage
+				const isActive = item.classList.contains('active');
+
+				// Remove storage state for all other li elements
+				linkItems2.forEach(function (dropdownItem) {
+					if (dropdownItem !== item) {
+						sessionStorage.removeItem(dropdownItem.getAttribute('data-key'));
+						dropdownItem.classList.remove('active');
+					}
+				});
+
+				// Add or remove storage state and class "active" for the current li element
+				if (!isActive) {
+					sessionStorage.setItem(item.getAttribute('data-key'), 'true');
+					item.classList.add('active');
+				} else {
+					sessionStorage.removeItem(item.getAttribute('data-key'));
+					item.classList.remove('active');
+				}
+			});
+		});
+	});
+	console.log("Script executed!");
+</script> *@

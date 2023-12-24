@@ -21,6 +21,12 @@
   <div class="m-t-15">
     <div class="card">
       <div class="card-body">
+          <div class="text-right">
+                    <button class="btn btn-tone btn-primary" onclick="exportExcel()">
+               <i class="anticon anticon-file-excel m-r-5"></i>
+               <span>Xuất Excel</span>
+             </button>
+          </div>
         <!-- Customer -->
         @if (Model.Customer != null)
         {
@@ -129,3 +135,30 @@
     </div>
   </div>
 </div>
+
+<script>
+    function exportExcel() {
+        var orderId = @Model.Id;
+
+        // Tạo một form ẩn để gửi dữ liệu
+        var form = document.createElement('form');
+        form.method = 'post';
+        form.action = '@Url.Action("ExportOrderToExcel", "Orders")'; 
+
+        // Tạo một input ẩn để chứa OrderId
+        var orderIdInput = document.createElement('input');
+        orderIdInput.type = 'hidden';
+        orderIdInput.name = 'orderId';
+        orderIdInput.value = orderId;
+
+        // Thêm input vào form
+        form.appendChild(orderIdInput);
+
+        // Thêm form vào body và submit nó
+        document.body.appendChild(form);
+        form.submit();
+
+        // Xóa form sau khi đã submit
+        document.body.removeChild(form);
+    }
+</script>
