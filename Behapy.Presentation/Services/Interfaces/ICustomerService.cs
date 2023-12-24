@@ -4,7 +4,7 @@ namespace Behapy.Presentation.Services.Interfaces;
 
 public interface ICustomerService
 {
-    void Register(string userId, string address);
+    void Register(string userId, string address, DateTime birthday);
     
     Customer? GetCustomerOrDefault();
 
