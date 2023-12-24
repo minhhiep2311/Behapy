@@ -102,6 +102,10 @@ public class RegisterModel : PageModel
         [Required]
         [Display(Name = "Địa chỉ")]
         public string Address { get; set; }
+
+        [Required]
+        [Display(Name = "Ngày sinh")]
+        public DateTime Birthday { get; set; }
     }
 
 
@@ -157,7 +161,7 @@ public class RegisterModel : PageModel
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
-            _customerService.Register(user.Id, Input.Address);
+            _customerService.Register(user.Id, Input.Address, Input.Birthday);
 
             return LocalRedirect(returnUrl);
         }
