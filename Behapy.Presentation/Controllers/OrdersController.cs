@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace Behapy.Presentation.Controllers;
 
@@ -190,4 +192,141 @@ public class OrdersController : Controller
         order.CurrentStatus = status;
         order.OrderStatuses.Add(orderStatus);
     }
+
+
+    //Export Order to Excel
+    [HttpPost]
+    public IActionResult ExportOrderToExcel(int orderId)
+    {
+        var order = _context.Orders
+            .AsNoTracking()
+            .Include(o => o.PaymentType)
+            .Include(o => o.Promotion)
+            .Include(o => o.Distributor)
+            .Include(o => o.OrderDetails)
+            .ThenInclude(od => od.Product)
+            .Include(o => o.Customer)
+            .ThenInclude(c => c!.User)
+            .FirstOrDefault(o => o.Id == orderId);
+
+        if (order == null)
+        {
+            return NotFound();
+        }
+
+        var excelData = GenerateExcelDataForOrder(order);
+
+        var currentDate = DateTime.Now.ToString("dd/MM/yyyy");
+
+        var fileName = $"HoaDon_{orderId}_{currentDate}.xlsx";
+        const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        return File(excelData, contentType, fileName);
+    }
+
+    public byte[] GenerateExcelDataForOrder(Order order)
+    {
+        using var package = new ExcelPackage();
+        var worksheet = package.Workbook.Worksheets.Add("Hóa đơn bán hàng");
+
+        // Thiết lập thông tin cửa hàng và hóa đơn bán hàng
+        worksheet.Cells["A1:B1"].Merge = true;
+        worksheet.Cells[1, 1].Value = "Thực Phẩm Dinh Dưỡng Behapy";
+        worksheet.Cells[1, 1].Style.Font.Size = 16;  // Chỉnh cỡ chữ tại đây
+        worksheet.Cells[1, 1].Style.Font.Bold = true;
+
+        worksheet.Cells["A2:B2"].Merge = true;
+        worksheet.Cells[2, 1].Value = "Địa chỉ: Số 5, Lô Ơ1, Linh Đàm, Q.Hoàng Mai, TP.Hà Nội";
+
+        worksheet.Cells["A3:E3"].Merge = true;
+        worksheet.Cells[3, 1].Value = "Tên khách hàng:";
+
+        worksheet.Cells["A4:E4"].Merge = true;
+        worksheet.Cells[4, 1].Value = "Địa chỉ khách:";
+
+        // Thiết lập header cho danh sách sản phẩm
+        //worksheet.Cells["A5:J5"].Merge = true;
+        worksheet.Cells[5, 1].Value = "TT";
+        worksheet.Cells[5, 2].Value = "TÊN HÀNG";
+        worksheet.Cells[5, 3].Value = "SỐ LƯỢNG";
+        worksheet.Cells[5, 4].Value = "ĐƠN GIÁ";
+        worksheet.Cells[5, 5].Value = "THÀNH TIỀN";
+        worksheet.Cells[5, 1].Style.Font.Bold = true;
+        worksheet.Cells[5, 2].Style.Font.Bold = true;
+        worksheet.Cells[5, 3].Style.Font.Bold = true;
+        worksheet.Cells[5, 4].Style.Font.Bold = true;
+        worksheet.Cells[5, 5].Style.Font.Bold = true;
+
+
+        // Ghi thông tin cửa hàng và hóa đơn bán hàng
+        worksheet.Cells["C1:E1"].Merge = true;
+        worksheet.Cells[1, 3].Value = "HÓA ĐƠN BÁN HÀNG";
+        worksheet.Cells[1, 3].Style.Font.Size = 16;
+        worksheet.Cells[1, 3].Style.Font.Bold = true;
+
+
+        worksheet.Cells["C2:E2"].Merge = true;
+        worksheet.Cells[2, 3].Value = "Ngày " + DateTime.Now.ToString("dd/MM/yyyy");
+
+        // Ghi thông tin khách hàng
+        worksheet.Cells[3, 1].Value = $"Tên khách hàng: {order.Customer?.User?.FullName}";
+        worksheet.Cells[4, 1].Value = $"Địa chỉ: {order.Customer?.Address}";    
+
+        // Ghi danh sách sản phẩm
+        var rowIndex = 6;
+        var count = 1;
+        foreach (var orderDetail in order.OrderDetails)
+        {
+            worksheet.Cells[rowIndex, 1].Value = count;
+            worksheet.Cells[rowIndex, 2].Value = orderDetail.Product?.Name;
+            worksheet.Cells[rowIndex, 3].Value = orderDetail.Amount;
+            worksheet.Cells[rowIndex, 4].Value = orderDetail.Price;
+            worksheet.Cells[rowIndex, 5].Formula = $"C{rowIndex} * D{rowIndex}"; // Thành tiền = Số lượng * Đơn giá
+
+            rowIndex++;
+            count++;
+        }
+
+        // Tính tổng cộng
+        worksheet.Cells[rowIndex, 4].Value = "TỔNG CỘNG";
+        worksheet.Cells[rowIndex, 5].Formula = $"SUM(E6:E{rowIndex - 1})";
+
+        // Viết thành tiền bằng chữ
+        worksheet.Cells[rowIndex + 2, 2, rowIndex + 2, 5].Merge = true;
+        worksheet.Cells[rowIndex + 2, 1].Value = "Thành tiền (viết bằng chữ):";
+
+        worksheet.Cells[rowIndex + 4, 1, rowIndex + 4, 2].Merge = true;
+        worksheet.Cells[rowIndex + 4, 1].Value = "Khách hàng";
+        worksheet.Cells[rowIndex + 4, 1].Style.Font.Size = 14;  
+        worksheet.Cells[rowIndex + 4, 1].Style.Font.Bold = true;
+        worksheet.Cells[rowIndex + 4, 1, rowIndex + 4, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        worksheet.Cells[rowIndex + 4, 1, rowIndex + 4, 2].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+
+        worksheet.Cells[rowIndex + 4, 3, rowIndex + 4, 5].Merge = true;
+        worksheet.Cells[rowIndex + 4, 3].Value = "Người bán hàng";
+        worksheet.Cells[rowIndex + 4, 3].Style.Font.Size = 14;  
+        worksheet.Cells[rowIndex + 4, 3].Style.Font.Bold = true;
+        worksheet.Cells[rowIndex + 4, 3, rowIndex + 4, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        worksheet.Cells[rowIndex + 4, 3, rowIndex + 4, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+
+        // Thiết lập border cho toàn bộ ô có nội dung
+        var contentRange = worksheet.Cells[1, 1, rowIndex+2, 5];
+        contentRange.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+        contentRange.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+        contentRange.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+        contentRange.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
+        // Tự động điều chỉnh kích thước các cột
+        worksheet.Cells.AutoFitColumns();
+
+        // Tạo stream để ghi dữ liệu ra file
+        using var stream = new MemoryStream();
+        package.SaveAs(stream);
+        stream.Position = 0;
+
+        // Chuyển stream thành mảng byte
+        return stream.ToArray();
+    }
+
+
 }
