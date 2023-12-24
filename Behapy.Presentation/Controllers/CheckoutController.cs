@@ -76,7 +76,7 @@ public class CheckoutController : Controller
             {
                 ProductId = ci.ProductId,
                 Amount = ci.Amount,
-                Price = ci.Product.Price * ci.Amount,
+                Price = ci.Product.Price,
                 OrderNumber = idx + 1
             }).ToList(),
             OrderStatuses = new List<OrderStatus>

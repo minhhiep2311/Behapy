@@ -17,9 +17,9 @@ public class CustomerService : ICustomerService
         _context = context;
     }
 
-    public void Register(string userId)
+    public void Register(string userId, string address)
     {
-        var customer = new Customer { UserId = userId };
+        var customer = new Customer { UserId = userId, Address = address };
         _context.Customers.Add(customer);
         _context.SaveChanges();
     }
