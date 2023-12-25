@@ -119,8 +119,8 @@
                          alt="@item.Product.Name"/>
                     <span class="m-b-0 m-l-10">@item.Product.Name</span>
                   </td>
-                  <td>@item.Price.ToMoney()</td>
                   <td>@item.Amount</td>
+                  <td>@item.Price.ToMoney()</td>
                   <td>@((item.Price * item.Amount).ToMoney())</td>
                 </tr>
               }
