@@ -17,4 +17,7 @@ public class CreateEmployeeModel
 
     [Display(Name = "Email")]
     public string Email { get; set; } = null!;
+
+    [Display(Name = "Số điện thoại")]
+    public string PhoneNumber { get; set; } = null!;
 }

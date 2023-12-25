@@ -199,7 +199,7 @@
                 modal.find('.modal-body').text(`Đơn hàng #${orderId} sẽ được chuyển sang trạng thái "${orderStatus}"`)
                 modal.find(`.modal-footer ${confirmBtn}`).data('orderId', orderId);
                 modal.find(`.modal-footer ${confirmBtn}`).data('orderStatus', orderStatus);
-            })
+            });
         }
         
         function updateStatus(btn) {
@@ -212,6 +212,11 @@
                 data: { id, status },
                 success: function () {
                     document.location.reload();
+                },
+                done: function () {
+                },
+                error: function (xhr, textStatus, error) {
+                    bootstrap.showToast(xhr.responseText);
                 },
             });
         }
