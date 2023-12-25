@@ -54,7 +54,7 @@ namespace Behapy.Presentation.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(
-            [Bind("Id,FullName,Address,Position,Email")]
+            [Bind("Id,FullName,Address,Position,Email,PhoneNumber")]
             CreateEmployeeModel employee)
         {
             if (!ModelState.IsValid)
@@ -74,7 +74,8 @@ namespace Behapy.Presentation.Controllers
                 Id = Guid.NewGuid().ToString(),
                 FullName = employee.FullName,
                 Email = employee.Email,
-                UserName = employee.Email
+                UserName = employee.Email,
+                PhoneNumber = employee.PhoneNumber
             };
 
             var createUserResult = await _userManager.CreateAsync(user, "123456");
