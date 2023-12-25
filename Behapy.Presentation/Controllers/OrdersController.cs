@@ -1,4 +1,5 @@
-﻿using Behapy.Presentation.Areas.Identity.Data;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Behapy.Presentation.Areas.Identity.Data;
 using Behapy.Presentation.Constants;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
@@ -158,6 +159,8 @@ public class OrdersController : Controller
             throw new Exception("Invalid status");
 
         var order = _context.Orders
+            .Include(o => o.OrderDetails)
+            .ThenInclude(od => od.Product)
             .AsNoTracking()
             .FirstOrDefault(p => p.Id == id);
         if (order == null)
@@ -169,7 +172,7 @@ public class OrdersController : Controller
         _context.SaveChanges();
     }
 
-    private static void UpdateStatus(Order order, string status)
+    private void UpdateStatus(Order order, string status)
     {
         switch (order.CurrentStatus)
         {
@@ -181,6 +184,15 @@ public class OrdersController : Controller
             }
             default:
                 throw new Exception("Unhandled status: " + status);
+        }
+
+        switch (status)
+        {
+            case OrderStatusConstant.Confirmed:
+            {
+                HandleConfirmOrder(order);
+                break;
+            }
         }
 
         var orderStatus = new OrderStatus
@@ -224,7 +236,7 @@ public class OrdersController : Controller
         return File(excelData, contentType, fileName);
     }
 
-    public byte[] GenerateExcelDataForOrder(Order order)
+    private byte[] GenerateExcelDataForOrder(Order order)
     {
         using var package = new ExcelPackage();
         var worksheet = package.Workbook.Worksheets.Add("Hóa đơn bán hàng");
@@ -232,7 +244,7 @@ public class OrdersController : Controller
         // Thiết lập thông tin cửa hàng và hóa đơn bán hàng
         worksheet.Cells["A1:B1"].Merge = true;
         worksheet.Cells[1, 1].Value = "Thực Phẩm Dinh Dưỡng Behapy";
-        worksheet.Cells[1, 1].Style.Font.Size = 16;  // Chỉnh cỡ chữ tại đây
+        worksheet.Cells[1, 1].Style.Font.Size = 16; // Chỉnh cỡ chữ tại đây
         worksheet.Cells[1, 1].Style.Font.Bold = true;
 
         worksheet.Cells["A2:B2"].Merge = true;
@@ -270,7 +282,7 @@ public class OrdersController : Controller
 
         // Ghi thông tin khách hàng
         worksheet.Cells[3, 1].Value = $"Tên khách hàng: {order.Customer?.User?.FullName}";
-        worksheet.Cells[4, 1].Value = $"Địa chỉ: {order.Customer?.Address}";    
+        worksheet.Cells[4, 1].Value = $"Địa chỉ: {order.Customer?.Address}";
 
         // Ghi danh sách sản phẩm
         var rowIndex = 6;
@@ -297,20 +309,20 @@ public class OrdersController : Controller
 
         worksheet.Cells[rowIndex + 4, 1, rowIndex + 4, 2].Merge = true;
         worksheet.Cells[rowIndex + 4, 1].Value = "Khách hàng";
-        worksheet.Cells[rowIndex + 4, 1].Style.Font.Size = 14;  
+        worksheet.Cells[rowIndex + 4, 1].Style.Font.Size = 14;
         worksheet.Cells[rowIndex + 4, 1].Style.Font.Bold = true;
         worksheet.Cells[rowIndex + 4, 1, rowIndex + 4, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
         worksheet.Cells[rowIndex + 4, 1, rowIndex + 4, 2].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
 
         worksheet.Cells[rowIndex + 4, 3, rowIndex + 4, 5].Merge = true;
         worksheet.Cells[rowIndex + 4, 3].Value = "Người bán hàng";
-        worksheet.Cells[rowIndex + 4, 3].Style.Font.Size = 14;  
+        worksheet.Cells[rowIndex + 4, 3].Style.Font.Size = 14;
         worksheet.Cells[rowIndex + 4, 3].Style.Font.Bold = true;
         worksheet.Cells[rowIndex + 4, 3, rowIndex + 4, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
         worksheet.Cells[rowIndex + 4, 3, rowIndex + 4, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
 
         // Thiết lập border cho toàn bộ ô có nội dung
-        var contentRange = worksheet.Cells[1, 1, rowIndex+2, 5];
+        var contentRange = worksheet.Cells[1, 1, rowIndex + 2, 5];
         contentRange.Style.Border.Top.Style = ExcelBorderStyle.Thin;
         contentRange.Style.Border.Left.Style = ExcelBorderStyle.Thin;
         contentRange.Style.Border.Right.Style = ExcelBorderStyle.Thin;
@@ -328,5 +340,26 @@ public class OrdersController : Controller
         return stream.ToArray();
     }
 
+    private void HandleConfirmOrder(Order order)
+    {
+        foreach (var productDetail in order.OrderDetails)
+        {
+            var amount = _context.Products
+                .First(p => p.Id == productDetail.Product.Id)
+                .Amount;
 
+            if (amount < productDetail.Amount)
+                throw new HttpRequestException(
+                    $"Số lượng đặt mua sản phẩm {productDetail.Product.Name} vượt quá số lượng trong kho");
+        }
+
+        foreach (var productDetail in order.OrderDetails)
+        {
+            var product = _context.Products
+                .First(p => p.Id == productDetail.Product.Id);
+
+            product.Amount -= productDetail.Amount;
+            // _context.Update(product);
+        }
+    }
 }
