@@ -1,5 +1,4 @@
-﻿using AspNetCoreHero.ToastNotification.Abstractions;
-using Behapy.Presentation.Areas.Identity.Data;
+﻿using Behapy.Presentation.Areas.Identity.Data;
 using Behapy.Presentation.Constants;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;

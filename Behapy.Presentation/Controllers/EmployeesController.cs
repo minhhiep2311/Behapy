@@ -33,6 +33,7 @@ namespace Behapy.Presentation.Controllers
                 return NotFound();
 
             var employee = await _context.Employees
+                .Include(e => e.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (employee == null)
                 return NotFound();
@@ -64,7 +65,7 @@ namespace Behapy.Presentation.Controllers
             {
                 FullName = employee.FullName,
                 Address = employee.Address,
-                Position = employee.Position,
+                Position = employee.Position
             };
 
             _context.Add(model);
