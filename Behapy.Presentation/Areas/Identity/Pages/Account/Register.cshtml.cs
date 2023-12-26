@@ -106,6 +106,10 @@ public class RegisterModel : PageModel
         [Required]
         [Display(Name = "Ngày sinh")]
         public DateTime Birthday { get; set; }
+
+        [Required]
+        [Display(Name = "Số điện thoại")]
+        public string PhoneNumber { get; set; }
     }
 
 
@@ -127,7 +131,8 @@ public class RegisterModel : PageModel
             Id = Guid.NewGuid().ToString(),
             UserName = Input.Email,
             Email = Input.Email,
-            FullName = Input.UserName
+            FullName = Input.UserName,
+            PhoneNumber = Input.PhoneNumber,
         };
 
         await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);

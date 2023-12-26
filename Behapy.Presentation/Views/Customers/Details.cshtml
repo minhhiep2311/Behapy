@@ -78,7 +78,7 @@
                                class="form-control"
                                id="dob"
                                placeholder="Ngày sinh" 
-                               value="@Model.Birthday"/>
+                               value='@Model.Birthday?.ToString("dd/MM/yyyy")'/>
                     </div>
                 </div>
             </form>

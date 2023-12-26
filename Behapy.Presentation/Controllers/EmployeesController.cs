@@ -33,6 +33,7 @@ namespace Behapy.Presentation.Controllers
                 return NotFound();
 
             var employee = await _context.Employees
+                .Include(e => e.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (employee == null)
                 return NotFound();
@@ -54,7 +55,7 @@ namespace Behapy.Presentation.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(
-            [Bind("Id,FullName,Address,Position,Email")]
+            [Bind("Id,FullName,Address,Position,Email,PhoneNumber")]
             CreateEmployeeModel employee)
         {
             if (!ModelState.IsValid)
@@ -64,7 +65,7 @@ namespace Behapy.Presentation.Controllers
             {
                 FullName = employee.FullName,
                 Address = employee.Address,
-                Position = employee.Position,
+                Position = employee.Position
             };
 
             _context.Add(model);
@@ -74,7 +75,8 @@ namespace Behapy.Presentation.Controllers
                 Id = Guid.NewGuid().ToString(),
                 FullName = employee.FullName,
                 Email = employee.Email,
-                UserName = employee.Email
+                UserName = employee.Email,
+                PhoneNumber = employee.PhoneNumber
             };
 
             var createUserResult = await _userManager.CreateAsync(user, "123456");
