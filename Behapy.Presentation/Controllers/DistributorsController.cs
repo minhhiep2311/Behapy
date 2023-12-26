@@ -65,7 +65,7 @@ namespace Behapy.Presentation.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("FullName,Address,Position,DistributorLevelId")] Distributor distributor)
+            [Bind("FullName,Address,Phone,Position,DistributorLevelId")] Distributor distributor)
         {
             if (ModelState.IsValid)
             {
@@ -104,7 +104,7 @@ namespace Behapy.Presentation.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
-            [Bind("Id,FullName,Address,Position,DistributorLevelId")] Distributor distributor)
+            [Bind("Id,FullName,Address,Phone,Position,DistributorLevelId")] Distributor distributor)
         {
             if (id != distributor.Id)
             {
