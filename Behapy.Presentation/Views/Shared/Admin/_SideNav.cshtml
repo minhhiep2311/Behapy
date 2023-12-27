@@ -2,7 +2,7 @@
 <div class="side-nav">
 	<div class="side-nav-inner">
 		<ul class="side-nav-menu scrollable">
-			<li class="nav-item dropdown active" data-key="Dashboard">
+			<li class="nav-item dropdown" data-key="Dashboard">
 				<a class="dropdown-toggle" href="@Url.Action("Index", "Dashboard")">
 					<span class="icon-holder">
 						<i class="anticon anticon-bar-chart"></i>
@@ -71,15 +71,10 @@
 </div>
 <!-- Side Nav END -->
 
-@* <script>
+<script>
 	document.addEventListener("DOMContentLoaded", function () {
-		console.log("Script executed!");
-
 		const dropdownItems2 = document.querySelectorAll('.side-nav-menu .nav-item.dropdown[data-key]');
 		const linkItems2 = [...dropdownItems2];
-
-		console.log(dropdownItems2);
-		console.log(linkItems2);
 
 		// Check the state saved in sessionStorage for dropdown-items
 		linkItems2.forEach(function (item) {
@@ -89,7 +84,6 @@
 			}
 		});
 
-		console.log(sessionStorage);
 		// Add click event for each dropdown-item
 		linkItems2.forEach(function (item) {
 			item.addEventListener('click', function () {
@@ -115,5 +109,4 @@
 			});
 		});
 	});
-	console.log("Script executed!");
-</script> *@
+</script>
