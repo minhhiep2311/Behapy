@@ -213,14 +213,16 @@
                 success: function () {
                     document.location.reload();
                 },
-                done: function () {
-                },
-                error: function (xhr, textStatus, error) {
-                    bootstrap.showToast(xhr.responseText);
+                error: function (xhr) {
+                    $('#confirmModal').modal('hide');
+                    bootstrap.showToast({
+                        body: xhr.responseText,
+                        zIndex: 999
+                    });
                 },
             });
         }
-        
+
         function goToDetailsPage(id) {
             location.href = `/Orders/AdminDetails/${id}`
         }

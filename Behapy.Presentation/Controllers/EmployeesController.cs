@@ -120,7 +120,7 @@ namespace Behapy.Presentation.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FullName,Address,Position,Email")] Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FullName,Address,Position,Email,PhoneNumber")] Employee employee)
         {
             if (id != employee.Id)
                 return NotFound();
