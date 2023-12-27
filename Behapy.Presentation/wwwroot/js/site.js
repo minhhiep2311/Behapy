@@ -51,7 +51,6 @@
                   ${(!showHeader && this.props.closeButton) ? `<button type="button" class="btn-close me-2 mx-auto ${this.props.closeButtonClass}" style="margin-top: 0.69rem" data-bs-dismiss="toast" aria-label="${this.props.closeButtonLabel}"></button>` : ""}
               </div>
             </div>`
-        console.log(this.template);
         this.container = document.getElementById(this.containerId)
         if (!this.container) {
             this.container = document.createElement("div")
@@ -125,8 +124,6 @@ function bindUploadEventToInputFile(selector, progressSelector, token, signature
                 signature,
                 expire,
             });
-
-            console.log(result);
 
             $(input).parent().find('#ImageUrl').val(result.url);
             $(progressSelector).find('.progress-bar').text('Uploaded file');

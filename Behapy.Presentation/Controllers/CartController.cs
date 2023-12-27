@@ -1,4 +1,5 @@
-﻿using Behapy.Presentation.Areas.Identity.Data;
+﻿using System.Net.Mime;
+using Behapy.Presentation.Areas.Identity.Data;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -36,18 +37,32 @@ public class CartController : Controller
 
     // POST: Cart/Add/5
     [HttpPost]
-    public void Add(int productId, int amount = 1)
+    public ContentResult Add(int productId, int amount = 1)
     {
         if (amount <= 0)
-            throw new Exception("Invalid amount");
+        {
+            Response.StatusCode = 500;
+            return Content("Số lượng phải là số dương", MediaTypeNames.Text.Plain);
+        }
 
         var customer = _customerService.GetCustomerOrDefault();
-        if (customer == null) throw new Exception("Not logged in");
+        if (customer == null)
+            throw new Exception("Not logged in");
 
         var product = _context.Products
             .AsNoTracking()
             .FirstOrDefault(p => p.Id == productId);
-        if (product == null) throw new Exception("Product not found");
+        if (product == null)
+        {
+            Response.StatusCode = 500;
+            return Content("Không tìm thấy sản phẩm", MediaTypeNames.Text.Plain);
+        }
+
+        if (product.Amount < amount)
+        {
+            Response.StatusCode = 500;
+            return Content("Số lượng sản phẩm trong kho không đủ, vui lòng giảm số lượng", MediaTypeNames.Text.Plain);
+        }
 
         var cartItem = _context.CartItems
             .Where(c => c.CustomerId == customer.Id && c.ProductId == productId)
@@ -71,6 +86,8 @@ public class CartController : Controller
         }
 
         _context.SaveChanges();
+
+        return Content("", MediaTypeNames.Text.Plain);
     }
 
     // DELETE: Cart/Delete/5

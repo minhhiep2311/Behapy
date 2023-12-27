@@ -6,8 +6,17 @@
         type: 'POST',
         contentType: 'application/json',
         success: function () {
-            bootstrap.showToast({body: 'Đã thêm sản phẩm vào giỏ hàng!'});
+            bootstrap.showToast({
+                body: 'Đã thêm sản phẩm vào giỏ hàng!',
+                zIndex: 999
+            });
             updateMiniCart();
+        },
+        error: function (xhr) {
+            bootstrap.showToast({
+                body: xhr.responseText,
+                zIndex: 999
+            });
         },
     });
 }

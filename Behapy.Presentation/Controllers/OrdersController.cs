@@ -1,4 +1,5 @@
-﻿using Behapy.Presentation.Areas.Identity.Data;
+﻿using System.Net.Mime;
+using Behapy.Presentation.Areas.Identity.Data;
 using Behapy.Presentation.Constants;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
@@ -152,7 +153,7 @@ public class OrdersController : Controller
     // POST: Orders/UpdateStatus
     [HttpPost]
     [Authorize(Roles = "Admin,Employee")]
-    public void UpdateStatus(int id, string status)
+    public ContentResult UpdateStatus(int id, string status)
     {
         if (!OrderStatusConstant.ValidStatus(status))
             throw new Exception("Invalid status");
@@ -160,15 +161,24 @@ public class OrdersController : Controller
         var order = _context.Orders
             .Include(o => o.OrderDetails)
             .ThenInclude(od => od.Product)
-            .AsNoTracking()
             .FirstOrDefault(p => p.Id == id);
         if (order == null)
             throw new Exception("Product not found");
 
-        UpdateStatus(order, status);
+        try
+        {
+            UpdateStatus(order, status);
+        }
+        catch (Exception e)
+        {
+            Response.StatusCode = 500;
+            return Content(e.Message, MediaTypeNames.Text.Plain);
+        }
 
         _context.Update(order);
         _context.SaveChanges();
+
+        return Content("", MediaTypeNames.Text.Plain);
     }
 
     private void UpdateStatus(Order order, string status)
@@ -235,7 +245,7 @@ public class OrdersController : Controller
         return File(excelData, contentType, fileName);
     }
 
-    private byte[] GenerateExcelDataForOrder(Order order)
+    private static byte[] GenerateExcelDataForOrder(Order order)
     {
         using var package = new ExcelPackage();
         var worksheet = package.Workbook.Worksheets.Add("Hóa đơn bán hàng");
@@ -280,7 +290,7 @@ public class OrdersController : Controller
         worksheet.Cells[2, 3].Value = "Ngày " + DateTime.Now.ToString("dd/MM/yyyy");
 
         // Ghi thông tin khách hàng
-        worksheet.Cells[3, 1].Value = $"Tên khách hàng: {order.Customer?.User?.FullName}";
+        worksheet.Cells[3, 1].Value = $"Tên khách hàng: {order.Customer?.User.FullName}";
         worksheet.Cells[4, 1].Value = $"Địa chỉ: {order.Customer?.Address}";
 
         // Ghi danh sách sản phẩm
@@ -289,7 +299,7 @@ public class OrdersController : Controller
         foreach (var orderDetail in order.OrderDetails)
         {
             worksheet.Cells[rowIndex, 1].Value = count;
-            worksheet.Cells[rowIndex, 2].Value = orderDetail.Product?.Name;
+            worksheet.Cells[rowIndex, 2].Value = orderDetail.Product.Name;
             worksheet.Cells[rowIndex, 3].Value = orderDetail.Amount;
             worksheet.Cells[rowIndex, 4].Value = orderDetail.Price;
             worksheet.Cells[rowIndex, 5].Formula = $"C{rowIndex} * D{rowIndex}"; // Thành tiền = Số lượng * Đơn giá
@@ -341,15 +351,15 @@ public class OrdersController : Controller
 
     private void HandleConfirmOrder(Order order)
     {
-        foreach (var productDetail in order.OrderDetails)
+        foreach (var productDetail in from productDetail in order.OrderDetails
+                 let amount = _context.Products
+                     .First(p => p.Id == productDetail.Product.Id)
+                     .Amount
+                 where amount < productDetail.Amount
+                 select productDetail)
         {
-            var amount = _context.Products
-                .First(p => p.Id == productDetail.Product.Id)
-                .Amount;
-
-            if (amount < productDetail.Amount)
-                throw new HttpRequestException(
-                    $"Số lượng đặt mua sản phẩm {productDetail.Product.Name} vượt quá số lượng trong kho");
+            throw new HttpRequestException(
+                $"Số lượng đặt mua sản phẩm \"{productDetail.Product.Name}\" vượt quá số lượng trong kho");
         }
 
         foreach (var productDetail in order.OrderDetails)
@@ -358,7 +368,7 @@ public class OrdersController : Controller
                 .First(p => p.Id == productDetail.Product.Id);
 
             product.Amount -= productDetail.Amount;
-            // _context.Update(product);
+            _context.Update(product);
         }
     }
 }
