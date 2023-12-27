@@ -46,7 +46,8 @@
                     </div>
                   </li>
                   <li class="add-to-cart">
-                    <a onclick="addToCart(@Model.Id)" class="btn btn-custom-size lg-size btn-primary btn-secondary-hover rounded-0">
+                    <a onclick="addToCart(@Model.Id)"
+                       class="btn btn-custom-size lg-size btn-primary btn-secondary-hover rounded-0 @(Model.Amount <= 0 ? "disabled" : "")">
                       Thêm vào giỏ
                     </a>
                   </li>
