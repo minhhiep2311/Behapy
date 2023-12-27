@@ -259,8 +259,11 @@ public class OrdersController : Controller
         worksheet.Cells["A2:B2"].Merge = true;
         worksheet.Cells[2, 1].Value = "Địa chỉ: Số 5, Lô Ơ1, Linh Đàm, Q.Hoàng Mai, TP.Hà Nội";
 
-        worksheet.Cells["A3:E3"].Merge = true;
+        worksheet.Cells["A3:B3"].Merge = true;
         worksheet.Cells[3, 1].Value = "Tên khách hàng:";
+
+        worksheet.Cells["C3:E3"].Merge = true;
+        worksheet.Cells[3, 3].Value = "Số điện thoại:";
 
         worksheet.Cells["A4:E4"].Merge = true;
         worksheet.Cells[4, 1].Value = "Địa chỉ khách:";
@@ -291,6 +294,7 @@ public class OrdersController : Controller
 
         // Ghi thông tin khách hàng
         worksheet.Cells[3, 1].Value = $"Tên khách hàng: {order.Customer?.User.FullName}";
+        worksheet.Cells[3, 3].Value = $"Số điện thoại: {order.Customer?.User.PhoneNumber}";
         worksheet.Cells[4, 1].Value = $"Địa chỉ: {order.Customer?.Address}";
 
         // Ghi danh sách sản phẩm
