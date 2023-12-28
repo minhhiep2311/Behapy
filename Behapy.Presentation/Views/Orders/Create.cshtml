@@ -1,3 +1,4 @@
+@using Behapy.Presentation.Constants
 @model Behapy.Presentation.Models.Order
 
 @{
@@ -5,72 +6,80 @@
   Layout = "~/Views/Shared/Admin/_Layout.cshtml";
 }
 
-<h1>Create</h1>
-
-<h4>Order</h4>
-<hr/>
-<div class="row">
-  <div class="col-md-4">
-    <form asp-action="Create">
-      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-      <div class="form-group">
-        <label asp-for="Discount" class="control-label"></label>
-        <input asp-for="Discount" class="form-control"/>
-        <span asp-validation-for="Discount" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <label asp-for="TotalMoney" class="control-label"></label>
-        <input asp-for="TotalMoney" class="form-control"/>
-        <span asp-validation-for="TotalMoney" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <label asp-for="CancelledAt" class="control-label"></label>
-        <input asp-for="CancelledAt" class="form-control"/>
-        <span asp-validation-for="CancelledAt" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <label asp-for="CreateAt" class="control-label"></label>
-        <input asp-for="CreateAt" class="form-control"/>
-        <span asp-validation-for="CreateAt" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <label asp-for="Note" class="control-label"></label>
-        <input asp-for="Note" class="form-control"/>
-        <span asp-validation-for="Note" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <label asp-for="CurrentStatus" class="control-label"></label>
-        <input asp-for="CurrentStatus" class="form-control"/>
-        <span asp-validation-for="CurrentStatus" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <label asp-for="Address" class="control-label"></label>
-        <input asp-for="Address" class="form-control"/>
-        <span asp-validation-for="Address" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <label asp-for="PaymentTypeId" class="control-label"></label>
-        <select asp-for="PaymentTypeId" class="form-control" asp-items="ViewBag.PaymentTypeId"></select>
-      </div>
-      <div class="form-group">
-        <label asp-for="CustomerId" class="control-label"></label>
-        <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerId"></select>
-      </div>
-      <div class="form-group">
-        <label asp-for="DistributorId" class="control-label"></label>
-        <select asp-for="DistributorId" class="form-control" asp-items="ViewBag.DistributorId"></select>
-      </div>
-      <div class="form-group">
-        <label asp-for="PromotionId" class="control-label"></label>
-        <select asp-for="PromotionId" class="form-control" asp-items="ViewBag.PromotionId"></select>
-      </div>
-      <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary"/>
-      </div>
-    </form>
+<div class="main-content">
+  <div class="page-header">
+    <div class="header-sub-title">
+      <nav class="breadcrumb breadcrumb-dash">
+        <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang chủ</a>
+        <a class="breadcrumb-item" asp-controller="Orders" asp-action="Admin">Đơn hàng</a>
+        <span class="breadcrumb-item active">Tạo đơn hàng</span>
+      </nav>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <form asp-action="Create">
+        <div style="display: none">
+          <input asp-for="CurrentStatus" class="form-control" value="@OrderStatusConstant.NeedToConfirm"/>
+        </div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+          <div class="radio">
+            <input id="IsCustomer" name="IsCustomer" type="radio" value="true" checked>
+            <label for="IsCustomer">Khách hàng</label>
+          </div>
+          <div class="radio">
+            <input id="IsDistributor" name="IsCustomer" type="radio" value="false">
+            <label for="IsDistributor">Nhà phân phối</label>
+          </div>
+        </div>
+        <div class="form-group customer">
+          <label asp-for="CustomerId" class="control-label"></label>
+          <select asp-for="CustomerId" class="form-control select2" asp-items="ViewBag.CustomerId"></select>
+        </div>
+        <div class="form-group distributor" style="display: none">
+          <label asp-for="DistributorId" class="control-label"></label>
+          <select asp-for="DistributorId" class="form-control select2" asp-items="ViewBag.DistributorId"></select>
+        </div>
+        <div class="form-group">
+          <label asp-for="Address" class="control-label"></label>
+          <input asp-for="Address" class="form-control"/>
+          <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="Note" class="control-label"></label>
+          <input asp-for="Note" class="form-control"/>
+          <span asp-validation-for="Note" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="PaymentTypeId" class="control-label"></label>
+          <select asp-for="PaymentTypeId" class="form-control" asp-items="ViewBag.PaymentTypeId"></select>
+        </div>
+        <div class="form-group">
+          <label asp-for="PromotionId" class="control-label"></label>
+          <select asp-for="PromotionId" class="form-control" asp-items="ViewBag.PromotionId"></select>
+        </div>
+        <div class="form-group">
+          <input type="submit" value="Create" class="btn btn-primary"/>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 
-<div>
-  <a asp-action="Index">Back to List</a>
-</div>
+@section Scripts {
+  <script src="~/js/admin/vendors/select2/select2.min.js"></script>
+
+  <script>
+    $(':radio[name="IsCustomer"]').change(function() {
+      const isCustomer = $(this).filter(':checked').val();
+      if (isCustomer === 'true') {
+        $('.customer').show();
+        $('.distributor').hide();
+      } else {
+        $('.customer').hide();
+        $('.distributor').show();
+      }
+    });
+  </script>
+}

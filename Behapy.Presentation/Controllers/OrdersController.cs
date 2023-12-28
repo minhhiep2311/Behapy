@@ -40,7 +40,11 @@ public class OrdersController : Controller
     // GET: Promotion/Create
     public IActionResult Create()
     {
-        ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Id");
+        ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Name");
+        ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name");
+        ViewData["CustomerId"] = new SelectList(_context.Customers.Include(c => c.User), "Id", "Name");
+        ViewData["DistributorId"] = new SelectList(_context.Distributors, "Id", "FullName");
+
         return View();
     }
 
@@ -50,20 +54,32 @@ public class OrdersController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-        [Bind("Id,Name,Value,Unit,Voucher,MaxDiscount,EndAt,StartAt,TypeId")]
+        [Bind("CurrentStatus,TotalMoney,Note,Address,PaymentTypeId,CustomerId,DistributorId,PromotionId,IsCustomer")]
         Order order)
     {
         if (ModelState.IsValid)
         {
+            order.CreateAt = DateTime.Now;
+            order.CurrentStatus = OrderStatusConstant.NeedToConfirm;
+            if (order.IsCustomer)
+            {
+                order.DistributorId = null;
+            }
+            else
+            {
+                order.CustomerId = null;
+            }
+
             _context.Add(order);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction(nameof(Admin));
         }
 
-        ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Id", order.PaymentType);
-        ViewData["TypeId"] = new SelectList(_context.Customers, "Id", "Id", order.Customer);
-        ViewData["DistributorId"] = new SelectList(_context.Distributors, "Id", "Id", order.Distributor);
-        ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Id", order.Promotion);
+        ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Name", order.PaymentType);
+        ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name", order.Promotion);
+        ViewData["CustomerId"] = new SelectList(_context.Customers.Include(c => c.User), "Id", "Name");
+        ViewData["DistributorId"] = new SelectList(_context.Distributors, "Id", "FullName", order.Distributor);
 
         return View(order);
     }
