@@ -36,9 +36,7 @@
                 <div class="price-box pb-1">
                   <span class="new-price text-danger">@Model.Price.ToMoney()</span>
                 </div>
-                <p class="short-desc mb-6">
-                  @Model.Description
-                </p>
+                <p class="short-desc mb-6" id="product-description"></p>
                 <ul class="quantity-with-btn pb-7">
                   <li class="quantity">
                     <div class="cart-plus-minus">
@@ -107,3 +105,9 @@
     </div>
   </div>
 </main>
+
+@section Scripts {
+  <script>
+    $('#product-description').html(`@Html.Raw(Model.Description)`);
+  </script>
+}
