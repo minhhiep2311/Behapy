@@ -68,7 +68,7 @@ public class CheckoutController : Controller
         {
             CustomerId = customer.Id,
             Address = address ?? "",
-            Note = checkoutViewModel.Note ?? "",
+            Note = checkoutViewModel.Note,
             CurrentStatus = OrderStatusConstant.NeedToConfirm,
             PaymentTypeId = checkoutViewModel.PaymentTypeId,
             TotalMoney = cartItems.Sum(ci => ci.Product.Price * ci.Amount),

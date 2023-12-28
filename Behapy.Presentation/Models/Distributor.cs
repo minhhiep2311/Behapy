@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace Behapy.Presentation.Models;
 
@@ -16,6 +17,7 @@ public class Distributor
 	public string Phone { get; set; } = null!;
 
 	[Display(Name = "Tổng tiền mua hàng")]
+	[Precision(18, 2)]
 	public decimal TotalMoney { get; set; }
 
 	public int DistributorLevelId { get; set; }
