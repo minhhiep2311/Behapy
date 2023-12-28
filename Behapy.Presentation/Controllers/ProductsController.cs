@@ -42,7 +42,6 @@ public class ProductsController : Controller
             );
 
         var categoryProductCount = await products.CountAsync();
-
         var totalProducts = await _context.Products.CountAsync();
 
         products = sortOrder switch
