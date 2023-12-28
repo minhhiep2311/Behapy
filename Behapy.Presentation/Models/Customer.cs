@@ -1,4 +1,5 @@
-﻿using Behapy.Presentation.Areas.Identity.Data;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Behapy.Presentation.Areas.Identity.Data;
 
 namespace Behapy.Presentation.Models;
 
@@ -13,4 +14,7 @@ public class Customer
 
     public List<Order> Orders { get; set; } = new();
     public List<CartItem> CartItems { get; set; } = new();
+
+    [NotMapped]
+    public string Name => User.FullName;
 }

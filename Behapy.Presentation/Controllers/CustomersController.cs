@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Behapy.Presentation.Areas.Identity.Data;
@@ -22,40 +18,36 @@ namespace Behapy.Presentation.Controllers
         // GET: Customers
         public async Task<IActionResult> Index(int pg = 1)
         {
-            var Customers = _context.Customers.Include(c => c.User);
+            var customers = _context.Customers.Include(c => c.User);
 
             const int pageSize = 8;
 
             if (pg < 1) pg = 1;
-            var recsCount = Customers.Count();
+            var recsCount = customers.Count();
             var pager = new Pager(recsCount, pg, pageSize);
             var recSkip = (pg - 1) * pageSize;
             ViewBag.Pager = pager;
 
-            return View(await Customers.Skip(recSkip).Take(pager.PageSize).ToListAsync());
+            return View(await customers.Skip(recSkip).Take(pager.PageSize).ToListAsync());
         }
 
         // GET: Customers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Customers == null)
-            {
+            if (id == null)
                 return NotFound();
-            }
 
             var customer = await _context.Customers
                 .Include(c => c.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (customer == null)
-            {
                 return NotFound();
-            }
 
             return View(customer);
         }
 
         // GET: Customers/Create
-        public IActionResult Create() 
+        public IActionResult Create()
         {
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
@@ -74,6 +66,7 @@ namespace Behapy.Presentation.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", customer.UserId);
             return View(customer);
         }
@@ -81,16 +74,13 @@ namespace Behapy.Presentation.Controllers
         // GET: Customers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Customers == null)
-            {
+            if (id == null)
                 return NotFound();
-            }
 
             var customer = await _context.Customers.FindAsync(id);
             if (customer == null)
-            {
                 return NotFound();
-            }
+
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", customer.UserId);
             return View(customer);
         }
@@ -103,9 +93,7 @@ namespace Behapy.Presentation.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("Id,Address,Birthday,UserId")] Customer customer)
         {
             if (id != customer.Id)
-            {
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -117,16 +105,13 @@ namespace Behapy.Presentation.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!CustomerExists(customer.Id))
-                    {
                         return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", customer.UserId);
             return View(customer);
         }
@@ -134,18 +119,14 @@ namespace Behapy.Presentation.Controllers
         // GET: Customers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Customers == null)
-            {
+            if (id == null)
                 return NotFound();
-            }
 
             var customer = await _context.Customers
                 .Include(c => c.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (customer == null)
-            {
                 return NotFound();
-            }
 
             return View(customer);
         }
@@ -155,23 +136,17 @@ namespace Behapy.Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Customers == null)
-            {
-                return Problem("Entity set 'BehapyDbContext.Customers'  is null.");
-            }
             var customer = await _context.Customers.FindAsync(id);
             if (customer != null)
-            {
                 _context.Customers.Remove(customer);
-            }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CustomerExists(int id)
         {
-          return (_context.Customers?.Any(e => e.Id == id)).GetValueOrDefault();
+            return _context.Customers.Any(e => e.Id == id);
         }
     }
 }

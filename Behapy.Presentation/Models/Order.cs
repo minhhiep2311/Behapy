@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace Behapy.Presentation.Models;
@@ -22,7 +23,7 @@ public class Order
     public DateTime CreateAt { get; set; }
 
     [Display(Name = "Ghi chú")]
-    public string Note { get; set; } = null!;
+    public string? Note { get; set; }
 
     [Display(Name = "Trạng thái")]
     public string CurrentStatus { get; set; } = null!;
@@ -30,18 +31,29 @@ public class Order
     [Display(Name = "Địa chỉ")]
     public string Address { get; set; } = null!;
 
+    [Display(Name = "Phương thức thanh toán")]
     public int PaymentTypeId { get; set; }
-    public PaymentType PaymentType { get; set; } = null!;
 
+    public PaymentType? PaymentType { get; set; }
+
+    [Display(Name = "Khách hàng")]
     public int? CustomerId { get; set; }
+
     public Customer? Customer { get; set; }
 
+    [Display(Name = "Nhà phân phối")]
     public int? DistributorId { get; set; }
+
     public Distributor? Distributor { get; set; }
 
+    [Display(Name = "Mã giảm giá")]
     public int? PromotionId { get; set; }
+
     public Promotion? Promotion { get; set; }
 
     public List<OrderStatus> OrderStatuses { get; set; } = new();
     public List<OrderDetail> OrderDetails { get; set; } = new();
+
+    [NotMapped]
+    public bool IsCustomer { get; set; }
 }
