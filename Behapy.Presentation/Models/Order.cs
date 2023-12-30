@@ -56,4 +56,13 @@ public class Order
 
     [NotMapped]
     public bool IsCustomer { get; set; }
+
+    [NotMapped]
+    public List<CreateOrderProduct> Products { get; set; } = new();
+}
+
+public class CreateOrderProduct
+{
+    public int Id { get; set; }
+    public int Amount { get; set; }
 }
