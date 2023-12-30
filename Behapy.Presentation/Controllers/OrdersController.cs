@@ -86,9 +86,12 @@ public class OrdersController : Controller
 
     //GET: Orders/Admin
     [Authorize(Roles = "Admin,Employee")]
-    public async Task<IActionResult> Admin(int pg)
+    public async Task<IActionResult> Admin(int pg, int? distributorId, int? customerId)
     {
-        var products = _context.Orders
+        var orders = _context.Orders
+            .Where(o =>
+                (distributorId == null || o.DistributorId == distributorId) &&
+                (customerId == null || o.CustomerId == customerId))
             .Include(o => o.PaymentType)
             .Include(o => o.Customer!.User)
             .Include(o => o.Distributor)
@@ -98,12 +101,12 @@ public class OrdersController : Controller
 
         //Pagination
         if (pg < 1) pg = 1;
-        var recsCount = products.Count();
+        var recsCount = orders.Count();
         var pager = new Pager(recsCount, pg);
         var recSkip = (pg - 1) * pager.PageSize;
         ViewBag.Pager = pager;
 
-        return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
+        return View(await orders.Skip(recSkip).Take(pager.PageSize).ToListAsync());
     }
 
     // GET: Orders/AdminDetails/5
