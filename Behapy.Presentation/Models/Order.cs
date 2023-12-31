@@ -41,7 +41,7 @@ public class Order
 
     public Customer? Customer { get; set; }
 
-    [Display(Name = "Nhà phân phối")]
+    [Display(Name = "Đối tác")]
     public int? DistributorId { get; set; }
 
     public Distributor? Distributor { get; set; }
