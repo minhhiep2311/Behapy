@@ -33,6 +33,10 @@
           </div>
         </div>
         <div class="m-b-15">
+          <button data-toggle="modal" data-target="#quantityModal" type="button" class="btn btn-primary m-r-10">
+            <i class="anticon anticon-plus-circle m-r-5"></i>
+            <span>Thêm số lượng</span>
+          </button>
           <button type="submit" class="btn btn-primary">
             <i class="anticon anticon-save"></i>
             <span>Lưu</span>
@@ -125,7 +129,7 @@
             <!-- Promotion -->
             <div class="form-group">
               <label asp-for="ProductPromotionsId" class="font-weight-semibold"></label>
-              <select asp-for="ProductPromotionsId" class="form-control select2" asp-items="ViewBag.ProductPromotionsId" 
+              <select asp-for="ProductPromotionsId" class="form-control select2" asp-items="ViewBag.ProductPromotionsId"
                       multiple="multiple">
               </select>
               <span asp-validation-for="ProductPromotionsId" class="text-danger"></span>
@@ -143,6 +147,28 @@
       </div>
     </div>
   </form>
+
+  <!--Add Quantity Modal -->
+  <div class="modal fade" id="quantityModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Thêm số lượng</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="productId"/>
+          <input class="form-control" type="text" id="quantityInput" pattern="[0-9]*" oninput="validateInput()" placeholder="Số lượng sản phẩm"/>
+          <div id="error-message" class="text-danger"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+          <button type="button" class="btn btn-tone btn-primary" id="addQuantityButton" onclick="addQuantity()">Thêm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Add Quantity Modal End-->
 </div>
 
 @section Styles {
@@ -193,5 +219,43 @@
     
       IMask(document.getElementById('Price'), numberMask);
       IMask(document.getElementById('Discount'), numberMask);
+      
+      function addQuantity() {
+          const quantityToAdd = $('#quantityInput').val();
+
+          $.ajax({
+              url: '/Products/AddQuantity',
+              method: 'POST',
+              data: { id: @Model.Id, quantityToAdd },
+              success: function () {
+                  bootstrap.showToast({
+                      body: 'Đã cập nhật số lượng!',
+                      zIndex: 9999
+                  });
+
+                  $('#quantityModal').modal('hide');
+                  $('#quantityInput').val('');
+                  
+                  const amount = $('#Amount');
+                  amount.val(+amount.val() + +quantityToAdd);
+              },
+          });
+      }
+
+      //Check validation input
+      function validateInput() {
+          const quantityInput = $('#quantityInput');
+          const errorMessage = $('#error-message');
+          const addQuantityButton = $('#addQuantityButton');
+
+          if (!quantityInput.val() || !/^[0-9]*$/.test(quantityInput.val())) {
+              errorMessage.text('Vui lòng nhập số nguyên dương hợp lệ.');
+              addQuantityButton.prop('disabled', true);
+          } else {
+              errorMessage.text('');
+              addQuantityButton.prop('disabled', false);
+          }
+      }
+        
     </script>
 }
