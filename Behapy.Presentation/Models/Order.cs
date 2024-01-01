@@ -41,7 +41,7 @@ public class Order
 
     public Customer? Customer { get; set; }
 
-    [Display(Name = "Nhà phân phối")]
+    [Display(Name = "Đối tác")]
     public int? DistributorId { get; set; }
 
     public Distributor? Distributor { get; set; }
@@ -56,4 +56,13 @@ public class Order
 
     [NotMapped]
     public bool IsCustomer { get; set; }
+
+    [NotMapped]
+    public List<CreateOrderProduct> Products { get; set; } = new();
+}
+
+public class CreateOrderProduct
+{
+    public int Id { get; set; }
+    public int Amount { get; set; }
 }

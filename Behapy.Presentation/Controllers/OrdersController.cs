@@ -44,6 +44,7 @@ public class OrdersController : Controller
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name");
         ViewData["CustomerId"] = new SelectList(_context.Customers.Include(c => c.User), "Id", "Name");
         ViewData["DistributorId"] = new SelectList(_context.Distributors, "Id", "FullName");
+        ViewData["Products"] = _context.Products.Where(p => p.IsActive).ToList();
 
         return View();
     }
@@ -54,13 +55,14 @@ public class OrdersController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-        [Bind("CurrentStatus,TotalMoney,Note,Address,PaymentTypeId,CustomerId,DistributorId,PromotionId,IsCustomer")]
+        [Bind("CurrentStatus,TotalMoney,Note,Address,PaymentTypeId,CustomerId,DistributorId,PromotionId,IsCustomer,Products")]
         Order order)
     {
         if (ModelState.IsValid)
         {
             order.CreateAt = DateTime.Now;
             order.CurrentStatus = OrderStatusConstant.NeedToConfirm;
+            
             if (order.IsCustomer)
             {
                 order.DistributorId = null;
@@ -69,6 +71,20 @@ public class OrdersController : Controller
             {
                 order.CustomerId = null;
             }
+
+            for (var i = 0; i < order.Products.Count; i++)
+            {
+                var product = order.Products[i];
+                order.OrderDetails.Add(new OrderDetail
+                {
+                    OrderNumber = i+1,
+                    ProductId = product.Id,
+                    Amount = product.Amount,
+                    Price = _context.Products.First(p => p.Id == product.Id).Price
+                });
+            }
+
+            order.TotalMoney = order.OrderDetails.Sum(od => od.Price * od.Amount);
 
             _context.Add(order);
             await _context.SaveChangesAsync();
@@ -80,15 +96,19 @@ public class OrdersController : Controller
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name", order.Promotion);
         ViewData["CustomerId"] = new SelectList(_context.Customers.Include(c => c.User), "Id", "Name");
         ViewData["DistributorId"] = new SelectList(_context.Distributors, "Id", "FullName", order.Distributor);
+        ViewData["Products"] = _context.Products.Where(p => p.IsActive).ToList();
 
         return View(order);
     }
 
     //GET: Orders/Admin
     [Authorize(Roles = "Admin,Employee")]
-    public async Task<IActionResult> Admin(int pg)
+    public async Task<IActionResult> Admin(int pg, int? distributorId, int? customerId)
     {
-        var products = _context.Orders
+        var orders = _context.Orders
+            .Where(o =>
+                (distributorId == null || o.DistributorId == distributorId) &&
+                (customerId == null || o.CustomerId == customerId))
             .Include(o => o.PaymentType)
             .Include(o => o.Customer!.User)
             .Include(o => o.Distributor)
@@ -98,12 +118,12 @@ public class OrdersController : Controller
 
         //Pagination
         if (pg < 1) pg = 1;
-        var recsCount = products.Count();
+        var recsCount = orders.Count();
         var pager = new Pager(recsCount, pg);
         var recSkip = (pg - 1) * pager.PageSize;
         ViewBag.Pager = pager;
 
-        return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
+        return View(await orders.Skip(recSkip).Take(pager.PageSize).ToListAsync());
     }
 
     // GET: Orders/AdminDetails/5

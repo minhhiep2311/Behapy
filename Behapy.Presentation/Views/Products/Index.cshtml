@@ -49,7 +49,8 @@
               </li>
               <li class="short">
                 <form asp-controller="Products" method="get">
-                  <select class="nice-select wide rounded-0" id="sort-select" name="sortOrder" onchange="onFilterChange()">
+                  <select class="nice-select wide rounded-0" id="sort-select" name="sortOrder" 
+                          onchange="onFilterChange()">
                     <option value="" selected>-- Tất cả --</option>
                     <option value="latest" selected='@(ViewBag.SortOrder == "latest")'>Mới nhất</option>
                     <option value="high-price" selected='@(ViewBag.SortOrder == "high-price")'>Giá giảm dần</option>
@@ -99,7 +100,9 @@
                         </div>
                       </div>
                       <div class="product-content">
-                        <a class="product-name" asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
+                        <a class="product-name" asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">
+                          @item.Name
+                        </a>
                         <div class="price-box pb-1">
                           <span class="new-price">@item.Price.ToMoney()</span>
                         </div>
@@ -163,7 +166,8 @@
                         </div>
                       </div>
                       <div class="product-content align-self-center">
-                        <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id" class="product-name pb-2">
+                        <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id"
+                           class="product-name pb-2">
                           @item.Name
                         </a>
                         <div class="price-box pb-1">
@@ -208,10 +212,16 @@
                   @if (pager.CurrentPage > 1)
                   {
                     <li class="page-item">
-                      <a class="page-link" asp-controller="Products" asp-route-pg="1" asp-route-categoryId="@ViewData["CategoryId"]" asp-route-sortOrder="@ViewData["SortOrder"]" asp-route-searchText="@ViewData["SearchText"]">Đầu</a>
+                      <a class="page-link" asp-controller="Products" asp-route-pg="1"
+                         asp-route-category="@ViewData["CategoryId"]" asp-route-sortOrder="@ViewData["SortOrder"]"
+                         asp-route-searchText="@ViewData["SearchText"]">
+                        Đầu
+                      </a>
                     </li>
                     <li class="page-item">
-                      <a class="page-link" asp-controller="Products" asp-route-pg="@(pager.CurrentPage - 1)" asp-route-categoryId="@ViewData["CategoryId"]" asp-route-sortOrder="@ViewData["SortOrder"]" asp-route-searchText="@ViewData["SearchText"]" aria-label="Trước">
+                      <a class="page-link" asp-controller="Products" asp-route-pg="@(pager.CurrentPage - 1)" 
+                         asp-route-category="@ViewData["CategoryId"]" asp-route-sortOrder="@ViewData["SortOrder"]"
+                         asp-route-searchText="@ViewData["SearchText"]" aria-label="Trước">
                         <span class="fa fa-chevron-left"></span>
                       </a>
                     </li>
@@ -221,19 +231,29 @@
                   {
                     <li class="page-item @(p == pager.CurrentPage ? "active" : "")">
                       @{ var pge = p; }
-                      <a class="page-link" asp-controller="Products" asp-route-pg="@pge" asp-route-categoryId="@ViewData["CategoryId"]" asp-route-sortOrder="@ViewData["SortOrder"]" asp-route-searchText="@ViewData["SearchText"]">@pge</a>
+                      <a class="page-link" asp-controller="Products" asp-route-pg="@pge"
+                         asp-route-category="@ViewData["CategoryId"]" asp-route-sortOrder="@ViewData["SortOrder"]"
+                         asp-route-searchText="@ViewData["SearchText"]">
+                        @pge
+                      </a>
                     </li>
                   }
 
                   @if (pager.CurrentPage < pager.TotalPages)
                   {
                     <li class="page-item">
-                      <a class="page-link" asp-controller="Products" asp-route-pg="@(pager.CurrentPage + 1)" asp-route-categoryId="@ViewData["CategoryId"]" asp-route-sortOrder="@ViewData["SortOrder"]" asp-route-searchText="@ViewData["SearchText"]" aria-label="Previous">
+                      <a class="page-link" asp-controller="Products" asp-route-pg="@(pager.CurrentPage + 1)" 
+                         asp-route-category="@ViewData["CategoryId"]" asp-route-sortOrder="@ViewData["SortOrder"]" 
+                         asp-route-searchText="@ViewData["SearchText"]" aria-label="Previous">
                         <span class="fa fa-chevron-right"></span>
                       </a>
                     </li>
                     <li class="page-item">
-                      <a class="page-link" asp-controller="Products" asp-route-pg="@pager.EndPage" asp-route-categoryId="@ViewData["CategoryId"]" asp-route-sortOrder="@ViewData["SortOrder"]" asp-route-searchText="@ViewData["SearchText"]">Cuối</a>
+                      <a class="page-link" asp-controller="Products" asp-route-pg="@pager.EndPage"
+                         asp-route-category="@ViewData["CategoryId"]" asp-route-sortOrder="@ViewData["SortOrder"]"
+                         asp-route-searchText="@ViewData["SearchText"]">
+                        Cuối
+                      </a>
                     </li>
                   }
                 </ul>
