@@ -192,7 +192,8 @@ public class ProductsController : Controller
         if (product == null)
             return NotFound();
 
-        var promotions = _context.Promotions.Where(p => p.Type == PromotionType.Product);
+        var now = DateTime.Now;
+        var promotions = _context.Promotions.Where(p => p.Type == PromotionType.Product && p.EndAt >= now);
 
         ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
         ViewData["ProductPromotionsId"] = new MultiSelectList(promotions, "Id", "Name",
@@ -228,7 +229,8 @@ public class ProductsController : Controller
                 .ToList();
 
             oldProduct.ProductPromotions.RemoveAll(pp => !newProductPromotionsId.Contains(pp));
-            oldProduct.ProductPromotions.AddRange(newProductPromotionsId.Where(pp => !oldProduct.ProductPromotions.Contains(pp)));
+            oldProduct.ProductPromotions.AddRange(
+                newProductPromotionsId.Where(pp => !oldProduct.ProductPromotions.Contains(pp)));
             oldProduct.Name = product.Name;
             oldProduct.Amount = product.Amount;
             oldProduct.Price = product.Price;
