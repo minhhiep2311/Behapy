@@ -24,7 +24,7 @@
         <div class="text-right">
           <button class="btn btn-tone btn-primary" onclick="exportExcel()">
             <i class="anticon anticon-file-excel m-r-5"></i>
-            <span>Xuất Excel</span>
+            <span>Xuất hóa đơn</span>
           </button>
         </div>
         <!-- Customer -->
@@ -69,7 +69,7 @@
         <!-- PaymentType -->
         <div class="form-group">
           <label for="PaymentType" class="font-weight-semibold">Hình thức thanh toán</label>
-          <input class="form-control" type="text" id="PaymentType" name="PaymentType" value="@Model.PaymentType.Name"
+          <input class="form-control" type="text" id="PaymentType" name="PaymentType" value="@Model.PaymentType?.Name"
                  readonly>
         </div>
 
@@ -102,8 +102,8 @@
               <tr>
                 <th scope="col">STT</th>
                 <th scope="col">Sản phẩm</th>
-                <th scope="col">Giá</th>
                 <th scope="col">Số lượng</th>
+                <th scope="col">Giá</th>
                 <th scope="col">Tổng tiền</th>
               </tr>
             </thead>

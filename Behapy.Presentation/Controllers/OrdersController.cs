@@ -40,7 +40,12 @@ public class OrdersController : Controller
     // GET: Promotion/Create
     public IActionResult Create()
     {
-        ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Id");
+        ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Name");
+        ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name");
+        ViewData["CustomerId"] = new SelectList(_context.Customers.Include(c => c.User), "Id", "Name");
+        ViewData["DistributorId"] = new SelectList(_context.Distributors, "Id", "FullName");
+        ViewData["Products"] = _context.Products.Where(p => p.IsActive).ToList();
+
         return View();
     }
 
@@ -50,29 +55,60 @@ public class OrdersController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-        [Bind("Id,Name,Value,Unit,Voucher,MaxDiscount,EndAt,StartAt,TypeId")]
+        [Bind("CurrentStatus,TotalMoney,Note,Address,PaymentTypeId,CustomerId,DistributorId,PromotionId,IsCustomer,Products")]
         Order order)
     {
         if (ModelState.IsValid)
         {
+            order.CreateAt = DateTime.Now;
+            order.CurrentStatus = OrderStatusConstant.NeedToConfirm;
+            
+            if (order.IsCustomer)
+            {
+                order.DistributorId = null;
+            }
+            else
+            {
+                order.CustomerId = null;
+            }
+
+            for (var i = 0; i < order.Products.Count; i++)
+            {
+                var product = order.Products[i];
+                order.OrderDetails.Add(new OrderDetail
+                {
+                    OrderNumber = i+1,
+                    ProductId = product.Id,
+                    Amount = product.Amount,
+                    Price = _context.Products.First(p => p.Id == product.Id).Price
+                });
+            }
+
+            order.TotalMoney = order.OrderDetails.Sum(od => od.Price * od.Amount);
+
             _context.Add(order);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction(nameof(Admin));
         }
 
-        ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Id", order.PaymentType);
-        ViewData["TypeId"] = new SelectList(_context.Customers, "Id", "Id", order.Customer);
-        ViewData["DistributorId"] = new SelectList(_context.Distributors, "Id", "Id", order.Distributor);
-        ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Id", order.Promotion);
+        ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Name", order.PaymentType);
+        ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name", order.Promotion);
+        ViewData["CustomerId"] = new SelectList(_context.Customers.Include(c => c.User), "Id", "Name");
+        ViewData["DistributorId"] = new SelectList(_context.Distributors, "Id", "FullName", order.Distributor);
+        ViewData["Products"] = _context.Products.Where(p => p.IsActive).ToList();
 
         return View(order);
     }
 
     //GET: Orders/Admin
     [Authorize(Roles = "Admin,Employee")]
-    public async Task<IActionResult> Admin(int pg)
+    public async Task<IActionResult> Admin(int pg, int? distributorId, int? customerId)
     {
-        var products = _context.Orders
+        var orders = _context.Orders
+            .Where(o =>
+                (distributorId == null || o.DistributorId == distributorId) &&
+                (customerId == null || o.CustomerId == customerId))
             .Include(o => o.PaymentType)
             .Include(o => o.Customer!.User)
             .Include(o => o.Distributor)
@@ -82,12 +118,12 @@ public class OrdersController : Controller
 
         //Pagination
         if (pg < 1) pg = 1;
-        var recsCount = products.Count();
+        var recsCount = orders.Count();
         var pager = new Pager(recsCount, pg);
         var recSkip = (pg - 1) * pager.PageSize;
         ViewBag.Pager = pager;
 
-        return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
+        return View(await orders.Skip(recSkip).Take(pager.PageSize).ToListAsync());
     }
 
     // GET: Orders/AdminDetails/5
@@ -259,8 +295,11 @@ public class OrdersController : Controller
         worksheet.Cells["A2:B2"].Merge = true;
         worksheet.Cells[2, 1].Value = "Địa chỉ: Số 5, Lô Ơ1, Linh Đàm, Q.Hoàng Mai, TP.Hà Nội";
 
-        worksheet.Cells["A3:E3"].Merge = true;
+        worksheet.Cells["A3:B3"].Merge = true;
         worksheet.Cells[3, 1].Value = "Tên khách hàng:";
+
+        worksheet.Cells["C3:E3"].Merge = true;
+        worksheet.Cells[3, 3].Value = "Số điện thoại:";
 
         worksheet.Cells["A4:E4"].Merge = true;
         worksheet.Cells[4, 1].Value = "Địa chỉ khách:";
@@ -291,6 +330,7 @@ public class OrdersController : Controller
 
         // Ghi thông tin khách hàng
         worksheet.Cells[3, 1].Value = $"Tên khách hàng: {order.Customer?.User.FullName}";
+        worksheet.Cells[3, 3].Value = $"Số điện thoại: {order.Customer?.User.PhoneNumber}";
         worksheet.Cells[4, 1].Value = $"Địa chỉ: {order.Customer?.Address}";
 
         // Ghi danh sách sản phẩm

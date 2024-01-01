@@ -27,7 +27,9 @@ function removeFromCart(productId) {
         type: 'DELETE',
         contentType: 'application/json',
         success: function () {
-            bootstrap.showToast({body: 'Đã xóa sản phẩm khỏi giỏ hàng'});
+            bootstrap.showToast({
+                body: 'Đã xóa sản phẩm khỏi giỏ hàng'
+            });
             updateMiniCart(true);
         },
     });
@@ -67,7 +69,7 @@ function updateMiniCart(updateCartPage) {
                 const content = `
                   <div class="product-item_content">
                     <a href="/Products/Details/${item.product.id}" class="product-item_title">${item.product.name}</a>
-                    <span class="product-item_quantity">${item.amount} x ${item.product.price}</span>
+                    <span class="product-item_quantity">${item.amount} x ${numberPipe(item.product.price.toString())}</span>
                   </div>
                 `;
 
@@ -96,7 +98,7 @@ function updateMiniCart(updateCartPage) {
                 `;
                 const price = $(`
                     <td class="product-price">
-                        <span class="amount">${item.product.price}</span>
+                        <span class="amount">${numberPipe(item.product.price.toString())}</span>
                     </td>
                 `);
                 const amount = $(`
@@ -108,7 +110,7 @@ function updateMiniCart(updateCartPage) {
                 `);
                 const subtotal = $(`
                     <td class="subtotal">
-                        <span class="amount">${item.product.price * item.product.amount}</span>
+                        <span class="amount">${numberPipe((item.product.price * item.product.amount).toString())}</span>
                     </td>
                 `);
                 const removeBtnPage = $(`
@@ -129,9 +131,9 @@ function updateMiniCart(updateCartPage) {
 
                 cartPageWrapper.append(itemHtmlPage);
             }
-
+            
             $('#mini-cart-quantity').html(quantity);
-            $('#mini-cart-total').html(total);
+            $('#mini-cart-total').html(numberPipe(total.toString()));
             if (updateCartPage) {
                 $('#cart-subtotal').html(total);
                 $('#cart-total').html(total);
@@ -156,3 +158,10 @@ function updateMiniCart(updateCartPage) {
         },
     });
 }
+
+const numberPipe = IMask.createPipe({
+    mask: Number,
+    scale: 2,
+    thousandsSeparator: ',',
+    radix: '.',
+});
