@@ -105,10 +105,10 @@
                     @if (pager.CurrentPage > 1)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="1">Đầu</a>
+                            <a class="page-link" asp-controller="Distributors" asp-action="Index" asp-route-pg="1">Đầu</a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage - 1)" aria-label="Trước">
+                            <a class="page-link" asp-controller="Distributors" asp-action="Index" asp-route-pg="@(pager.CurrentPage - 1)" aria-label="Trước">
                                 <span class="fa fa-chevron-left"></span>
                             </a>
                         </li>
@@ -120,7 +120,7 @@
                             @{
                                 var pge = p;
                             }
-                            <a asp-controller="Products" asp-action="Admin" asp-route-pg="@pge" a class="page-link">
+                            <a asp-controller="Distributors" asp-action="Index" asp-route-pg="@pge" a class="page-link">
                                 @pge
                             </a>
                         </li>
@@ -129,12 +129,12 @@
                     @if (pager.CurrentPage < pager.TotalPages)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage + 1)" aria-label="Previous">
+                            <a class="page-link" asp-controller="Distributors" asp-action="Index" asp-route-pg="@(pager.CurrentPage + 1)" aria-label="Previous">
                                 <span class="fa fa-chevron-right"></span>
                             </a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@pager.EndPage">Cuối</a>
+                            <a class="page-link" asp-controller="Distributors" asp-action="Index" asp-route-pg="@pager.EndPage">Cuối</a>
                         </li>
                     }
                 </ul>
@@ -142,3 +142,4 @@
         </nav>
     </div>
     <!-- Pagination end -->
+
