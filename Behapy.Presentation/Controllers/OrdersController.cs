@@ -44,7 +44,10 @@ public class OrdersController : Controller
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name");
         ViewData["CustomerId"] = new SelectList(_context.Customers.Include(c => c.User), "Id", "Name");
         ViewData["DistributorId"] = new SelectList(_context.Distributors, "Id", "FullName");
-        ViewData["Products"] = _context.Products.Where(p => p.IsActive).ToList();
+        ViewData["Products"] = _context.Products
+            .Where(p => p.IsActive)
+            .OrderBy(p => p.Name)
+            .ToList();
 
         return View();
     }
@@ -96,7 +99,10 @@ public class OrdersController : Controller
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name", order.Promotion);
         ViewData["CustomerId"] = new SelectList(_context.Customers.Include(c => c.User), "Id", "Name");
         ViewData["DistributorId"] = new SelectList(_context.Distributors, "Id", "FullName", order.Distributor);
-        ViewData["Products"] = _context.Products.Where(p => p.IsActive).ToList();
+        ViewData["Products"] = _context.Products
+            .Where(p => p.IsActive)
+            .OrderBy(p => p.Name)
+            .ToList();
 
         return View(order);
     }

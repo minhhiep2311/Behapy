@@ -14,11 +14,12 @@ namespace Behapy.Presentation.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? year)
         {
-            var today = DateTime.Now;
+            year ??= DateTime.Now.Year;
 
             ViewData["Revenue"] = _context.Orders
+                .Where(o => o.CreateAt.Year == year)
                 .Sum(o => o.TotalMoney);
             ViewData["OrdersCount"] = _context.Orders
                 .Count(o => o.CurrentStatus != OrderStatusConstant.Denied)
@@ -26,7 +27,7 @@ namespace Behapy.Presentation.Controllers
             ViewData["CustomersCount"] = _context.Customers.Count().ToString("N0");
             ViewData["DistributorsCount"] = _context.Distributors.Count().ToString("N0");
             ViewData["RevenueChart"] = _context.Orders
-                .Where(o => o.CreateAt.Year == today.Year)
+                .Where(o => o.CreateAt.Year == year)
                 .GroupBy(o => new { o.CreateAt.Month, o.CreateAt.Year, IsDistributor = o.DistributorId != null })
                 .Select(my => new
                 {
@@ -41,16 +42,21 @@ namespace Behapy.Presentation.Controllers
                 .Select(x => new
                 {
                     x.Key,
-                    Sum = x.Sum(od => od.Price),
-                    Count = x.Count()
+                    Sum = x.Sum(od => od.Price * od.Amount),
+                    Count = x.Sum(od => od.Amount)
                 })
-                .OrderBy(x => x.Count)
+                .OrderByDescending(x => x.Count)
                 .Take(5)
                 .Join(_context.Products,
                     arg => arg.Key,
                     product => product.Id,
                     (arg, product) => new { Product = product, arg.Sum, arg.Count });
 
+            var x = _context.OrderDetails
+                .Include(od => od.Order)
+                .Where(od => od.Order.CurrentStatus != OrderStatusConstant.Denied)
+                .GroupBy(od => od.ProductId);
+            
             return View();
         }
     }
