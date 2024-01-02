@@ -20,6 +20,7 @@
             <form asp-action="Edit">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="DistributorLevelId">
                 <div class="form-group">
                     <label asp-for="FullName" class="control-label"></label>
                     <input asp-for="FullName" class="form-control" />
@@ -35,12 +36,6 @@
                     <input asp-for="Address" class="form-control" />
                     <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
-                @* 
-                <div class="form-group">
-                    <label asp-for="DistributorLevelId" class="control-label">Phân loại</label>
-                    <select asp-for="DistributorLevelId" class="form-control" asp-items="ViewBag.DistributorLevelId"></select>
-                    <span asp-validation-for="DistributorLevelId" class="text-danger"></span>
-                </div> *@
                 <div class="form-group">
                     <input type="submit" value="Lưu" class="btn btn-primary" />
                 </div>

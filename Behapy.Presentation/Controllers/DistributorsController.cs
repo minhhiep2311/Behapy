@@ -104,7 +104,7 @@ namespace Behapy.Presentation.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
-            [Bind("Id,FullName,Address,Phone,Position,DistributorLevelId")] Distributor distributor)
+            [Bind("Id,FullName,Address,Phone,DistributorLevelId")] Distributor distributor)
         {
             if (id != distributor.Id)
             {
