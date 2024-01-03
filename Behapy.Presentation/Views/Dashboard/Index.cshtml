@@ -4,6 +4,7 @@
 @{
   ViewData["Title"] = "Dashboard";
   Layout = "~/Views/Shared/Admin/_Layout.cshtml";
+  var currentYear = DateTime.Now.Year;
 }
 
 <div class="main-content">
@@ -78,9 +79,21 @@
             <h5>Tổng doanh thu</h5>
             <div>
               <div class="btn-group">
-                <button class="btn btn-default active">
+                <button class="btn btn-primary">
                   <span>Tháng</span>
                 </button>
+                <div class="dropdown">
+                  <button class="btn btn-default active dropdown-toggle" data-toggle="dropdown">
+                    <span>Năm @ViewData["Year"]</span>
+                  </button>
+                  <div class="dropdown-menu">
+                    @for (var i = ViewData["MinYear"] as int? ?? 0; i <= currentYear; i++)
+                    {
+                      var year = i;
+                      <a asp-action="Index" asp-route-year="@year" class="dropdown-item">@year</a>
+                    }
+                  </div>
+                </div>
               </div>
             </div>
           </div>
