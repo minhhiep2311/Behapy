@@ -64,11 +64,11 @@ namespace Behapy.Presentation.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            [Bind("FullName,Address,Phone,Position,DistributorLevelId")] Distributor distributor)
+        public async Task<IActionResult> Create([Bind("FullName,Address,Phone,Position")] Distributor distributor)
         {
             if (ModelState.IsValid)
             {
+                distributor.DistributorLevelId = 1;
                 _context.Add(distributor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -82,7 +82,7 @@ namespace Behapy.Presentation.Controllers
         // GET: Distributors/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Distributors == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -104,7 +104,8 @@ namespace Behapy.Presentation.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,
-            [Bind("Id,FullName,Address,Phone,DistributorLevelId")] Distributor distributor)
+            [Bind("Id,FullName,Address,Phone,DistributorLevelId")]
+            Distributor distributor)
         {
             if (id != distributor.Id)
             {
@@ -124,10 +125,8 @@ namespace Behapy.Presentation.Controllers
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+
+                    throw;
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -141,7 +140,7 @@ namespace Behapy.Presentation.Controllers
         // GET: Distributors/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Distributors == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -162,11 +161,6 @@ namespace Behapy.Presentation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Distributors == null)
-            {
-                return Problem("Entity set 'BehapyDbContext.Distributors'  is null.");
-            }
-
             var distributor = await _context.Distributors.FindAsync(id);
             if (distributor != null)
             {
@@ -179,7 +173,7 @@ namespace Behapy.Presentation.Controllers
 
         private bool DistributorExists(int id)
         {
-            return (_context.Distributors?.Any(e => e.Id == id)).GetValueOrDefault();
+            return _context.Distributors.Any(e => e.Id == id);
         }
     }
 }
