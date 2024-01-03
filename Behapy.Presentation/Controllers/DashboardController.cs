@@ -51,11 +51,6 @@ namespace Behapy.Presentation.Controllers
                     arg => arg.Key,
                     product => product.Id,
                     (arg, product) => new { Product = product, arg.Sum, arg.Count });
-
-            var x = _context.OrderDetails
-                .Include(od => od.Order)
-                .Where(od => od.Order.CurrentStatus != OrderStatusConstant.Denied)
-                .GroupBy(od => od.ProductId);
             
             return View();
         }
