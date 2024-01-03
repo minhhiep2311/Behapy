@@ -134,9 +134,22 @@ public class ProductsController : Controller
         var product = await _context.Products
             .Include(p => p.Category)
             .Include(p => p.ProductPromotions)
+            .ThenInclude(productPromotion => productPromotion.Promotion)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (product == null)
             return NotFound();
+
+        var maxPromotionValue = product.ProductPromotions
+            .Select(pp => pp.Promotion)
+            .Where(p => p.EndAt > DateTime.Now && p.Unit == PromotionUnit.Value)
+            .Max(p => (decimal?)p.Value) ?? 0;
+        var maxPromotionPercentage = product.ProductPromotions
+            .Select(pp => pp.Promotion)
+            .Where(p => p.EndAt > DateTime.Now && p.Unit == PromotionUnit.Percentage)
+            .Max(p => (decimal?)p.Value) ?? 0;
+        var promotionValue = Math.Max(maxPromotionValue, product.Price * maxPromotionPercentage / 100);
+
+        ViewData["PromotionPrice"] = product.Price - promotionValue;
 
         return View(product);
     }
