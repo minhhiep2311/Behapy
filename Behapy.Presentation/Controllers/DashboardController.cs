@@ -18,6 +18,7 @@ namespace Behapy.Presentation.Controllers
         {
             year ??= DateTime.Now.Year;
 
+            ViewData["Year"] = year;
             ViewData["Revenue"] = _context.Orders
                 .Where(o => o.CreateAt.Year == year)
                 .Sum(o => o.TotalMoney);
@@ -39,11 +40,11 @@ namespace Behapy.Presentation.Controllers
                 .Include(od => od.Order)
                 .Where(od => od.Order.CurrentStatus != OrderStatusConstant.Denied)
                 .GroupBy(od => od.ProductId)
-                .Select(x => new
+                .Select(o => new
                 {
-                    x.Key,
-                    Sum = x.Sum(od => od.Price * od.Amount),
-                    Count = x.Sum(od => od.Amount)
+                    o.Key,
+                    Sum = o.Sum(od => od.Price * od.Amount),
+                    Count = o.Sum(od => od.Amount)
                 })
                 .OrderByDescending(x => x.Count)
                 .Take(5)
@@ -51,6 +52,9 @@ namespace Behapy.Presentation.Controllers
                     arg => arg.Key,
                     product => product.Id,
                     (arg, product) => new { Product = product, arg.Sum, arg.Count });
+            ViewData["MinYear"] = _context.Orders
+                .Select(o => o.CreateAt.Year)
+                .Min();
             
             return View();
         }
