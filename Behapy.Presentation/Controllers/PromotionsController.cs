@@ -5,9 +5,11 @@ using Behapy.Presentation.Areas.Identity.Data;
 using Behapy.Presentation.Enums;
 using Behapy.Presentation.Extensions;
 using Behapy.Presentation.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Behapy.Presentation.Controllers;
 
+[Authorize(Roles = "Admin,Employee")]
 public class PromotionsController : Controller
 {
     private readonly BehapyDbContext _context;

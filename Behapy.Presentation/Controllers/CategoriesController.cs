@@ -41,12 +41,14 @@ public class CategoriesController : Controller
     }
 
     // GET: Categories/Create
+    [Authorize(Roles = "Admin,Employee")]
     public IActionResult Create()
     {
         return View();
     }
 
     // POST: Categories/Create
+    [Authorize(Roles = "Admin,Employee")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,Name,Description")] Category category)
@@ -59,6 +61,7 @@ public class CategoriesController : Controller
     }
 
     // GET: Categories/Edit/5
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
@@ -76,6 +79,7 @@ public class CategoriesController : Controller
     }
 
     // POST: Categories/Edit/5
+    [Authorize(Roles = "Admin,Employee")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Category category)
@@ -109,6 +113,7 @@ public class CategoriesController : Controller
     }
 
     // GET: Categories/Delete/5
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null)
@@ -127,6 +132,7 @@ public class CategoriesController : Controller
     }
 
     // POST: Categories/Delete/5
+    [Authorize(Roles = "Admin,Employee")]
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
