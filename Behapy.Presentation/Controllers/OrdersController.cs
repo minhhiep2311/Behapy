@@ -40,10 +40,11 @@ public class OrdersController : Controller
     // GET: Promotion/Create
     public IActionResult Create()
     {
+        ViewData["CustomerId"] = _context.Customers.Include(c => c.User);
+        ViewData["DistributorId"] = _context.Distributors;
+
         ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Name");
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name");
-        ViewData["CustomerId"] = new SelectList(_context.Customers.Include(c => c.User), "Id", "Name");
-        ViewData["DistributorId"] = new SelectList(_context.Distributors, "Id", "FullName");
         ViewData["Products"] = _context.Products
             .Where(p => p.IsActive)
             .OrderBy(p => p.Name)
@@ -58,14 +59,15 @@ public class OrdersController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-        [Bind("CurrentStatus,TotalMoney,Note,Address,PaymentTypeId,CustomerId,DistributorId,PromotionId,IsCustomer,Products")]
+        [Bind(
+            "CurrentStatus,TotalMoney,Note,Address,PaymentTypeId,CustomerId,DistributorId,PromotionId,IsCustomer,Products")]
         Order order)
     {
         if (ModelState.IsValid)
         {
             order.CreateAt = DateTime.Now;
             order.CurrentStatus = OrderStatusConstant.NeedToConfirm;
-            
+
             if (order.IsCustomer)
             {
                 order.DistributorId = null;
@@ -80,7 +82,7 @@ public class OrdersController : Controller
                 var product = order.Products[i];
                 order.OrderDetails.Add(new OrderDetail
                 {
-                    OrderNumber = i+1,
+                    OrderNumber = i + 1,
                     ProductId = product.Id,
                     Amount = product.Amount,
                     Price = _context.Products.First(p => p.Id == product.Id).Price
@@ -95,9 +97,11 @@ public class OrdersController : Controller
             return RedirectToAction(nameof(Admin));
         }
 
+        ViewData["CustomerId"] = _context.Customers.Include(c => c.User);
+        ViewData["DistributorId"] = _context.Distributors;
+
         ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Name", order.PaymentType);
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name", order.Promotion);
-        ViewData["CustomerId"] = new SelectList(_context.Customers.Include(c => c.User), "Id", "Name");
         ViewData["DistributorId"] = new SelectList(_context.Distributors, "Id", "FullName", order.Distributor);
         ViewData["Products"] = _context.Products
             .Where(p => p.IsActive)
