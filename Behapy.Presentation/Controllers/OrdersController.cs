@@ -59,8 +59,7 @@ public class OrdersController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-        [Bind(
-            "CurrentStatus,TotalMoney,Note,Address,PaymentTypeId,CustomerId,DistributorId,PromotionId,IsCustomer,Products")]
+        [Bind("Note,Address,PaymentTypeId,CustomerId,DistributorId,PromotionId,IsCustomer,Products")]
         Order order)
     {
         if (ModelState.IsValid)
