@@ -59,7 +59,7 @@ public class OrdersController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-        [Bind("Note,Address,PaymentTypeId,CustomerId,DistributorId,PromotionId,IsCustomer,Products")]
+        [Bind("CurrentStatus,Note,Address,PaymentTypeId,CustomerId,DistributorId,PromotionId,IsCustomer,Products")]
         Order order)
     {
         if (ModelState.IsValid)
@@ -101,7 +101,6 @@ public class OrdersController : Controller
 
         ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Name", order.PaymentType);
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name", order.Promotion);
-        ViewData["DistributorId"] = new SelectList(_context.Distributors, "Id", "FullName", order.Distributor);
         ViewData["Products"] = _context.Products
             .Where(p => p.IsActive)
             .OrderBy(p => p.Name)
@@ -204,6 +203,7 @@ public class OrdersController : Controller
             throw new Exception("Invalid status");
 
         var order = _context.Orders
+            .Include(o => o.Distributor)
             .Include(o => o.OrderDetails)
             .ThenInclude(od => od.Product)
             .FirstOrDefault(p => p.Id == id);
@@ -245,6 +245,11 @@ public class OrdersController : Controller
             case OrderStatusConstant.Confirmed:
             {
                 HandleConfirmOrder(order);
+                break;
+            }
+            case OrderStatusConstant.Delivered:
+            {
+                HandleDeliveredOrder(order);
                 break;
             }
         }
@@ -419,5 +424,30 @@ public class OrdersController : Controller
             product.Amount -= productDetail.Amount;
             _context.Update(product);
         }
+    }
+
+    private void HandleDeliveredOrder(Order order)
+    {
+        var distributor = order.Distributor;
+        if (distributor == null)
+        {
+            return;
+        }
+
+        distributor.TotalMoney += order.TotalMoney;
+
+        var level = _context.DistributorLevels
+            .First(dl => dl.Id == distributor.DistributorLevelId);
+        if (level.NextLevel != null)
+        {
+            var nextLevel = _context.DistributorLevels
+                .First(dl => dl.Id == level.NextLevel);
+            if (distributor.TotalMoney >= nextLevel.MoneyNeeded)
+            {
+                distributor.DistributorLevelId = nextLevel.Id;
+            }
+        }
+
+        _context.Update(distributor);
     }
 }
