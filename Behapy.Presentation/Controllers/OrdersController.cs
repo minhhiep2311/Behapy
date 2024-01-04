@@ -236,6 +236,18 @@ public class OrdersController : Controller
                     throw new Exception("Invalid status: Status should be Confirmed or Denied");
                 break;
             }
+            case OrderStatusConstant.Confirmed:
+            {
+                if (status != OrderStatusConstant.Delivering)
+                    throw new Exception("Invalid status: Status should be Confirmed or Denied");
+                break;
+            }
+            case OrderStatusConstant.Delivering:
+            {
+                if (status != OrderStatusConstant.Delivered && status != OrderStatusConstant.DeliverFailed)
+                    throw new Exception("Invalid status: Status should be Confirmed or Denied");
+                break;
+            }
             default:
                 throw new Exception("Unhandled status: " + status);
         }
