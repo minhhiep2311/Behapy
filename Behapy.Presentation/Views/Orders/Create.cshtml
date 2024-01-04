@@ -37,21 +37,31 @@
         </div>
         <div class="form-group customer">
           <label asp-for="CustomerId" class="control-label"></label>
-          <select asp-for="CustomerId" class="select2">
-            @foreach (var customer in (ViewData["CustomerId"] as IEnumerable<dynamic>)!)
-            {
-              <option value="@customer.Id">@customer.Name (@customer.User.PhoneNumber)</option>
-            }
-          </select>
+          <div class="input-group">
+            <select asp-for="CustomerId" class="select2 flex-grow-1">
+              @foreach (var customer in (ViewData["CustomerId"] as IEnumerable<dynamic>)!)
+              {
+                <option value="@customer.Id">@customer.Name (@customer.User.PhoneNumber)</option>
+              }
+            </select>
+            <div class="input-group-append">
+              <a asp-controller="Customers" asp-action="Create" class="btn btn-primary ml-3">Thêm khách hàng</a>
+            </div>
+          </div>
         </div>
         <div class="form-group distributor" style="display: none">
           <label asp-for="DistributorId" class="control-label"></label>
-          <select asp-for="DistributorId" class="select2" onchange="updateAddress()">
-            @foreach (var distributor in (ViewData["DistributorId"] as IEnumerable<dynamic>)!)
-            {
-              <option value="@distributor.Id">@distributor.FullName (@distributor.Phone)</option>
-            }
-          </select>
+          <div class="input-group">
+            <select asp-for="DistributorId" class="select2 flex-grow-1" onchange="updateAddress()">
+              @foreach (var distributor in (ViewData["DistributorId"] as IEnumerable<dynamic>)!)
+              {
+                <option value="@distributor.Id">@distributor.FullName (@distributor.Phone)</option>
+              }
+            </select>
+            <div class="input-group-append">
+              <a asp-controller="Distributors" asp-action="Create" class="btn btn-primary ml-3">Thêm nhà phân phối</a>
+            </div>
+          </div>
         </div>
         <div class="form-group">
           <label asp-for="Address" class="control-label"></label>
