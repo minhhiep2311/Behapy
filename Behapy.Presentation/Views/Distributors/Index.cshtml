@@ -2,137 +2,141 @@
 @using Behapy.Presentation.Models;
 
 @{
-  ViewData["Title"] = "Index";
-  Layout = "~/Views/Shared/Admin/_Layout.cshtml";
-  var pager = new Pager();
-  var pageNo = 0;
-  if (ViewBag.Pager != null)
-  {
-    pager = ViewBag.Pager;
-    pageNo = pager.CurrentPage;
-  }
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/Admin/_Layout.cshtml";
+    var pager = new Pager();
+    var pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
 }
 
 <!-- Content Wrapper START -->
 <div class="main-content">
-  <div class="page-header">
-    <h2 class="header-title">Đối tác</h2>
-    <div class="header-sub-title">
-      <nav class="breadcrumb breadcrumb-dash">
-        <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang Chủ</a>
-        <span class="breadcrumb-item active" href="#">Đối tác</span>
-      </nav>
+    <div class="page-header">
+        <h2 class="header-title">Đối tác</h2>
+        <div class="header-sub-title">
+            <nav class="breadcrumb breadcrumb-dash">
+                <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang Chủ</a>
+                <span class="breadcrumb-item active" href="#">Đối tác</span>
+            </nav>
+        </div>
     </div>
-  </div>
-  <div class="card">
-    <div class="card-body">
-      <div class="row m-b-30">
-        <div class="col-6 text-left">
-          <div class="d-md-flex">
-            @*  @using (Html.BeginForm("Admin", "Products", FormMethod.Get))
-                        {
-                        <div class="row">
-                        <div class="col-md-12">
-                        @Html.DropDownList("categoryId", ViewData["CategoryId"] as SelectList, "Tất cả danh mục", new { @class = "form-control", onchange = "this.form.submit();" })
-                        </div>
-                        </div>
-                        }*@
-          </div>
-          <div class="">
-            <input type="search" class="form-control" placeholder="Tìm kiếm đối tác" aria-controls="DataTables_Table_0">
-          </div>
-        </div>
-        <div class="col-6 text-right">
-          <a class="btn btn-primary" asp-controller="Distributors" asp-action="Create">
-            <i class="anticon anticon-plus-circle m-r-5"></i>
-            <span>Thêm đối tác</span>
-          </a>
-        </div>
-      </div>
-      <div class="table-responsive">
-        <table class="table table-hover e-commerce-table">
-          <thead>
-            <tr>
-              <th>STT</th>
-              <th>Họ và tên</th>
-              <th>Phân loại</th>
-              <th>Số điện thoại</th>
-              <th></th>
-            </tr>
-          </thead>
+    <div class="card">
+        <div class="card-body">
+            <div class="row m-b-30">
+                <div class="col-6 text-left">
+                    <div>
+                        <form class="input-group" asp-controller="Distributors" asp-action="Search" method="get">
+                            <input type="text" name="q" class="form-control" value="@ViewData["SearchText"]"
+                                placeholder="Tìm kiếm đối tác" />
+                            <button class="btn btn-tone btn-primary" type="submit">
+                                Tìm kiếm
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-6 text-right">
+                    <a class="btn btn-primary" asp-controller="Distributors" asp-action="Create">
+                        <i class="anticon anticon-plus-circle m-r-5"></i>
+                        <span>Thêm đối tác</span>
+                    </a>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover e-commerce-table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Họ và tên</th>
+                            <th>Phân loại</th>
+                            <th>Số điện thoại</th>
+                            <th></th>
+                        </tr>
+                    </thead>
 
-          <tbody>
-            @for (
-              int i = 0, index = (pageNo - 1) * pager.PageSize + 1;
-              i < Model.Count;
-              i++, index++
-            )
-            {
-              var item = Model[i];
-              <tr>
-                <td>@index</td>
-                <td>
-                  <a asp-action="Details" asp-route-id="@item.Id">@item.FullName</a>
-                </td>
-                <td>@item.DistributorLevel?.Name</td>
-                <td>@item.Phone</td>
-                <td class="text-right">
-                  <button onclick="location.href='@Url.Action("Edit", "Distributors", new { id = item.Id })'"
-                          class="btn btn-icon btn-hover btn-sm btn-rounded pull-right">
-                    <i class="anticon anticon-edit"></i>
-                  </button>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+                    <tbody>
+                        @for (
+                        int i = 0, index = (pageNo - 1) * pager.PageSize + 1;
+                        i < Model.Count;
+                        i++, index++
+                        )
+                        {
+                            var item = Model[i];
+                            <tr>
+                                <td>@index</td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@item.Id">@item.FullName</a>
+                                </td>
+                                <td>@item.DistributorLevel?.Name</td>
+                                <td>@item.Phone</td>
+                                <td class="text-right">
+                                    <button
+                                        onclick="location.href='@Url.Action("Edit", "Distributors", new { id = item.Id })'"
+                                        class="btn btn-icon btn-hover btn-sm btn-rounded pull-right">
+                                        <i class="anticon anticon-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 <!-- Pagination -->
 <div class="pagination-area pt-10">
-  <nav aria-label="Page navigation example">
-    @if (pager.TotalPages > 0)
-    {
-      <ul class="pagination justify-content-center">
-        @if (pager.CurrentPage > 1)
+    <nav aria-label="Page navigation example">
+        @if (pager.TotalPages > 0)
         {
-          <li class="page-item">
-            <a class="page-link" asp-controller="Distributors" asp-action="Index" asp-route-pg="1">Đầu</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" asp-controller="Distributors" asp-action="Index" asp-route-pg="@(pager.CurrentPage - 1)" aria-label="Trước">
-              <span class="fa fa-chevron-left"></span>
-            </a>
-          </li>
-        }
+            <ul class="pagination justify-content-center">
+                @if (pager.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-controller="Distributors" asp-action="Index"
+                            asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="1">Đầu</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" asp-controller="Distributors" asp-action="Index"
+                            asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="@(pager.CurrentPage - 1)"
+                            aria-label="Trước">
+                            <span class="fa fa-chevron-left"></span>
+                        </a>
+                    </li>
+                }
 
-        @for (var p = pager.StartPage; p <= pager.EndPage; p++)
-        {
-          <li class="page-item @(p == pager.CurrentPage ? "active" : "")">
-            @{
-              var pge = p;
-            }
-            <a asp-controller="Distributors" asp-action="Index" asp-route-pg="@pge" a class="page-link">
-              @pge
-            </a>
-          </li>
-        }
+                @for (var p = pager.StartPage; p <= pager.EndPage; p++)
+                {
+                    <li class="page-item @(p == pager.CurrentPage ? "active" : "")">
+                        @{
+                            var pge = p;
+                        }
+                        <a asp-controller="Distributors" asp-action="Index" asp-route-searchText="@ViewData["SearchText"]"
+                            asp-route-pg="@pge" a class="page-link">
+                            @pge
+                        </a>
+                    </li>
+                }
 
-        @if (pager.CurrentPage < pager.TotalPages)
-        {
-          <li class="page-item">
-            <a class="page-link" asp-controller="Distributors" asp-action="Index" asp-route-pg="@(pager.CurrentPage + 1)" aria-label="Previous">
-              <span class="fa fa-chevron-right"></span>
-            </a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" asp-controller="Distributors" asp-action="Index" asp-route-pg="@pager.EndPage">Cuối</a>
-          </li>
+                @if (pager.CurrentPage < pager.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-controller="Distributors" asp-action="Index"
+                            asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="@(pager.CurrentPage + 1)"
+                            aria-label="Previous">
+                            <span class="fa fa-chevron-right"></span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" asp-controller="Distributors" asp-action="Index"
+                            asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="@pager.EndPage">Cuối</a>
+                    </li>
+                }
+            </ul>
         }
-      </ul>
-    }
-  </nav>
+    </nav>
 </div>
 <!-- Pagination end -->
