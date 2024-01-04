@@ -41,7 +41,7 @@ public class OrdersController : Controller
     public IActionResult Create()
     {
         ViewData["CustomerId"] = _context.Customers.Include(c => c.User);
-        ViewData["DistributorId"] = _context.Distributors;
+        ViewData["DistributorId"] = _context.Distributors.Include(d => d.DistributorLevel);
 
         ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Name");
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name");
@@ -449,11 +449,11 @@ public class OrdersController : Controller
         distributor.TotalMoney += order.TotalMoney;
 
         var level = _context.DistributorLevels
+            .Include(dl => dl.NextLevel)
             .First(dl => dl.Id == distributor.DistributorLevelId);
         if (level.NextLevel != null)
         {
-            var nextLevel = _context.DistributorLevels
-                .First(dl => dl.Id == level.NextLevel);
+            var nextLevel = level.NextLevel;
             if (distributor.TotalMoney >= nextLevel.MoneyNeeded)
             {
                 distributor.DistributorLevelId = nextLevel.Id;
