@@ -38,7 +38,7 @@
         <div class="form-group customer">
           <label asp-for="CustomerId" class="control-label"></label>
           <div class="input-group">
-            <select asp-for="CustomerId" class="select2 flex-grow-1">
+            <select asp-for="CustomerId" class="select2 flex-grow-1" onchange="onSelectCustomer()">
               @foreach (var customer in (ViewData["CustomerId"] as IEnumerable<dynamic>)!)
               {
                 <option value="@customer.Id">@customer.Name (@customer.User.PhoneNumber)</option>
@@ -52,7 +52,7 @@
         <div class="form-group distributor" style="display: none">
           <label asp-for="DistributorId" class="control-label"></label>
           <div class="input-group">
-            <select asp-for="DistributorId" class="select2 flex-grow-1" onchange="updateAddress()">
+            <select asp-for="DistributorId" class="select2 flex-grow-1" onchange="onSelectDistributor()">
               @foreach (var distributor in (ViewData["DistributorId"] as IEnumerable<dynamic>)!)
               {
                 <option value="@distributor.Id">@distributor.FullName (@distributor.Phone)</option>
@@ -89,18 +89,20 @@
                 <th scope="col">Sản phẩm</th>
                 <th scope="col">Giá</th>
                 <th scope="col">Số lượng</th>
-                <th scope="col">Tổng tiền</th>
+                <th scope="col">Tạm tính</th>
+                <th scope="col">Chiết khấu</th>
+                <th scope="col">Thành tiền</th>
               </tr>
             </thead>
             <tbody id="table-data"></tbody>
             <tfoot>
               <tr>
-                <th scope="row" colspan="4">
+                <th scope="row" colspan="7">
                   <button type="button" class="btn btn-success" onclick="addProduct()">Thêm sản phẩm</button>
                 </th>
               </tr>
               <tr>
-                <th scope="row" colspan="4">Tổng tiền hóa đơn</th>
+                <th scope="row" colspan="6">Tổng tiền hóa đơn</th>
                 <td class="total">@(0m.ToMoney())</td>
               </tr>
             </tfoot>
@@ -131,6 +133,7 @@
     
     const distributors = @Html.Raw(Json.Serialize(ViewData["DistributorId"]));
     const distributorSelect = $('#DistributorId');
+    let selectedDistributor = null;
 
     $(':radio[name="IsCustomer"]').change(function() {
       const isCustomer = $(this).filter(':checked').val();
@@ -154,9 +157,11 @@
       });
     }
     
-    function onSelectProduct(select) {
+    function onSelectProduct(select, skipUpdateTotal = false) {
+      const amountInput = $(select).closest('tr').find('.amount'); 
+
       updatePrice(select);
-      updateMoney($(select).closest('tr').find('.amount'));
+      updateMoney(amountInput, skipUpdateTotal);
     }
     
     function updatePrice(select) {
@@ -168,23 +173,48 @@
       tdPrice.html(numberPipe(price.toString()))
     }
     
-    function updateMoney(input) {
+    function updateMoney(input, skipUpdateTotal) {
       const tr = $(input).closest('tr');
       let price = tr.find('.price').attr('data-price');
       price = isNaN(price) ? 0 : +price;
-      
+
       const trMoney = tr.find('.money');
       const money = $(input).val() * price;
       trMoney.html(numberPipe(money.toString()));
       $(trMoney).attr('data-money', money);
 
-      updateTotalMoney();
+      updateDiscountForDistributor(input);
+      updateSubtotal(input);
+      
+      if (!skipUpdateTotal) {
+        updateTotalMoney();
+      }
+    }
+    
+    function updateDiscountForDistributor(input) {
+      const tr = $(input).closest('tr');
+      const tdDiscountForDistributor = tr.find('.discount-for-distributor');
+      const money = $(input).val() * (selectedDistributor?.distributorLevel?.importReduction ?? 0);
+      tdDiscountForDistributor.html(numberPipe(money.toString()));
+      $(tdDiscountForDistributor).attr('data-discount', money);
+    }
+    
+    function updateSubtotal(input) {
+      const tr = $(input).closest('tr');
+      const money = +tr.find('.money').attr('data-money');
+      const discount = +tr.find('.discount-for-distributor').attr('data-discount');
+      const subtotal = money - discount;
+      const tdSubtotal = tr.find('.sub-total');
+      tdSubtotal.html(numberPipe(subtotal.toString()));
+      $(tdSubtotal).attr('data-sub-total', subtotal);
     }
     
     function updateTotalMoney() {
       let total = 0;
-      $('#table-data .money').each2(function (_, obj) {
-        const value = $(obj).attr('data-money');
+      
+      $('#table-data .sub-total').each2(function (_, obj) {
+        const value = $(obj).attr('data-sub-total');
+        console.log(value);
         total += isNaN(value) ? 0 : +value; 
       });
       $('tfoot .total').html(numberPipe(total.toString()));
@@ -220,12 +250,16 @@
         </td>
       `;
       const tdMoney = `<td class='money'></td>`;
+      const tdDiscountForDistributor = `<td class='discount-for-distributor'></td>`;
+      const tdSubTotal = `<td class='sub-total'></td>`;
 
       tr.append(tdId)
           .append(tdProduct)
           .append(tdPrice)
           .append(tdAmount)
-          .append(tdMoney);
+          .append(tdMoney)
+          .append(tdDiscountForDistributor)
+          .append(tdSubTotal);
 
       $('#table-data').append(tr);
       
@@ -234,10 +268,29 @@
       tr.children('.select2').select2();
     }
     
-    function updateAddress() {
+    function onSelectDistributor() {
       const distributorId = +distributorSelect.val();
-      const distributor = distributors.find(d => d.id === distributorId);
-      $('#Address').val(distributor?.address);
+      selectedDistributor = distributors.find(d => d.id === distributorId);
+
+      updateAddress(selectedDistributor?.address);
+      recalculateTable();
+    }
+
+    function onSelectCustomer() {
+      selectedDistributor = null;
+      recalculateTable();
+    }
+    
+    function recalculateTable() {
+      $('#table-data .product').each2(function (_, obj) {
+        console.log(obj);
+        onSelectProduct(obj[0], true);
+      });
+      updateTotalMoney();
+    }
+    
+    function updateAddress(address) {
+      $('#Address').val(address);
     }
   </script>
 }
