@@ -106,28 +106,32 @@ public class BehapyDbContext : IdentityDbContext<User, Role, string>
                 Id = 1,
                 Name = "B4",
                 MoneyNeeded = 0,
-                NextLevel = 2
+                NextLevelId = 2,
+                ImportReduction = 10_000
             },
             new DistributorLevel
             {
                 Id = 2,
                 Name = "B3",
                 MoneyNeeded = 1_000_000,
-                NextLevel = 3
+                NextLevelId = 3,
+                ImportReduction = 20_000
             },
             new DistributorLevel
             {
                 Id = 3,
                 Name = "B2",
                 MoneyNeeded = 30_000_000,
-                NextLevel = 4
+                NextLevelId = 4,
+                ImportReduction = 30_000
             },
             new DistributorLevel
             {
                 Id = 4,
                 Name = "B1",
                 MoneyNeeded = 100_000_000,
-                NextLevel = null
+                NextLevelId = null,
+                ImportReduction = 40_000
             }
         );
     }

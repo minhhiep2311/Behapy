@@ -10,9 +10,12 @@ public class DistributorLevel
 
     [Precision(18, 2)]
     public decimal MoneyNeeded { get; set; }
+    
+    [Precision(18, 2)]
+    public decimal ImportReduction { get; set; }
 
-    public int? NextLevel { get; set; }
+    public int? NextLevelId { get; set; }
+    public DistributorLevel? NextLevel { get; set; }
 
-    //public IEnumerable<Distributor> Distributors { get; set; } = Enumerable.Empty<Distributor>();
     public ICollection<Distributor> Distributors { get; set; } = new List<Distributor>();
 }

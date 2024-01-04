@@ -1,4 +1,6 @@
 @using Behapy.Presentation.Extensions
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Behapy.Presentation.Constants
 @model Behapy.Presentation.Models.Order
 
 @{
@@ -22,7 +24,31 @@
     <div class="card">
       <div class="card-body">
         <div class="text-right">
-          <button class="btn btn-tone btn-primary" onclick="exportExcel()">
+          @switch (Model.CurrentStatus)
+          {
+            case OrderStatusConstant.NeedToConfirm:
+              <button data-toggle="modal" data-target="#confirmModal" class="btn btn-success">
+                Xác nhận
+              </button>
+              <button data-toggle="modal" data-target="#denyModal" class="btn btn-danger ml-2">
+                Từ chối
+              </button>
+              break;
+            case OrderStatusConstant.Confirmed:
+              <button data-toggle="modal" data-target="#deliveringModal" class="btn btn-success">
+                Chuyển trạng thái sang "@OrderStatusConstant.Delivering"
+              </button>
+              break;
+            case OrderStatusConstant.Delivering:
+              <button data-toggle="modal" data-target="#deliveredModal" class="btn btn-success">
+                Giao hàng thành công
+              </button>
+              <button data-toggle="modal" data-target="#deliverFailedModal" class="btn btn-danger ml-2">
+                Giao hàng thất bại
+              </button>
+              break;
+          }
+          <button class="btn btn-tone btn-primary ml-2" onclick="exportExcel()">
             <i class="anticon anticon-file-excel m-r-5"></i>
             <span>Xuất hóa đơn</span>
           </button>
@@ -140,17 +166,138 @@
   </div>
 </div>
 
+
+<!-- Confirm Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Xác nhận đơn hàng</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <i class="anticon anticon-close"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        Đơn hàng #@Model.Id sẽ được chuyển sang trạng thái "@OrderStatusConstant.Confirmed"
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+        <button onclick="updateStatus('@OrderStatusConstant.Confirmed')" class="confirm-order btn btn-tone btn-success">
+          Xác nhận
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Confirm Modal End -->
+
+<!-- Deny Modal -->
+<div class="modal fade" id="denyModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Từ chối đơn hàng</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <i class="anticon anticon-close"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        Đơn hàng #@Model.Id sẽ được chuyển sang trạng thái "@OrderStatusConstant.Denied"
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+        <button onclick="updateStatus('@OrderStatusConstant.Denied')" class="deny-order btn btn-tone btn-danger">
+          Xác nhận
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Deny Modal End -->
+
+<!-- Delivering Modal -->
+<div class="modal fade" id="deliveringModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Từ chối đơn hàng</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <i class="anticon anticon-close"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        Đơn hàng #@Model.Id sẽ được chuyển sang trạng thái "@OrderStatusConstant.Delivering"
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+        <button onclick="updateStatus('@OrderStatusConstant.Delivering')" class="deny-order btn btn-tone btn-success">
+          Xác nhận
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Delivering Modal End -->
+
+<!-- Delivering Modal -->
+<div class="modal fade" id="deliveredModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Giao hàng thành công</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <i class="anticon anticon-close"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        Đơn hàng #@Model.Id sẽ được chuyển sang trạng thái "@OrderStatusConstant.Delivered"
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+        <button onclick="updateStatus('@OrderStatusConstant.Delivered')" class="deny-order btn btn-tone btn-success">
+          Xác nhận
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Delivering Modal End -->
+
+<!-- Delivering Modal -->
+<div class="modal fade" id="deliverFailedModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Giao hàng thất bại</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <i class="anticon anticon-close"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        Đơn hàng #@Model.Id sẽ được chuyển sang trạng thái "@OrderStatusConstant.DeliverFailed"
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+        <button onclick="updateStatus(@OrderStatusConstant.DeliverFailed)" class="deny-order btn btn-tone btn-danger">
+          Xác nhận
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Delivering Modal End -->
+
 <script>
     function exportExcel() {
-        var orderId = @Model.Id;
+        const orderId = @Model.Id;
 
         // Tạo một form ẩn để gửi dữ liệu
-        var form = document.createElement('form');
+        const form = document.createElement('form');
         form.method = 'post';
         form.action = '@Url.Action("ExportOrderToExcel", "Orders")'; 
 
         // Tạo một input ẩn để chứa OrderId
-        var orderIdInput = document.createElement('input');
+        const orderIdInput = document.createElement('input');
         orderIdInput.type = 'hidden';
         orderIdInput.name = 'orderId';
         orderIdInput.value = orderId;
@@ -164,5 +311,23 @@
 
         // Xóa form sau khi đã submit
         document.body.removeChild(form);
+    }
+    
+    function updateStatus(status) {
+        $.ajax({
+            url: '/Orders/UpdateStatus',
+            method: 'POST',
+            data: { id: @Model.Id, status },
+            success: function () {
+                document.location.reload();
+            },
+            error: function (xhr) {
+                $('#confirmModal').modal('hide');
+                bootstrap.showToast({
+                    body: xhr.responseText,
+                    zIndex: 999
+                });
+            },
+        });
     }
 </script>

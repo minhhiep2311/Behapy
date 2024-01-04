@@ -1,4 +1,4 @@
-namespace Behapy.Domain.Models;
+namespace Behapy.Presentation.ViewModels;
 
 public class ErrorViewModel
 {
