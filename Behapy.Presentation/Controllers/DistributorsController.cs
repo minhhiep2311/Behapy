@@ -18,10 +18,13 @@ public class DistributorsController : Controller
     }
 
     // GET: Distributors
-    public async Task<IActionResult> Index(int pg = 1)
+    public async Task<IActionResult> Index([FromQuery(Name = "q")] string? searchText, int pg = 1)
     {
+        ViewData["SearchText"] = searchText;
+
         var distributors = _context.Distributors
             .Include(d => d.DistributorLevel)
+             .Where(p => string.IsNullOrWhiteSpace(searchText) || p.FullName.Contains(searchText) || p.Phone.Contains(searchText) || p.DistributorLevel.Name.Contains(searchText))
             .OrderBy(d => d.DistributorLevelId);
 
         const int pageSize = 8;
@@ -33,6 +36,13 @@ public class DistributorsController : Controller
         ViewBag.Pager = pager;
 
         return View(await distributors.Skip(recSkip).Take(pager.PageSize).ToListAsync());
+    }
+
+    // POST: Distributors/Search
+    [HttpPost]
+    public IActionResult Search(string q)
+    {
+        return RedirectToAction("Index", new { q });
     }
 
     // GET: Distributors/Details/5

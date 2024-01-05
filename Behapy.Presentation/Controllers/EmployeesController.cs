@@ -21,9 +21,21 @@ public class EmployeesController : Controller
     }
 
     // GET: Employees
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index([FromQuery(Name = "q")] string? searchText)
     {
-        return View(await _context.Employees.ToListAsync());
+        ViewData["SearchText"] = searchText;
+
+        var employees = _context.Employees
+             .Include(c => c.User)
+            .Where(p => string.IsNullOrWhiteSpace(searchText) || p.FullName.Contains(searchText) || p.User.Email.Contains(searchText)).ToListAsync();
+        return View(await employees);
+    }
+
+    // POST: Distributors/Search
+    [HttpPost]
+    public IActionResult Search(string q)
+    {
+        return RedirectToAction("Index", new { q });
     }
 
     // GET: Employees/Details/5
