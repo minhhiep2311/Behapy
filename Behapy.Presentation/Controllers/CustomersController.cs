@@ -18,9 +18,13 @@ public class CustomersController : Controller
     }
 
     // GET: Customers
-    public async Task<IActionResult> Index(int pg = 1)
+    public async Task<IActionResult> Index([FromQuery(Name = "q")] string? searchText, int pg = 1)
     {
-        var customers = _context.Customers.Include(c => c.User);
+        ViewData["SearchText"] = searchText;
+
+        var customers = _context.Customers
+            .Include(c => c.User)
+            .Where(p => string.IsNullOrWhiteSpace(searchText) || p.User.FullName.Contains(searchText) || p.User.Email.Contains(searchText) || p.User.PhoneNumber.Contains(searchText));
 
         const int pageSize = 8;
 
@@ -31,6 +35,13 @@ public class CustomersController : Controller
         ViewBag.Pager = pager;
 
         return View(await customers.Skip(recSkip).Take(pager.PageSize).ToListAsync());
+    }
+
+    // POST: Customers/Search
+    [HttpPost]
+    public IActionResult Search(string q)
+    {
+        return RedirectToAction("Index", new { q });
     }
 
     // GET: Customers/Details/5

@@ -27,25 +27,32 @@
     <div class="card">
         <div class="card-body">
             <div class="row">
-                <div class="col-md-6 offset-md-6">
-                    <input type="search" class="form-control" placeholder="Tìm kiếm khách hàng" aria-controls="DataTables_Table_0">
+                <div class="col-md-6">
+                    <form class="input-group" asp-controller="Customers" asp-action="Search" method="get">
+                        <input type="text" name="q" class="form-control" value="@ViewData["SearchText"]"
+                            placeholder="Tìm kiếm khách hàng" />
+                        <button class="btn btn-tone btn-primary" type="submit">
+                            Tìm kiếm
+                        </button>
+                    </form>
                 </div>
             </div>
             <div class="row m-b-30">
                 <div class="col-6 text-left">
                     <div class="d-md-flex">
-                        @*  @using (Html.BeginForm("Admin", "Products", FormMethod.Get))
+                        @* @using (Html.BeginForm("Admin", "Products", FormMethod.Get))
                         {
                         <div class="row">
                         <div class="col-md-12">
-                        @Html.DropDownList("categoryId", ViewData["CategoryId"] as SelectList, "Tất cả danh mục", new { @class = "form-control", onchange = "this.form.submit();" })
+                        @Html.DropDownList("categoryId", ViewData["CategoryId"] as SelectList, "Tất cả danh mục", new {
+                        @class = "form-control", onchange = "this.form.submit();" })
                         </div>
                         </div>
                         }*@
                     </div>
                 </div>
                 <div class="col-6 text-right">
-                    @*  <a class="btn btn-primary" asp-controller="Products" asp-action="Create">
+                    @* <a class="btn btn-primary" asp-controller="Products" asp-action="Create">
                     <i class="anticon anticon-plus-circle m-r-5"></i>
                     <span>Thêm sản phẩm</span>
                     </a>*@
@@ -71,7 +78,8 @@
                         )
                         {
                             var item = Model[i];
-                            <tr onclick="location.href='@Url.Action("Details", "Customers", new { id = @item.Id })'" style="cursor: pointer">
+                            <tr onclick="location.href='@Url.Action("Details", "Customers", new { id = @item.Id })'"
+                                style="cursor: pointer">
                                 <td>@index</td>
                                 <td>@item.User.FullName</td>
                                 <td>@item.User.Email</td>
@@ -93,10 +101,13 @@
                     @if (pager.CurrentPage > 1)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="1">Đầu</a>
+                            <a class="page-link" asp-controller="Customers" asp-action="Admin"
+                                asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="1">Đầu</a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage - 1)" aria-label="Trước">
+                            <a class="page-link" asp-controller="Customers" asp-action="Admin"
+                                asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="@(pager.CurrentPage - 1)"
+                                aria-label="Trước">
                                 <span class="fa fa-chevron-left"></span>
                             </a>
                         </li>
@@ -108,7 +119,8 @@
                             @{
                                 var pge = p;
                             }
-                            <a asp-controller="Products" asp-action="Admin" asp-route-pg="@pge" a class="page-link">
+                            <a asp-controller="Customers" asp-action="Admin" asp-route-searchText="@ViewData["SearchText"]"
+                                asp-route-pg="@pge" a class="page-link">
                                 @pge
                             </a>
                         </li>
@@ -117,12 +129,15 @@
                     @if (pager.CurrentPage < pager.TotalPages)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@(pager.CurrentPage + 1)" aria-label="Previous">
+                            <a class="page-link" asp-controller="Customers" asp-action="Admin"
+                                asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="@(pager.CurrentPage + 1)"
+                                aria-label="Previous">
                                 <span class="fa fa-chevron-right"></span>
                             </a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" asp-controller="Products" asp-action="Admin" asp-route-pg="@pager.EndPage">Cuối</a>
+                            <a class="page-link" asp-controller="Customers" asp-action="Admin"
+                                asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="@pager.EndPage">Cuối</a>
                         </li>
                     }
                 </ul>
