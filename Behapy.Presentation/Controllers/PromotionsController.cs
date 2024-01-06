@@ -20,9 +20,12 @@ public class PromotionsController : Controller
     }
 
     // GET: Promotions
-    public async Task<IActionResult> Index(int pg)
+    public async Task<IActionResult> Index([FromQuery(Name = "q")] string? searchText, int pg)
     {
+        ViewData["SearchText"] = searchText;
+
         var promotions = _context.Promotions
+             .Where(p => string.IsNullOrWhiteSpace(searchText) ||p.Name.Contains(searchText))
             .OrderByDescending(o => o.Id)
             .AsQueryable();
 
@@ -34,6 +37,13 @@ public class PromotionsController : Controller
         ViewBag.Pager = pager;
 
         return View(await promotions.Skip(recSkip).Take(pager.PageSize).ToListAsync());
+    }
+
+    // POST: Promotions/Search
+    [HttpPost]
+    public IActionResult Search(string q)
+    {
+        return RedirectToAction("Index", new { q });
     }
 
     // GET: Promotions/Details/5

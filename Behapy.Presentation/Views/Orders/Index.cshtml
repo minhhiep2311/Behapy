@@ -20,6 +20,7 @@
                   <th>Ngày đặt hàng</th>
                   <th>Số lượng sản phẩm</th>
                   <th>Giá trị</th>
+                  <th>Trạng thái</th>
                 </tr>
               </thead>
 
@@ -32,7 +33,7 @@
                     <td class="index">@(i + 1)</td>
                     <td class="product-thumbnail">
                       <a asp-controller="Orders" asp-action="Details" asp-route-id="@item.Id">
-                        @item.Id
+                        #@item.Id
                       </a>
                     </td>
                     <td class="product-thumbnail">
@@ -45,6 +46,9 @@
                     </td>
                     <td class="product-price">
                       <span class="amount">@item.TotalMoney.ToMoney()</span>
+                    </td>
+                    <td class="product-price">
+                      <span class="amount">@item.CurrentStatus</span>
                     </td>
                   </tr>
                 }

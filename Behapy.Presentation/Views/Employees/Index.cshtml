@@ -1,74 +1,85 @@
 ﻿@model List<Behapy.Presentation.Models.Employee>
 
 @{
-  ViewData["Title"] = "Admin";
-  Layout = "~/Views/Shared/Admin/_Layout.cshtml";
+    ViewData["Title"] = "Admin";
+    Layout = "~/Views/Shared/Admin/_Layout.cshtml";
 }
 
 <!-- Content Wrapper START -->
 <div class="main-content">
-  <div class="page-header">
-    <h2 class="header-title">Nhân viên</h2>
-    <div class="header-sub-title">
-      <nav class="breadcrumb breadcrumb-dash">
-        <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang Chủ</a>
-        <span class="breadcrumb-item active" href="#">Nhân viên</span>
-        @* <a class="breadcrumb-item" href="#">E-commerce</a>
+    <div class="page-header">
+        <h2 class="header-title">Nhân viên</h2>
+        <div class="header-sub-title">
+            <nav class="breadcrumb breadcrumb-dash">
+                <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang Chủ</a>
+                <span class="breadcrumb-item active" href="#">Nhân viên</span>
+                @* <a class="breadcrumb-item" href="#">E-commerce</a>
                 <span class="breadcrumb-item active">Orders List</span>*@
-      </nav>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-body">
-      <div class="row m-b-30">
-        <div class="col-12 text-right p-r-50">
-          <a class="btn btn-primary" asp-controller="Employees" asp-action="Create">
-            <i class="anticon anticon-plus-circle"></i>
-            <span>Thêm nhân viên</span>
-          </a>
+            </nav>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-11 mx-auto">
-          <!-- Card View -->
-          <div class="row" id="card-view">
-            @foreach (var item in Model)
-            {
-              <div class="col-md-4">
-                <div class="card">
-                  <div class="card-body">
-                    <div class="m-t-20 text-center">
-                      <div class="avatar avatar-image"
-                           style="height: 100px; width: 100px">
-                        <img src="~/images/admin/avatars/default-avatar.jpg" alt=""/>
-                      </div>
-                      <h4 class="m-t-30">@item.FullName</h4>
-                      <p>@item.Position</p>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row m-b-30">
+                <div class="col-6 text-left">
+                    <div>
+                        <form class="input-group" asp-controller="Employees" asp-action="Search" method="get">
+                            <input type="text" name="q" class="form-control" value="@ViewData["SearchText"]"
+                                placeholder="Tìm kiếm nhân viên" />
+                            <button class="btn btn-tone btn-primary" type="submit">
+                                Tìm kiếm
+                            </button>
+                        </form>
                     </div>
-                    <div class="text-center m-t-15">
-                      <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                        <i class="anticon anticon-facebook"></i>
-                      </button>
-                      <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                        <i class="anticon anticon-twitter"></i>
-                      </button>
-                      <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
-                        <i class="anticon anticon-instagram"></i>
-                      </button>
-                    </div>
-                    <div class="text-center m-t-30">
-                      <a href='@Url.Action("Details", "Employees", new { id = item.Id })' class="btn btn-primary btn-tone">
-                        <i class="anticon anticon-mail"></i>
-                        <span class="m-l-5">Thông tin chi tiết</span>
-                      </a>
-                    </div>
-                  </div>
                 </div>
-              </div>
-            }
-          </div>
+                <div class="col-6 text-right p-r-50">
+                    <a class="btn btn-primary" asp-controller="Employees" asp-action="Create">
+                        <i class="anticon anticon-plus-circle"></i>
+                        <span>Thêm nhân viên</span>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-11 mx-auto">
+                    <!-- Card View -->
+                    <div class="row" id="card-view">
+                        @foreach (var item in Model)
+                        {
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="m-t-20 text-center">
+                                            <div class="avatar avatar-image" style="height: 100px; width: 100px">
+                                                <img src="~/images/admin/avatars/default-avatar.jpg" alt="" />
+                                            </div>
+                                            <h4 class="m-t-30">@item.FullName</h4>
+                                            <p>@item.Position</p>
+                                        </div>
+                                        <div class="text-center m-t-15">
+                                            <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
+                                                <i class="anticon anticon-facebook"></i>
+                                            </button>
+                                            <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
+                                                <i class="anticon anticon-twitter"></i>
+                                            </button>
+                                            <button class="m-r-5 btn btn-icon btn-hover btn-rounded">
+                                                <i class="anticon anticon-instagram"></i>
+                                            </button>
+                                        </div>
+                                        <div class="text-center m-t-30">
+                                            <a href='@Url.Action("Details", "Employees", new { id = item.Id })'
+                                                class="btn btn-primary btn-tone">
+                                                <i class="anticon anticon-mail"></i>
+                                                <span class="m-l-5">Thông tin chi tiết</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>

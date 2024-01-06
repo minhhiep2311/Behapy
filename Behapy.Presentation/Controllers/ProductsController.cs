@@ -68,11 +68,16 @@ public class ProductsController : Controller
 
     //GET: Products/Admin
     [Authorize(Roles = "Admin,Employee")]
-    public async Task<IActionResult> Admin(int pg, int? categoryId)
+    public async Task<IActionResult> Admin([FromQuery(Name = "q")] string? searchText, int pg, int? categoryId)
     {
+        ViewData["SearchText"] = searchText;
+
         var products = _context.Products
             .Include(p => p.Category)
             .Include(p => p.ProductPromotions)
+             .Where(p =>
+                (categoryId == null || p.CategoryId == categoryId) &&
+                (string.IsNullOrWhiteSpace(searchText) || EF.Functions.Like(p.Name, $"%{searchText}%")))
             .OrderByDescending(p => p.CreatedAt)
             .AsQueryable();
 
@@ -123,6 +128,13 @@ public class ProductsController : Controller
         ViewData["Category"] = categoryId;
 
         return View(await products.Skip(recSkip).Take(pager.PageSize).ToListAsync());
+    }
+
+    // POST: Products/Admin/Search
+    [HttpPost]
+    public IActionResult AdminSearch(string q)
+    {
+        return RedirectToAction("Admin", new { q });
     }
 
     // GET: Products/Details/5

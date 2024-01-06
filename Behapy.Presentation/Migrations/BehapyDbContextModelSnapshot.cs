@@ -52,21 +52,21 @@ namespace Behapy.Presentation.Migrations
                         new
                         {
                             Id = "08db1e18-c46f-4e76-8e77-69430f54d796",
-                            ConcurrencyStamp = "6934e92c-e746-4b49-aac8-c3b3975a40bc",
+                            ConcurrencyStamp = "77036dfc-8228-432b-9d3f-93813c764786",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "08db1e1a-7953-4790-8ebe-272e34a8fe18",
-                            ConcurrencyStamp = "43b7b685-49b4-4193-a6a3-5d5fe1b1367b",
+                            ConcurrencyStamp = "b3134b04-8b6e-4336-bdf2-b39e5825228d",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = "dacb0904-8ed9-4728-af4e-cecf7b4c29e3",
-                            ConcurrencyStamp = "cb07ec56-46eb-47bb-91dd-959fd9601cfe",
+                            ConcurrencyStamp = "5fc49acf-fa3b-4042-a8fd-2f85ed62e514",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -153,7 +153,7 @@ namespace Behapy.Presentation.Migrations
                         {
                             Id = "08db0f36-7dbb-436f-88e5-f1be70b3bda6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "145aba11-057c-4fec-8ad5-4af354dd6a93",
+                            ConcurrencyStamp = "1126fd4f-a61e-48ad-ab59-ac3a71a8893f",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
@@ -161,9 +161,9 @@ namespace Behapy.Presentation.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBq2GZ7t2mSxfbqPB8qeJ6z1+6qQkYzLGzA+fo998LqXnjsn26JuR4tnPZrWS7Idhw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEP8CtE13mTv2Gv4XM+SUJHNZQSiz7V/gqpmShSxs6iBdU/aUi8jd6Vzdp22TER6aQw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "29002a16-145d-4c59-9e0b-49b9cf2e28e6",
+                            SecurityStamp = "2992399a-ec3a-4d33-85fa-7e54799a316a",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });
@@ -291,6 +291,10 @@ namespace Behapy.Presentation.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<decimal>("ImportReduction")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("MoneyNeeded")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -299,10 +303,12 @@ namespace Behapy.Presentation.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("NextLevel")
+                    b.Property<int?>("NextLevelId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("NextLevelId");
 
                     b.ToTable("DistributorLevels");
 
@@ -310,27 +316,31 @@ namespace Behapy.Presentation.Migrations
                         new
                         {
                             Id = 1,
+                            ImportReduction = 10000m,
                             MoneyNeeded = 0m,
                             Name = "B4",
-                            NextLevel = 2
+                            NextLevelId = 2
                         },
                         new
                         {
                             Id = 2,
+                            ImportReduction = 20000m,
                             MoneyNeeded = 1000000m,
                             Name = "B3",
-                            NextLevel = 3
+                            NextLevelId = 3
                         },
                         new
                         {
                             Id = 3,
+                            ImportReduction = 30000m,
                             MoneyNeeded = 30000000m,
                             Name = "B2",
-                            NextLevel = 4
+                            NextLevelId = 4
                         },
                         new
                         {
                             Id = 4,
+                            ImportReduction = 40000m,
                             MoneyNeeded = 100000000m,
                             Name = "B1"
                         });
@@ -856,6 +866,15 @@ namespace Behapy.Presentation.Migrations
                         .IsRequired();
 
                     b.Navigation("DistributorLevel");
+                });
+
+            modelBuilder.Entity("Behapy.Presentation.Models.DistributorLevel", b =>
+                {
+                    b.HasOne("Behapy.Presentation.Models.DistributorLevel", "NextLevel")
+                        .WithMany()
+                        .HasForeignKey("NextLevelId");
+
+                    b.Navigation("NextLevel");
                 });
 
             modelBuilder.Entity("Behapy.Presentation.Models.Employee", b =>

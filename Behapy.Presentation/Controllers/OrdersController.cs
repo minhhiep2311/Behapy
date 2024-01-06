@@ -41,7 +41,7 @@ public class OrdersController : Controller
     public IActionResult Create()
     {
         ViewData["CustomerId"] = _context.Customers.Include(c => c.User);
-        ViewData["DistributorId"] = _context.Distributors;
+        ViewData["DistributorId"] = _context.Distributors.Include(d => d.DistributorLevel);
 
         ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Name");
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name");
@@ -111,17 +111,22 @@ public class OrdersController : Controller
 
     //GET: Orders/Admin
     [Authorize(Roles = "Admin,Employee")]
-    public async Task<IActionResult> Admin(int pg, int? distributorId, int? customerId)
+    public async Task<IActionResult> Admin([FromQuery(Name = "q")] string? searchText, int pg, int? distributorId, int? customerId)
     {
+        ViewData["SearchText"] = searchText;
+
+
         var orders = _context.Orders
             .Where(o =>
                 (distributorId == null || o.DistributorId == distributorId) &&
-                (customerId == null || o.CustomerId == customerId))
+                (customerId == null || o.CustomerId == customerId) &&
+                 (string.IsNullOrWhiteSpace(searchText) || o.Customer.User.FullName.Contains(searchText) || o.CurrentStatus.Contains(searchText)))
             .Include(o => o.PaymentType)
             .Include(o => o.Customer!.User)
             .Include(o => o.Distributor)
             .Include(o => o.Promotion)
-            .OrderByDescending(o => o.CreateAt)
+            .OrderBy(o => o.CurrentStatus)
+            .ThenBy(o => o.CreateAt)
             .AsQueryable();
 
         //Pagination
@@ -132,6 +137,13 @@ public class OrdersController : Controller
         ViewBag.Pager = pager;
 
         return View(await orders.Skip(recSkip).Take(pager.PageSize).ToListAsync());
+    }
+
+    // POST: Orders/Admin/Search
+    [HttpPost]
+    public IActionResult AdminSearch(string q)
+    {
+        return RedirectToAction("Admin", new { q });
     }
 
     // GET: Orders/AdminDetails/5
@@ -449,11 +461,11 @@ public class OrdersController : Controller
         distributor.TotalMoney += order.TotalMoney;
 
         var level = _context.DistributorLevels
+            .Include(dl => dl.NextLevel)
             .First(dl => dl.Id == distributor.DistributorLevelId);
         if (level.NextLevel != null)
         {
-            var nextLevel = _context.DistributorLevels
-                .First(dl => dl.Id == level.NextLevel);
+            var nextLevel = level.NextLevel;
             if (distributor.TotalMoney >= nextLevel.MoneyNeeded)
             {
                 distributor.DistributorLevelId = nextLevel.Id;
