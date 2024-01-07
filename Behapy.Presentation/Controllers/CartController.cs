@@ -1,7 +1,9 @@
 ﻿using System.Net.Mime;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Behapy.Presentation.Areas.Identity.Data;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
+using Behapy.Presentation.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,19 +15,87 @@ public class CartController : Controller
     private readonly BehapyDbContext _context;
     private readonly ICustomerService _customerService;
     private readonly ICartService _cartService;
+    private readonly IPromotionService _promotionService;
+    private readonly INotyfService _notyfService;
 
-    public CartController(BehapyDbContext context, ICustomerService customerService, ICartService cartService)
+    public CartController(BehapyDbContext context, ICustomerService customerService, ICartService cartService,
+        IPromotionService promotionService, INotyfService notyfService)
     {
         _context = context;
         _customerService = customerService;
         _cartService = cartService;
+        _promotionService = promotionService;
+        _notyfService = notyfService;
     }
 
+    // GET: Cart
     [Authorize]
     public async Task<IActionResult> Index()
     {
         var items = await GetAll();
+        ViewData["Promotions"] = _promotionService.GetAllContent();
+
         return View(items);
+    }
+
+    // POST: Cart
+    [HttpPost]
+    [Authorize]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Index([Bind("Products,PromotionVoucher")] CartUpdateViewModel model)
+    {
+        foreach (var product in model.Products.Where(product => product.Amount <= 0))
+        {
+            model.Products.Remove(product);
+        }
+
+        foreach (var product in model.Products
+                     .Where(product => _context.Products.FirstOrDefault(p => p.Id == product.Id && p.IsActive) == null))
+        {
+            _notyfService.Error($"Sản phẩm {product.Name} không còn kinh doanh! Vui lòng xóa khỏi giỏ hàng");
+            return await Index();
+        }
+
+        var customer = _customerService.GetCustomerOrDefault(true);
+        if (customer == null)
+        {
+            throw new Exception("Not logged in");
+        }
+
+        var now = DateTime.Now;
+        await _context.Entry(customer)
+            .Collection(c => c.CartItems)
+            .LoadAsync();
+        customer.CartItems.Clear();
+        
+        foreach (var product in model.Products)
+        {
+            customer.CartItems.Add(new CartItem
+            {
+                CustomerId = customer.Id,
+                ProductId = product.Id,
+                Amount = product.Amount,
+                CreatedAt = now,
+                UpdatedAt = now
+            });
+        }
+
+        if (!string.IsNullOrWhiteSpace(model.Voucher))
+        {
+            var promotion = _context.Promotions
+                .FirstOrDefault(p => p.Voucher == model.Voucher);
+
+            if (promotion == null)
+            {
+                _notyfService.Error("Mã khuyến mãi không hợp lệ");
+                return await Index();
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
+        _notyfService.Success("Cập nhật thành công!");
+        return await Index();
     }
 
     // GET: Cart/GetAll
