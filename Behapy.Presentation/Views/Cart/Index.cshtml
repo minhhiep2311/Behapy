@@ -6,6 +6,8 @@
   Layout = "~/Views/Shared/_Layout.cshtml";
 
   var total = Model.Sum(item => item.Product.Price * item.Amount);
+  var promotionValue = ViewData["PromotionValue"] as decimal? ?? 0;
+  var totalAfterPromotion = total - promotionValue;
 }
 
 <main class="main-content">
@@ -42,7 +44,7 @@
                       </td>
                       <td class="product-name">
                         <a asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId">@item.Product.Name</a>
-                        <input type="hidden" name="Products[@i].Id" value="@item.Id">
+                        <input type="hidden" name="Products[@i].Id" value="@item.ProductId">
                         <input type="hidden" name="Products[@i].Name" value="@item.Product.Name">
                       </td>
                       <td class="product-price">
@@ -83,18 +85,19 @@
                   <h2>Tổng tiền giỏ hàng</h2>
                   <ul>
                     <li>Tổng tiền <span id="cart-subtotal">@total.ToMoney()</span></li>
-                    <li>Giá tiền <span id="cart-total">@total.ToMoney()</span></li>
+                    <li>Tổng tiền <span>@promotionValue.ToMoney()</span></li>
+                    <li>Giá tiền <span id="cart-total">@totalAfterPromotion.ToMoney()</span></li>
                   </ul>
                   <a asp-controller="Checkout" asp-action="Index">Thanh toán</a>
                 </div>
               </div>
               <div class="col-md-6">
-                <div class="p-4">
+                <div class="ms-4" style="padding-top: 30px">
                   <h2 style="font-size: 25px">Mã khuyến mãi</h2>
                   <ul style="list-style-type: disc">
                     @foreach (var promotion in (ViewData["Promotions"] as List<string>)!)
                     {
-                      <li>@promotion</li>
+                      <li>@Html.Raw(promotion)</li>
                     }
                   </ul>
                 </div>

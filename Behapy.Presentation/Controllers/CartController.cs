@@ -1,6 +1,8 @@
 ﻿using System.Net.Mime;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Behapy.Presentation.Areas.Identity.Data;
+using Behapy.Presentation.Enums;
+using Behapy.Presentation.Extensions;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
 using Behapy.Presentation.ViewModels;
@@ -42,7 +44,7 @@ public class CartController : Controller
     [HttpPost]
     [Authorize]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Index([Bind("Products,PromotionVoucher")] CartUpdateViewModel model)
+    public async Task<IActionResult> Index([Bind("Products,Voucher")] CartUpdateViewModel model)
     {
         foreach (var product in model.Products.Where(product => product.Amount <= 0))
         {
@@ -65,14 +67,16 @@ public class CartController : Controller
         var now = DateTime.Now;
         await _context.Entry(customer)
             .Collection(c => c.CartItems)
+            .Query()
             .LoadAsync();
         customer.CartItems.Clear();
-        
+
         foreach (var product in model.Products)
         {
             customer.CartItems.Add(new CartItem
             {
                 CustomerId = customer.Id,
+                Product = _context.Products.First(p => p.Id == product.Id),
                 ProductId = product.Id,
                 Amount = product.Amount,
                 CreatedAt = now,
@@ -83,12 +87,53 @@ public class CartController : Controller
         if (!string.IsNullOrWhiteSpace(model.Voucher))
         {
             var promotion = _context.Promotions
+                .Include(p => p.ProductPromotions)
+                .ThenInclude(pp => pp.Product)
                 .FirstOrDefault(p => p.Voucher == model.Voucher);
 
             if (promotion == null)
             {
                 _notyfService.Error("Mã khuyến mãi không hợp lệ");
                 return await Index();
+            }
+
+            var total = customer.CartItems.Sum(item => item.Product.Price * item.Amount);
+            if (total < promotion.MinOrderValue)
+            {
+                _notyfService.Error("Không đạt giá trị đơn tối thiểu");
+            }
+            else
+            {
+                var promotionValue = (promotion.Type, promotion.Unit) switch
+                {
+                    (PromotionType.Order, PromotionUnit.Percentage) => Math.Min(
+                        promotion.MaxDiscount ?? decimal.MaxValue,
+                        total.Percentage(promotion.Value)),
+                    (PromotionType.Order, PromotionUnit.Value) => promotion.Value,
+                    (PromotionType.Product, PromotionUnit.Percentage) => Math.Min(
+                        promotion.MaxDiscount ?? decimal.MaxValue,
+                        customer.CartItems.Where(ci =>
+                                promotion.ProductPromotions
+                                    .Select(pp => pp.ProductId)
+                                    .Contains(ci.ProductId))
+                            .Sum(ci => ci.Amount * ci.Product.Price)
+                            .Percentage(promotion.Value)),
+                    (PromotionType.Product, PromotionUnit.Value) => Math.Min(
+                        promotion.MaxDiscount ?? decimal.MaxValue,
+                        customer.CartItems.Where(ci =>
+                                promotion.ProductPromotions
+                                    .Select(pp => pp.ProductId)
+                                    .Contains(ci.ProductId))
+                            .Sum(ci => (decimal)ci.Amount) * promotion.Value),
+                    _ => 0
+                };
+
+                if (promotionValue == 0)
+                {
+                    _notyfService.Warning("Không thể áp dụng mã khuyến mãi này. Vui lòng thử mã khác");
+                }
+
+                ViewData["PromotionValue"] = promotionValue;
             }
         }
 

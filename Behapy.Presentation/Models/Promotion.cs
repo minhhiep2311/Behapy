@@ -44,6 +44,7 @@ public class Promotion : IValidatableObject
     public bool IsHidden { get; set; }
 
     public List<Order> Orders { get; set; } = new();
+
     // public List<Category> Categories { get; set; } = new();
     public List<ProductPromotion> ProductPromotions { get; set; } = new();
     public List<OrderDetail> OrderDetails { get; set; } = new();
@@ -59,7 +60,8 @@ public class Promotion : IValidatableObject
                 // PromotionType.Category => string.Join(", ", Categories.Select(c => c.Name)),
                 _ => throw new ArgumentOutOfRangeException()
             };
-            return $"{Name}: Giảm giá {Value}{Unit.GetName()} cho {Type.GetName(true)} {typeName}: {Voucher}";
+            return
+                $"{Name}: Giảm giá {Value}{Unit.GetName()} cho {Type.GetName(true)} {typeName} cho đơn hàng từ {(MinOrderValue ?? 0).ToMoney()}: <b>{Voucher}</b>";
         }
     }
 
