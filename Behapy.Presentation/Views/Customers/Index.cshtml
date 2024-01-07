@@ -28,7 +28,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <form class="input-group" asp-controller="Customers" asp-action="Search" method="get">
+                    <form class="input-group" asp-controller="Customers" asp-action="Search" method="post">
                         <input type="text" name="q" class="form-control" value="@ViewData["SearchText"]"
                             placeholder="Tìm kiếm khách hàng" />
                         <button class="btn btn-tone btn-primary" type="submit">
