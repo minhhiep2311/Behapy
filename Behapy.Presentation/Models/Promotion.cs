@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Behapy.Presentation.Enums;
+using Behapy.Presentation.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Behapy.Presentation.Models;
@@ -40,11 +41,27 @@ public class Promotion : IValidatableObject
     public PromotionType Type { get; set; }
 
     [Display(Name = "Ẩn khỏi danh sách")]
-    public bool IsHidden { get; set; } = false;
+    public bool IsHidden { get; set; }
 
     public List<Order> Orders { get; set; } = new();
+    // public List<Category> Categories { get; set; } = new();
     public List<ProductPromotion> ProductPromotions { get; set; } = new();
     public List<OrderDetail> OrderDetails { get; set; } = new();
+
+    public string Content
+    {
+        get
+        {
+            var typeName = Type switch
+            {
+                PromotionType.Order => "",
+                PromotionType.Product => "trong danh sách",
+                // PromotionType.Category => string.Join(", ", Categories.Select(c => c.Name)),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            return $"{Name}: Giảm giá {Value}{Unit.GetName()} cho {Type.GetName(true)} {typeName}: {Voucher}";
+        }
+    }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
