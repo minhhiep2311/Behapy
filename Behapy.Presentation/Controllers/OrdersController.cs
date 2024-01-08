@@ -390,26 +390,26 @@ public class OrdersController : Controller
         worksheet.Cells[rowIndex, 4].Value = "TỔNG CỘNG";
         worksheet.Cells[rowIndex, 5].Formula = $"SUM(E6:E{rowIndex - 1})";
 
-        // Viết thành tiền bằng chữ
-        worksheet.Cells[rowIndex + 2, 2, rowIndex + 2, 5].Merge = true;
-        worksheet.Cells[rowIndex + 2, 1].Value = "Thành tiền (viết bằng chữ):";
+        //// Viết thành tiền bằng chữ
+        //worksheet.Cells[rowIndex + 2, 2, rowIndex + 2, 5].Merge = true;
+        //worksheet.Cells[rowIndex + 2, 1].Value = "Thành tiền (viết bằng chữ):";
 
-        worksheet.Cells[rowIndex + 4, 1, rowIndex + 4, 2].Merge = true;
-        worksheet.Cells[rowIndex + 4, 1].Value = "Khách hàng";
-        worksheet.Cells[rowIndex + 4, 1].Style.Font.Size = 14;
-        worksheet.Cells[rowIndex + 4, 1].Style.Font.Bold = true;
-        worksheet.Cells[rowIndex + 4, 1, rowIndex + 4, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-        worksheet.Cells[rowIndex + 4, 1, rowIndex + 4, 2].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //worksheet.Cells[rowIndex + 4, 1, rowIndex + 4, 2].Merge = true;
+        //worksheet.Cells[rowIndex + 4, 1].Value = "Khách hàng";
+        //worksheet.Cells[rowIndex + 4, 1].Style.Font.Size = 14;
+        //worksheet.Cells[rowIndex + 4, 1].Style.Font.Bold = true;
+        //worksheet.Cells[rowIndex + 4, 1, rowIndex + 4, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //worksheet.Cells[rowIndex + 4, 1, rowIndex + 4, 2].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
 
-        worksheet.Cells[rowIndex + 4, 3, rowIndex + 4, 5].Merge = true;
-        worksheet.Cells[rowIndex + 4, 3].Value = "Người bán hàng";
-        worksheet.Cells[rowIndex + 4, 3].Style.Font.Size = 14;
-        worksheet.Cells[rowIndex + 4, 3].Style.Font.Bold = true;
-        worksheet.Cells[rowIndex + 4, 3, rowIndex + 4, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-        worksheet.Cells[rowIndex + 4, 3, rowIndex + 4, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        //worksheet.Cells[rowIndex + 4, 3, rowIndex + 4, 5].Merge = true;
+        //worksheet.Cells[rowIndex + 4, 3].Value = "Người bán hàng";
+        //worksheet.Cells[rowIndex + 4, 3].Style.Font.Size = 14;
+        //worksheet.Cells[rowIndex + 4, 3].Style.Font.Bold = true;
+        //worksheet.Cells[rowIndex + 4, 3, rowIndex + 4, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //worksheet.Cells[rowIndex + 4, 3, rowIndex + 4, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
 
         // Thiết lập border cho toàn bộ ô có nội dung
-        var contentRange = worksheet.Cells[1, 1, rowIndex + 2, 5];
+        var contentRange = worksheet.Cells[1, 1, rowIndex, 5];
         contentRange.Style.Border.Top.Style = ExcelBorderStyle.Thin;
         contentRange.Style.Border.Left.Style = ExcelBorderStyle.Thin;
         contentRange.Style.Border.Right.Style = ExcelBorderStyle.Thin;

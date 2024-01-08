@@ -28,7 +28,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <form class="input-group" asp-controller="Customers" asp-action="Search" method="get">
+                    <form class="input-group" asp-controller="Customers" asp-action="Search" method="post">
                         <input type="text" name="q" class="form-control" value="@ViewData["SearchText"]"
                             placeholder="Tìm kiếm khách hàng" />
                         <button class="btn btn-tone btn-primary" type="submit">
@@ -101,11 +101,11 @@
                     @if (pager.CurrentPage > 1)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-controller="Customers" asp-action="Admin"
+                            <a class="page-link" asp-controller="Customers" asp-action="Index"
                                 asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="1">Đầu</a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" asp-controller="Customers" asp-action="Admin"
+                            <a class="page-link" asp-controller="Customers" asp-action="Index"
                                 asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="@(pager.CurrentPage - 1)"
                                 aria-label="Trước">
                                 <span class="fa fa-chevron-left"></span>
@@ -119,7 +119,7 @@
                             @{
                                 var pge = p;
                             }
-                            <a asp-controller="Customers" asp-action="Admin" asp-route-searchText="@ViewData["SearchText"]"
+                            <a asp-controller="Customers" asp-action="Index" asp-route-searchText="@ViewData["SearchText"]"
                                 asp-route-pg="@pge" a class="page-link">
                                 @pge
                             </a>
@@ -129,14 +129,14 @@
                     @if (pager.CurrentPage < pager.TotalPages)
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-controller="Customers" asp-action="Admin"
+                            <a class="page-link" asp-controller="Customers" asp-action="Index"
                                 asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="@(pager.CurrentPage + 1)"
                                 aria-label="Previous">
                                 <span class="fa fa-chevron-right"></span>
                             </a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" asp-controller="Customers" asp-action="Admin"
+                            <a class="page-link" asp-controller="Customers" asp-action="Index"
                                 asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="@pager.EndPage">Cuối</a>
                         </li>
                     }
