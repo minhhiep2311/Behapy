@@ -26,15 +26,24 @@ public class OrdersController : Controller
     // GET: Orders
     [Authorize]
     [Authorize(Roles = "User")]
-    public IActionResult Index()
+    public async Task<IActionResult> Index(int pg = 1)
     {
         var customerId = _customerService.GetCustomer().Id;
         var items = _context.Orders
             .AsNoTracking()
             .Where(o => o.CustomerId == customerId)
             .Include(o => o.OrderDetails)
-            .ToList();
-        return View(items);
+            .OrderByDescending(o => o.CreateAt);
+
+        const int pageSize = 8;
+
+        if (pg < 1) pg = 1;
+        var recsCount = items.Count();
+        var pager = new Pager(recsCount, pg, pageSize);
+        var recSkip = (pg - 1) * pageSize;
+        ViewBag.Pager = pager;
+
+        return View(await items.Skip(recSkip).Take(pager.PageSize).ToListAsync());
     }
 
     // GET: Promotion/Create
