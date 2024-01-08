@@ -1,62 +1,125 @@
 @using Behapy.Presentation.Extensions
+@using Behapy.Presentation.Models
 @model List<Behapy.Presentation.Models.Order>
 
 @{
-  ViewData["Title"] = "Orders";
-  Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Orders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var pager = new Pager();
+    var pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
 }
 
 <main class="main-content">
-  <div class="cart-area section-space-y-axis-100">
-    <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <div class="table-content table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>STT</th>
-                  <th>Mã đơn hàng</th>
-                  <th>Ngày đặt hàng</th>
-                  <th>Số lượng sản phẩm</th>
-                  <th>Giá trị</th>
-                  <th>Trạng thái</th>
-                </tr>
-              </thead>
+    <div class="cart-area section-space-y-axis-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-content table-responsive">
+                        <h1>LỊCH SỬ MUA HÀNG</h1>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Mã đơn hàng</th>
+                                    <th>Ngày đặt hàng</th>
+                                    <th>Số lượng sản phẩm</th>
+                                    <th>Giá trị</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
 
-              <tbody id="cart-table-content">
-                @for (var i = 0; i < Model.Count; i++)
-                {
-                  var item = Model[i];
+                            <tbody id="cart-table-content">
+                                @for (int i = 0, index = (pageNo - 1) * pager.PageSize + 1; i < Model.Count; i++, index++)
+                                {
+                                    var item = Model[i];
 
-                  <tr>
-                    <td class="index">@(i + 1)</td>
-                    <td class="product-thumbnail">
-                      <a asp-controller="Orders" asp-action="Details" asp-route-id="@item.Id">
-                        #@item.Id
-                      </a>
-                    </td>
-                    <td class="product-thumbnail">
-                      <span class="amount">
-                        @item.CreateAt
-                      </span>
-                    </td>
-                    <td class="product-price">
-                      <span class="amount">@item.OrderDetails.Count</span>
-                    </td>
-                    <td class="product-price">
-                      <span class="amount">@item.TotalMoney.ToMoney()</span>
-                    </td>
-                    <td class="product-price">
-                      <span class="amount">@item.CurrentStatus</span>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
+                                        <tr>
+                                            <td class="index">@index</td>
+                                            <td class="product-thumbnail">
+                                                <a asp-controller="Orders" asp-action="Details" asp-route-id="@item.Id">
+                                                    #@item.Id
+                                                </a>
+                                            </td>
+                                            <td class="product-thumbnail">
+                                                <span class="amount">
+                                                @item.CreateAt
+                                                </span>
+                                            </td>
+                                            <td class="product-price">
+                                                <span class="amount">@item.OrderDetails.Count</span>
+                                            </td>
+                                            <td class="product-price">
+                                                <span class="amount">@item.TotalMoney.ToMoney()</span>
+                                            </td>
+                                            <td class="product-price">
+                                                <span class="amount">@item.CurrentStatus</span>
+                                            </td>
+                                        </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination-area pt-10">
+                        <nav aria-label="Page navigation example">
+                            @if (pager.TotalPages > 0)
+                            {
+                                    <ul class="pagination justify-content-center">
+                                    @if (pager.CurrentPage > 1)
+                                    {
+                                                <li class="page-item">
+                                                    <a class="page-link" asp-controller="Orders" asp-route-pg="1">
+                                                        Đầu
+                                                    </a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" asp-controller="Orders" asp-route-pg="@(pager.CurrentPage - 1)" aria-label="Trước">
+                                                        <span class="fa fa-chevron-left"></span>
+                                                    </a>
+                                                </li>
+                                    }
+
+                                    @for (var p = pager.StartPage; p <= pager.EndPage; p++)
+                                    {
+                                                <li class="page-item @(p == pager.CurrentPage ? "active" : "")">
+                                            @{
+                                                var pge = p;
+                                            }
+                                                    <a class="page-link" asp-controller="Orders" asp-route-pg="@pge">
+                                                @pge
+                                                    </a>
+                                                </li>
+                                    }
+
+                                    @if (pager.CurrentPage < pager.TotalPages)
+                                    {
+                                                <li class="page-item">
+                                                    <a class="page-link" asp-controller="Orders" asp-route-pg="@(pager.CurrentPage + 1)" aria-label="Trước">
+                                                        <span class="fa fa-chevron-right"></span>
+                                                    </a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" asp-controller="Orders" asp-route-pg="@pager.EndPage">
+                                                        Cuối
+                                                    </a>
+                                                </li>
+                                    }
+                                    </ul>
+                            }
+
+                        </nav>
+                    </div>
+                    <!-- Pagination end -->
+
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </main>
