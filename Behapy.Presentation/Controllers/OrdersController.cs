@@ -16,11 +16,14 @@ public class OrdersController : Controller
 {
     private readonly BehapyDbContext _context;
     private readonly ICustomerService _customerService;
+    private readonly IPromotionService _promotionService;
 
-    public OrdersController(BehapyDbContext context, ICustomerService customerService)
+    public OrdersController(BehapyDbContext context, ICustomerService customerService,
+        IPromotionService promotionService)
     {
         _context = context;
         _customerService = customerService;
+        _promotionService = promotionService;
     }
 
     // GET: Orders
@@ -46,11 +49,12 @@ public class OrdersController : Controller
         return View(await items.Skip(recSkip).Take(pager.PageSize).ToListAsync());
     }
 
-    // GET: Promotion/Create
+    // GET: Order/Create
     public IActionResult Create()
     {
         ViewData["CustomerId"] = _context.Customers.Include(c => c.User);
         ViewData["DistributorId"] = _context.Distributors.Include(d => d.DistributorLevel);
+        ViewData["Promotions"] = _promotionService.GetAllContent();
 
         ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Name");
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name");
@@ -62,7 +66,7 @@ public class OrdersController : Controller
         return View();
     }
 
-    // POST: Promotion/Create
+    // POST: Order/Create
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
@@ -107,6 +111,7 @@ public class OrdersController : Controller
 
         ViewData["CustomerId"] = _context.Customers.Include(c => c.User);
         ViewData["DistributorId"] = _context.Distributors;
+        ViewData["Promotions"] = _promotionService.GetAllContent();
 
         ViewData["PaymentTypeId"] = new SelectList(_context.PaymentTypes, "Id", "Name", order.PaymentType);
         ViewData["PromotionId"] = new SelectList(_context.Promotions, "Id", "Name", order.Promotion);
@@ -120,32 +125,34 @@ public class OrdersController : Controller
 
     //GET: Orders/Admin
     [Authorize(Roles = "Admin,Employee")]
-    public async Task<IActionResult> Admin([FromQuery(Name = "q")] string? searchText, int pg, int? distributorId, int? customerId)
+    public IActionResult Admin([FromQuery(Name = "q")] string? searchText, int pg, int? distributorId,
+        int? customerId)
     {
         ViewData["SearchText"] = searchText;
-
 
         var orders = _context.Orders
             .Where(o =>
                 (distributorId == null || o.DistributorId == distributorId) &&
                 (customerId == null || o.CustomerId == customerId) &&
-                 (string.IsNullOrWhiteSpace(searchText) || o.Customer.User.FullName.Contains(searchText) || o.CurrentStatus.Contains(searchText)))
+                (string.IsNullOrWhiteSpace(searchText) ||
+                 (o.Customer != null && o.Customer.User.FullName.Contains(searchText)) ||
+                 o.CurrentStatus.Contains(searchText)))
             .Include(o => o.PaymentType)
             .Include(o => o.Customer!.User)
             .Include(o => o.Distributor)
             .Include(o => o.Promotion)
-            .OrderBy(o => o.CurrentStatus)
-            .ThenBy(o => o.CreateAt)
-            .AsQueryable();
+            .OrderByDescending(o => o.Id)
+            .AsNoTracking()
+            .ToList();
 
         //Pagination
         if (pg < 1) pg = 1;
-        var recsCount = orders.Count();
+        var recsCount = orders.Count;
         var pager = new Pager(recsCount, pg);
         var recSkip = (pg - 1) * pager.PageSize;
         ViewBag.Pager = pager;
 
-        return View(await orders.Skip(recSkip).Take(pager.PageSize).ToListAsync());
+        return View(orders.Skip(recSkip).Take(pager.PageSize).ToList());
     }
 
     // POST: Orders/Admin/Search
@@ -378,7 +385,7 @@ public class OrdersController : Controller
         // Ghi thông tin khách hàng
         worksheet.Cells[3, 1].Value = $"Tên khách hàng: {order.Customer?.User.FullName}";
         worksheet.Cells[3, 3].Value = $"Số điện thoại: {order.Customer?.User.PhoneNumber}";
-        worksheet.Cells[4, 1].Value = $"Địa chỉ: {order.Customer?.Address}";
+        worksheet.Cells[4, 1].Value = $"Địa chỉ: {order.Address}";
 
         // Ghi danh sách sản phẩm
         var rowIndex = 6;
@@ -398,24 +405,6 @@ public class OrdersController : Controller
         // Tính tổng cộng
         worksheet.Cells[rowIndex, 4].Value = "TỔNG CỘNG";
         worksheet.Cells[rowIndex, 5].Formula = $"SUM(E6:E{rowIndex - 1})";
-
-        //// Viết thành tiền bằng chữ
-        //worksheet.Cells[rowIndex + 2, 2, rowIndex + 2, 5].Merge = true;
-        //worksheet.Cells[rowIndex + 2, 1].Value = "Thành tiền (viết bằng chữ):";
-
-        //worksheet.Cells[rowIndex + 4, 1, rowIndex + 4, 2].Merge = true;
-        //worksheet.Cells[rowIndex + 4, 1].Value = "Khách hàng";
-        //worksheet.Cells[rowIndex + 4, 1].Style.Font.Size = 14;
-        //worksheet.Cells[rowIndex + 4, 1].Style.Font.Bold = true;
-        //worksheet.Cells[rowIndex + 4, 1, rowIndex + 4, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-        //worksheet.Cells[rowIndex + 4, 1, rowIndex + 4, 2].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-
-        //worksheet.Cells[rowIndex + 4, 3, rowIndex + 4, 5].Merge = true;
-        //worksheet.Cells[rowIndex + 4, 3].Value = "Người bán hàng";
-        //worksheet.Cells[rowIndex + 4, 3].Style.Font.Size = 14;
-        //worksheet.Cells[rowIndex + 4, 3].Style.Font.Bold = true;
-        //worksheet.Cells[rowIndex + 4, 3, rowIndex + 4, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-        //worksheet.Cells[rowIndex + 4, 3, rowIndex + 4, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
 
         // Thiết lập border cho toàn bộ ô có nội dung
         var contentRange = worksheet.Cells[1, 1, rowIndex, 5];
