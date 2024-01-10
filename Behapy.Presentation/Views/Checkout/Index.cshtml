@@ -1,16 +1,10 @@
 @using Behapy.Presentation.Extensions
 @using Behapy.Presentation.Models
-@using Behapy.Presentation.Services.Interfaces
 @model Behapy.Presentation.ViewModels.CheckoutViewModel
-
-@inject ICartService CartService
 
 @{
   ViewData["Title"] = "Checkout";
   Layout = "~/Views/Shared/_Layout.cshtml";
-
-  var cartItems = await CartService.GetItems(User) ?? new List<CartItem>();
-  var total = cartItems.Sum(item => item.Product.Price * item.Amount);
 }
 
 <main class="main-content">
@@ -83,7 +77,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @foreach (var item in cartItems)
+                    @foreach (var item in (ViewData["CartItems"] as List<CartItem>)!)
                     {
                       <tr class="cart_item">
                         <td class="cart-product-name">
@@ -99,10 +93,26 @@
 
                   <tfoot>
                     <tr class="order-total">
-                      <th>Tổng đơn hàng</th>
+                      <th>Tổng tiền</th>
                       <td>
                         <strong>
-                          <span class="amount">@total.ToMoney()</span>
+                          <span class="amount">@((ViewData["Total"] as decimal? ?? 0).ToMoney())</span>
+                        </strong>
+                      </td>
+                    </tr>
+                    <tr class="order-total">
+                      <th>Giảm giá</th>
+                      <td>
+                        <strong>
+                          <span class="amount">@((ViewData["PromotionValue"] as decimal? ?? 0).ToMoney())</span>
+                        </strong>
+                      </td>
+                    </tr>
+                    <tr class="order-total">
+                      <th>Thành tiền</th>
+                      <td>
+                        <strong>
+                          <span class="amount">@((ViewData["TotalAfterPromotion"] as decimal? ?? 0).ToMoney())</span>
                         </strong>
                       </td>
                     </tr>
