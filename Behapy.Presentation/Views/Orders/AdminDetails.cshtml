@@ -154,6 +154,22 @@
                   <td>@((item.Price * item.Amount).ToMoney())</td>
                 </tr>
               }
+              @if (Model.Promotion != null)
+              {
+                <tr>
+                  <th scope="row" colspan="4">Tạm tính</th>
+                  <td>@((Model.TotalMoney - Model.Discount).ToMoney())</td>
+                </tr>
+                <tr>
+                  <th scope="row" colspan="4">
+                    Mã giảm giá:
+                    <a asp-controller="Promotions" asp-action="Details" asp-route-id="@Model.PromotionId">
+                      @Model.Promotion.Name
+                    </a>
+                  </th>
+                  <td>@Model.Discount.ToMoney()</td>
+                </tr>
+              }
               <tr>
                 <th scope="row" colspan="4">Tổng tiền hóa đơn</th>
                 <td>@Model.TotalMoney.ToMoney()</td>

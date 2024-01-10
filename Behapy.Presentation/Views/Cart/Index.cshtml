@@ -73,7 +73,7 @@
               <div class="col-12">
                 <div class="coupon-all">
                   <div class="coupon">
-                    <input class="input-text mr-3" name="Voucher" placeholder="Mã giảm giá" type="text"/>
+                    <input class="input-text mr-3" name="Voucher" placeholder="Mã giảm giá" type="text" value="@ViewData["PromotionVoucher"]"/>
                     <input class="button" value="Cập nhật giỏ hàng" type="submit"/>
                   </div>
                 </div>
@@ -88,7 +88,7 @@
                     <li>Tổng tiền <span>@promotionValue.ToMoney()</span></li>
                     <li>Giá tiền <span id="cart-total">@totalAfterPromotion.ToMoney()</span></li>
                   </ul>
-                  <a asp-controller="Checkout" asp-action="Index">Thanh toán</a>
+                  <a asp-controller="Checkout" asp-action="Index" asp-route-promotionVoucher="">Thanh toán</a>
                 </div>
               </div>
               <div class="col-md-6">

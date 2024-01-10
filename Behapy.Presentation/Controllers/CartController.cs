@@ -1,7 +1,6 @@
 ﻿using System.Net.Mime;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Behapy.Presentation.Areas.Identity.Data;
-using Behapy.Presentation.Enums;
 using Behapy.Presentation.Extensions;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
@@ -32,10 +31,11 @@ public class CartController : Controller
 
     // GET: Cart
     [Authorize]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? promotionVoucher = null)
     {
         var items = await GetAll();
         ViewData["Promotions"] = _promotionService.GetAllContent();
+        ViewData["PromotionVoucher"] = promotionVoucher;
 
         return View(items);
     }
@@ -55,7 +55,7 @@ public class CartController : Controller
                      .Where(product => _context.Products.FirstOrDefault(p => p.Id == product.Id && p.IsActive) == null))
         {
             _notyfService.Error($"Sản phẩm {product.Name} không còn kinh doanh! Vui lòng xóa khỏi giỏ hàng");
-            return await Index();
+            return await Index(model.Voucher);
         }
 
         var customer = _customerService.GetCustomerOrDefault(true);
@@ -94,7 +94,7 @@ public class CartController : Controller
             if (promotion == null)
             {
                 _notyfService.Error("Mã khuyến mãi không hợp lệ");
-                return await Index();
+                return await Index(model.Voucher);
             }
 
             var total = customer.CartItems.Sum(item => item.Product.Price * item.Amount);
@@ -104,33 +104,14 @@ public class CartController : Controller
             }
             else
             {
-                var promotionValue = (promotion.Type, promotion.Unit) switch
-                {
-                    (PromotionType.Order, PromotionUnit.Percentage) => Math.Min(
-                        promotion.MaxDiscount ?? decimal.MaxValue,
-                        total.Percentage(promotion.Value)),
-                    (PromotionType.Order, PromotionUnit.Value) => promotion.Value,
-                    (PromotionType.Product, PromotionUnit.Percentage) => Math.Min(
-                        promotion.MaxDiscount ?? decimal.MaxValue,
-                        customer.CartItems.Where(ci =>
-                                promotion.ProductPromotions
-                                    .Select(pp => pp.ProductId)
-                                    .Contains(ci.ProductId))
-                            .Sum(ci => ci.Amount * ci.Product.Price)
-                            .Percentage(promotion.Value)),
-                    (PromotionType.Product, PromotionUnit.Value) => Math.Min(
-                        promotion.MaxDiscount ?? decimal.MaxValue,
-                        customer.CartItems.Where(ci =>
-                                promotion.ProductPromotions
-                                    .Select(pp => pp.ProductId)
-                                    .Contains(ci.ProductId))
-                            .Sum(ci => (decimal)ci.Amount) * promotion.Value),
-                    _ => 0
-                };
-
+                var promotionValue = promotion.CalculateValue(total, customer.CartItems);
                 if (promotionValue == 0)
                 {
                     _notyfService.Warning("Không thể áp dụng mã khuyến mãi này. Vui lòng thử mã khác");
+                }
+                else
+                {
+                    HttpContext.Session.SetInt32("PromotionId", promotion.Id);
                 }
 
                 ViewData["PromotionValue"] = promotionValue;
@@ -140,7 +121,7 @@ public class CartController : Controller
         await _context.SaveChangesAsync();
 
         _notyfService.Success("Cập nhật thành công!");
-        return await Index();
+        return await Index(model.Voucher);
     }
 
     // GET: Cart/GetAll

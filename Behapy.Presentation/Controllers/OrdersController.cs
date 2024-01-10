@@ -172,6 +172,7 @@ public class OrdersController : Controller
         var order = _context.Orders
             .AsNoTracking()
             .Include(o => o.PaymentType)
+            .Include(p => p.Promotion)
             .Include(o => o.OrderDetails)
             .ThenInclude(od => od.Product)
             .Include(o => o.Customer)
