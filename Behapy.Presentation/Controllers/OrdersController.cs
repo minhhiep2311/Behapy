@@ -125,7 +125,7 @@ public class OrdersController : Controller
 
     //GET: Orders/Admin
     [Authorize(Roles = "Admin,Employee")]
-    public async Task<IActionResult> Admin([FromQuery(Name = "q")] string? searchText, int pg, int? distributorId,
+    public IActionResult Admin([FromQuery(Name = "q")] string? searchText, int pg, int? distributorId,
         int? customerId)
     {
         ViewData["SearchText"] = searchText;
@@ -141,18 +141,18 @@ public class OrdersController : Controller
             .Include(o => o.Customer!.User)
             .Include(o => o.Distributor)
             .Include(o => o.Promotion)
-            .OrderBy(o => o.CurrentStatus)
-            .ThenBy(o => o.CreateAt)
-            .AsQueryable();
+            .OrderByDescending(o => o.Id)
+            .AsNoTracking()
+            .ToList();
 
         //Pagination
         if (pg < 1) pg = 1;
-        var recsCount = orders.Count();
+        var recsCount = orders.Count;
         var pager = new Pager(recsCount, pg);
         var recSkip = (pg - 1) * pager.PageSize;
         ViewBag.Pager = pager;
 
-        return View(await orders.Skip(recSkip).Take(pager.PageSize).ToListAsync());
+        return View(orders.Skip(recSkip).Take(pager.PageSize).ToList());
     }
 
     // POST: Orders/Admin/Search

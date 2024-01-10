@@ -4,198 +4,201 @@
 @model List<Behapy.Presentation.Models.Order>
 
 @{
-    ViewData["Title"] = "Admin";
-    Layout = "~/Views/Shared/Admin/_Layout.cshtml";
+  ViewData["Title"] = "Admin";
+  Layout = "~/Views/Shared/Admin/_Layout.cshtml";
 
-    var pager = new Pager();
-    if (ViewBag.Pager != null)
-    {
-        pager = ViewBag.Pager;
-    }
+  var pager = new Pager();
+  if (ViewBag.Pager != null)
+  {
+    pager = ViewBag.Pager;
+  }
 }
 
 <!-- Content Wrapper START -->
 <div class="main-content">
-    <div class="page-header">
-        <h2 class="header-title">Đơn hàng</h2>
-        <div class="header-sub-title">
-            <nav class="breadcrumb breadcrumb-dash">
-                <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang Chủ</a>
-                <span class="breadcrumb-item active" href="#">Đơn hàng</span>
-            </nav>
-        </div>
+  <div class="page-header">
+    <h2 class="header-title">Đơn hàng</h2>
+    <div class="header-sub-title">
+      <nav class="breadcrumb breadcrumb-dash">
+        <a href="#" class="breadcrumb-item"><i class="anticon anticon-home m-r-5"></i>Trang Chủ</a>
+        <span class="breadcrumb-item active" href="#">Đơn hàng</span>
+      </nav>
     </div>
-    <div class="card">
-        <div class="card-body">
-            <div class="row m-b-30">
-                <div class="col-6">
-                    <form class="input-group" asp-controller="Orders" asp-action="AdminSearch" method="post">
-                        <input type="text" name="q" class="form-control" value="@ViewData["SearchText"]" />
-                        <button class="btn btn-tone  btn-primary"
-                                type="submit">
-                            Tìm kiếm
-                        </button>
-                    </form>
-                </div>
-                <div class="col-6 text-right">
-                    <a class="btn btn-primary" asp-controller="Orders" asp-action="Create">
-                        <i class="anticon anticon-plus-circle m-r-5"></i>
-                        <span>Tạo đơn hàng</span>
-                    </a>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-hover e-commerce-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Tên khách hàng</th>
-                            <th>Tổng hóa đơn</th>
-                            <th>Giảm giá</th>
-                            <th>Trạng thái</th>
-                            <th>Tùy chọn</th>
-                        </tr>
-                    </thead>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="row m-b-30">
+        <div class="col-6">
+          <form class="input-group" asp-controller="Orders" asp-action="AdminSearch" method="post">
+            <input type="text" name="q" class="form-control" value="@ViewData["SearchText"]"/>
+            <button class="btn btn-tone  btn-primary"
+                    type="submit">
+              Tìm kiếm
+            </button>
+          </form>
+        </div>
+        <div class="col-6 text-right">
+          <a class="btn btn-primary" asp-controller="Orders" asp-action="Create">
+            <i class="anticon anticon-plus-circle m-r-5"></i>
+            <span>Tạo đơn hàng</span>
+          </a>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover e-commerce-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tên khách hàng</th>
+              <th>Tổng hóa đơn</th>
+              <th>Giảm giá</th>
+              <th>Ngày tạo đơn</th>
+              <th>Trạng thái</th>
+              <th>Tùy chọn</th>
+            </tr>
+          </thead>
 
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td onclick="goToDetailsPage(@item.Id)" style="cursor: pointer">#@item.Id </td>
-                                <td onclick="goToDetailsPage(@item.Id)" style="cursor: pointer">@item.Orderer()</td>
-                                <td>@item.TotalMoney.ToMoney()</td>
-                                <td>@item.Discount</td>
-                                <td>
-                                    @item.CurrentStatus
-                                </td>
-                                <td>
-                                    @if (item.CurrentStatus == OrderStatusConstant.NeedToConfirm)
-                                    {
-                                        <button data-toggle="modal" data-target="#confirmModal" data-order-id="@item.Id"
-                                                data-order-status="@OrderStatusConstant.Confirmed"
-                                                class="btn btn-success btn-sm btn-rounded ml-2">
-                                            Xác nhận
-                                        </button>
-                                        <button data-toggle="modal" data-target="#denyModal" data-order-id="@item.Id"
-                                                data-order-status="@OrderStatusConstant.Denied"
-                                                class="btn btn-danger btn-sm btn-rounded ml-2">
-                                            Từ chối
-                                        </button>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Confirm Modal -->
-    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Xác nhận đơn hàng</h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <i class="anticon anticon-close"></i>
-                    </button>
-                </div>
-                <div class="modal-body"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-                    <button onclick="updateStatus(this)" data-order-id="" data-order-status="@OrderStatusConstant.Confirmed"
-                            class="confirm-order btn btn-tone btn-success">
-                        Xác nhận
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Confirm Modal End-->
-    <!-- Deny Modal -->
-    <div class="modal fade" id="denyModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Từ chối đơn hàng</h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <i class="anticon anticon-close"></i>
-                    </button>
-                </div>
-                <div class="modal-body"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-                    <button onclick="updateStatus(this)" data-order-id="" data-order-status="@OrderStatusConstant.Denied"
-                            class="deny-order btn btn-tone btn-danger">
-                        Xác nhận
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Deny Modal End-->
-    <!-- Pagination -->
-    <div class="pagination-area pt-10">
-        <nav aria-label="Page navigation example">
-            @if (pager.TotalPages > 0)
+          <tbody>
+            @foreach (var item in Model)
             {
-                <ul class="pagination justify-content-center">
-                    @if (pager.CurrentPage > 1)
-                    {
-                        <li class="page-item">
-                            <a asp-action="Admin" asp-route-pg="1"
-                               asp-route-categoryId="@ViewData["Category"]" asp-route-searchText="@ViewData["SearchText"]"
-                               class="page-link">
-                                Đầu
-                            </a>
-                        </li>
-                        <li class="page-item">
-                            <a asp-action="Admin" asp-route-pg="@(pager.CurrentPage - 1)"
-                               asp-route-categoryId="@ViewData["Category"]" asp-route-searchText="@ViewData["SearchText"]" aria-label="Trước" class="page-link">
-                                <span class="fa fa-chevron-left"></span>
-                            </a>
-                        </li>
-                    }
-
-                    @for (var p = pager.StartPage; p <= pager.EndPage; p++)
-                    {
-                        <li class="page-item @(p == pager.CurrentPage ? "active" : "")">
-                            @{
-                                var pge = p;
-                            }
-                            <a asp-controller="Orders" asp-action="Admin" asp-route-pg="@pge"
-                               asp-route-categoryId="@ViewData["Category"]" asp-route-searchText="@ViewData["SearchText"]"  class="page-link">
-                                @pge
-                            </a>
-                        </li>
-                    }
-
-                    @if (pager.CurrentPage < pager.TotalPages)
-                    {
-                        <li class="page-item">
-                            <a class="page-link" asp-controller="Orders" asp-action="Admin" asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="@(pager.CurrentPage + 1)"
-                               asp-route-categoryId="@ViewData["Category"]" aria-label="Previous">
-                                <span class="fa fa-chevron-right"></span>
-                            </a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" asp-controller="Orders" asp-action="Admin" asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="@pager.EndPage"
-                               asp-route-categoryId="@ViewData["Category"]">
-                                Cuối
-                            </a>
-                        </li>
-                    }
-                </ul>
+              <tr>
+                <td onclick="goToDetailsPage(@item.Id)" style="cursor: pointer">#@item.Id </td>
+                <td onclick="goToDetailsPage(@item.Id)" style="cursor: pointer">@item.Orderer()</td>
+                <td>@item.TotalMoney.ToMoney()</td>
+                <td>@item.Discount</td>
+                <td>@item.CreateAt</td>
+                <td>
+                  @item.CurrentStatus
+                </td>
+                <td>
+                  @if (item.CurrentStatus == OrderStatusConstant.NeedToConfirm)
+                  {
+                    <button data-toggle="modal" data-target="#confirmModal" data-order-id="@item.Id"
+                            data-order-status="@OrderStatusConstant.Confirmed"
+                            class="btn btn-success btn-sm btn-rounded ml-2">
+                      Xác nhận
+                    </button>
+                    <button data-toggle="modal" data-target="#denyModal" data-order-id="@item.Id"
+                            data-order-status="@OrderStatusConstant.Denied"
+                            class="btn btn-danger btn-sm btn-rounded ml-2">
+                      Từ chối
+                    </button>
+                  }
+                </td>
+              </tr>
             }
-        </nav>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <!-- Pagination end -->
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Xác nhận đơn hàng</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <i class="anticon anticon-close"></i>
+          </button>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+          <button onclick="updateStatus(this)" data-order-id="" data-order-status="@OrderStatusConstant.Confirmed"
+                  class="confirm-order btn btn-tone btn-success">
+            Xác nhận
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Confirm Modal End-->
+  <!-- Deny Modal -->
+  <div class="modal fade" id="denyModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Từ chối đơn hàng</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <i class="anticon anticon-close"></i>
+          </button>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+          <button onclick="updateStatus(this)" data-order-id="" data-order-status="@OrderStatusConstant.Denied"
+                  class="deny-order btn btn-tone btn-danger">
+            Xác nhận
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Deny Modal End-->
+  <!-- Pagination -->
+  <div class="pagination-area pt-10">
+    <nav aria-label="Page navigation example">
+      @if (pager.TotalPages > 0)
+      {
+        <ul class="pagination justify-content-center">
+          @if (pager.CurrentPage > 1)
+          {
+            <li class="page-item">
+              <a asp-action="Admin" asp-route-pg="1"
+                 asp-route-categoryId="@ViewData["Category"]" asp-route-searchText="@ViewData["SearchText"]"
+                 class="page-link">
+                Đầu
+              </a>
+            </li>
+            <li class="page-item">
+              <a asp-action="Admin" asp-route-pg="@(pager.CurrentPage - 1)"
+                 asp-route-categoryId="@ViewData["Category"]" asp-route-searchText="@ViewData["SearchText"]" aria-label="Trước" class="page-link">
+                <span class="fa fa-chevron-left"></span>
+              </a>
+            </li>
+          }
+
+          @for (var p = pager.StartPage; p <= pager.EndPage; p++)
+          {
+            <li class="page-item @(p == pager.CurrentPage ? "active" : "")">
+              @{
+                var pge = p;
+              }
+              <a asp-controller="Orders" asp-action="Admin" asp-route-pg="@pge"
+                 asp-route-categoryId="@ViewData["Category"]" asp-route-searchText="@ViewData["SearchText"]" class="page-link">
+                @pge
+              </a>
+            </li>
+          }
+
+          @if (pager.CurrentPage < pager.TotalPages)
+          {
+            <li class="page-item">
+              <a class="page-link" asp-controller="Orders" asp-action="Admin" asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="@(pager.CurrentPage + 1)"
+                 asp-route-categoryId="@ViewData["Category"]" aria-label="Previous">
+                <span class="fa fa-chevron-right"></span>
+              </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" asp-controller="Orders" asp-action="Admin" asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="@pager.EndPage"
+                 asp-route-categoryId="@ViewData["Category"]">
+                Cuối
+              </a>
+            </li>
+          }
+        </ul>
+      }
+    </nav>
+  </div>
+  <!-- Pagination end -->
 
 </div>
 <!-- Content Wrapper END -->
+
 @section Scripts {
-    <script>
+  <script>
         function setupChangeStatusModal(modalId, confirmBtn) {
             $(document).on('show.bs.modal', modalId, function (event) {
                 const modal = $(this);
