@@ -55,7 +55,7 @@
                       </span>
                     </td>
                     <td class="product-price">
-                      <span class="amount">@item.OrderDetails.Count</span>
+                      <span class="amount">@item.OrderDetails.Sum(od => od.Amount)</span>
                     </td>
                     <td class="product-price">
                       <span class="amount">@item.TotalMoney.ToMoney()</span>
