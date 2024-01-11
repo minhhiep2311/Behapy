@@ -6,6 +6,8 @@
   Layout = "~/Views/Shared/_Layout.cshtml";
 
   var total = Model.Sum(item => item.Product.Price * item.Amount);
+  var promotionValue = ViewData["PromotionValue"] as decimal? ?? 0;
+  var totalAfterPromotion = total - promotionValue;
 }
 
 <main class="main-content">
@@ -13,7 +15,7 @@
     <div class="container">
       <div class="row">
         <div class="col-12">
-          <form>
+          <form asp-action="Index">
             <div class="table-content table-responsive">
               <table class="table">
                 <thead>
@@ -42,13 +44,15 @@
                       </td>
                       <td class="product-name">
                         <a asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId">@item.Product.Name</a>
+                        <input type="hidden" name="Products[@i].Id" value="@item.ProductId">
+                        <input type="hidden" name="Products[@i].Name" value="@item.Product.Name">
                       </td>
                       <td class="product-price">
                         <span class="amount">@item.Product.Price.ToMoney()</span>
                       </td>
                       <td class="quantity">
                         <div class="cart-plus-minus">
-                          <input class="cart-plus-minus-box" value="@item.Amount" type="text"/>
+                          <input class="cart-plus-minus-box" value="@item.Amount" name="Products[@i].Amount" type="text"/>
                         </div>
                       </td>
                       <td class="product-subtotal">
@@ -64,28 +68,38 @@
                 </tbody>
               </table>
             </div>
+            <div asp-validation-summary="All" class="text-danger"></div>
             <div class="row">
               <div class="col-12">
                 <div class="coupon-all">
                   <div class="coupon">
-                    <input id="coupon_code" class="input-text" name="coupon_code" value="" placeholder="Mã giảm giá" type="text"/>
-                    <input class="button mt-xxs-30" name="apply_coupon" value="Áp dụng" type="submit"/>
-                  </div>
-                  <div class="coupon2">
-                    <input class="button" name="update_cart" value="Cập nhật giỏ hàng" type="submit"/>
+                    <input class="input-text mr-3" name="Voucher" placeholder="Mã giảm giá" type="text" value="@ViewData["PromotionVoucher"]"/>
+                    <input class="button" value="Cập nhật giỏ hàng" type="submit"/>
                   </div>
                 </div>
               </div>
             </div>
             <div class="row">
-              <div class="col-md-5 ml-auto">
+              <div class="col-md-6">
                 <div class="cart-page-total">
                   <h2>Tổng tiền giỏ hàng</h2>
                   <ul>
                     <li>Tổng tiền <span id="cart-subtotal">@total.ToMoney()</span></li>
-                    <li>Giá tiền <span id="cart-total">@total.ToMoney()</span></li>
+                    <li>Giảm giá <span>@promotionValue.ToMoney()</span></li>
+                    <li>Tổng tiền sau khi giảm giá<span id="cart-total">@totalAfterPromotion.ToMoney()</span></li>
                   </ul>
-                  <a asp-controller="Checkout" asp-action="Index">Thanh toán</a>
+                  <a asp-controller="Checkout" asp-action="Index" asp-route-promotionVoucher="">Thanh toán</a>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="ms-4" style="padding-top: 30px">
+                  <h2 style="font-size: 25px">Mã khuyến mãi</h2>
+                  <ul style="list-style-type: disc">
+                    @foreach (var promotion in (ViewData["Promotions"] as List<string>)!)
+                    {
+                      <li>@Html.Raw(promotion)</li>
+                    }
+                  </ul>
                 </div>
               </div>
             </div>

@@ -3,5 +3,6 @@
 public enum PromotionType
 {
     Order,
-    Product
+    Product,
+    Category
 }

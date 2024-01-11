@@ -72,6 +72,14 @@
                    value="@Model.Distributor.FullName" readonly>
           </div>
         }
+        else if (Model.Customer != null)
+        {
+          <div class="form-group">
+            <label for="Distributor" class="font-weight-semibold">Khách hàng</label>
+            <input class="form-control" type="text" id="Distributor" name="Distributor"
+                   value="@Model.Customer.Name" readonly>
+          </div>
+        }
 
         <!-- Address -->
         <div class="form-group">
@@ -152,6 +160,22 @@
                   <td>@item.Amount</td>
                   <td>@item.Price.ToMoney()</td>
                   <td>@((item.Price * item.Amount).ToMoney())</td>
+                </tr>
+              }
+              @if (Model.Promotion != null)
+              {
+                <tr>
+                  <th scope="row" colspan="4">Tạm tính</th>
+                  <td>@((Model.TotalMoney + Model.Discount).ToMoney())</td>
+                </tr>
+                <tr>
+                  <th scope="row" colspan="4">
+                    Mã giảm giá:
+                    <a asp-controller="Promotions" asp-action="Details" asp-route-id="@Model.PromotionId">
+                      @Model.Promotion.Name
+                    </a>
+                  </th>
+                  <td>@Model.Discount.ToMoney()</td>
                 </tr>
               }
               <tr>

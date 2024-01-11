@@ -1,7 +1,10 @@
 ﻿using System.Net.Mime;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Behapy.Presentation.Areas.Identity.Data;
+using Behapy.Presentation.Extensions;
 using Behapy.Presentation.Models;
 using Behapy.Presentation.Services.Interfaces;
+using Behapy.Presentation.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,19 +16,112 @@ public class CartController : Controller
     private readonly BehapyDbContext _context;
     private readonly ICustomerService _customerService;
     private readonly ICartService _cartService;
+    private readonly IPromotionService _promotionService;
+    private readonly INotyfService _notyfService;
 
-    public CartController(BehapyDbContext context, ICustomerService customerService, ICartService cartService)
+    public CartController(BehapyDbContext context, ICustomerService customerService, ICartService cartService,
+        IPromotionService promotionService, INotyfService notyfService)
     {
         _context = context;
         _customerService = customerService;
         _cartService = cartService;
+        _promotionService = promotionService;
+        _notyfService = notyfService;
     }
 
+    // GET: Cart
     [Authorize]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? promotionVoucher = null)
     {
         var items = await GetAll();
+        ViewData["Promotions"] = _promotionService.GetAllContent();
+        ViewData["PromotionVoucher"] = promotionVoucher;
+
         return View(items);
+    }
+
+    // POST: Cart
+    [HttpPost]
+    [Authorize]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Index([Bind("Products,Voucher")] CartUpdateViewModel model)
+    {
+        foreach (var product in model.Products.Where(product => product.Amount <= 0))
+        {
+            model.Products.Remove(product);
+        }
+
+        foreach (var product in model.Products
+                     .Where(product => _context.Products.FirstOrDefault(p => p.Id == product.Id && p.IsActive) == null))
+        {
+            _notyfService.Error($"Sản phẩm {product.Name} không còn kinh doanh! Vui lòng xóa khỏi giỏ hàng");
+            return await Index(model.Voucher);
+        }
+
+        var customer = _customerService.GetCustomerOrDefault(true);
+        if (customer == null)
+        {
+            throw new Exception("Not logged in");
+        }
+
+        var now = DateTime.Now;
+        await _context.Entry(customer)
+            .Collection(c => c.CartItems)
+            .Query()
+            .LoadAsync();
+        customer.CartItems.Clear();
+
+        foreach (var product in model.Products)
+        {
+            customer.CartItems.Add(new CartItem
+            {
+                CustomerId = customer.Id,
+                Product = _context.Products.First(p => p.Id == product.Id),
+                ProductId = product.Id,
+                Amount = product.Amount,
+                CreatedAt = now,
+                UpdatedAt = now
+            });
+        }
+
+        if (!string.IsNullOrWhiteSpace(model.Voucher))
+        {
+            var promotion = _context.Promotions
+                .Include(p => p.ProductPromotions)
+                .ThenInclude(pp => pp.Product)
+                .FirstOrDefault(p => p.Voucher == model.Voucher);
+
+            if (promotion == null)
+            {
+                _notyfService.Error("Mã khuyến mãi không hợp lệ");
+                return await Index(model.Voucher);
+            }
+
+            var total = customer.CartItems.Sum(item => item.Product.Price * item.Amount);
+            if (total < promotion.MinOrderValue)
+            {
+                _notyfService.Error("Không đạt giá trị đơn tối thiểu");
+            }
+            else
+            {
+                var promotionValue = promotion.CalculateValue(total, customer.CartItems);
+                if (promotionValue == 0)
+                {
+                    _notyfService.Warning("Không thể áp dụng mã khuyến mãi này. Vui lòng thử mã khác");
+                }
+                else
+                {
+                    HttpContext.Session.SetInt32("PromotionId", promotion.Id);
+                }
+
+                ViewData["PromotionValue"] = promotionValue;
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
+        _notyfService.Success("Cập nhật thành công!");
+        return await Index(model.Voucher);
     }
 
     // GET: Cart/GetAll

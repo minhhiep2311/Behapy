@@ -13,6 +13,15 @@ builder.Services.AddControllersWithViews()
         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
     );
 
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(10);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddRazorPages();
 
 var connectionString = builder.Configuration.GetConnectionString("BehapyDbContextConnection") ??
@@ -62,6 +71,7 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
     
 var app = builder.Build();
@@ -81,6 +91,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
