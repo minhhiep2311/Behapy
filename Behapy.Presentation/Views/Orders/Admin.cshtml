@@ -65,7 +65,7 @@
                 <td onclick="goToDetailsPage(@item.Id)" style="cursor: pointer">#@item.Id </td>
                 <td onclick="goToDetailsPage(@item.Id)" style="cursor: pointer">@item.Orderer()</td>
                 <td>@item.TotalMoney.ToMoney()</td>
-                <td>@item.Discount</td>
+                <td>@item.Discount.ToMoney()</td>
                 <td>@item.CreateAt</td>
                 <td>
                   @item.CurrentStatus
