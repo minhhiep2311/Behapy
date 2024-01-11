@@ -177,6 +177,7 @@ public class OrdersController : Controller
             .ThenInclude(od => od.Product)
             .Include(o => o.Customer)
             .ThenInclude(c => c!.User)
+            .Include(o => o.Distributor)
             .FirstOrDefault(o => o.Id == id);
         if (order == null)
             return NotFound();
