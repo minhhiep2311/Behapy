@@ -129,6 +129,8 @@ public class OrdersController : Controller
         int? customerId)
     {
         ViewData["SearchText"] = searchText;
+        ViewData["DistributorId"] = distributorId;
+        ViewData["CustomerId"] = customerId;
 
         var orders = _context.Orders
             .Where(o =>

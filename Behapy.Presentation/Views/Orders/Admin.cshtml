@@ -147,14 +147,16 @@
           {
             <li class="page-item">
               <a asp-action="Admin" asp-route-pg="1"
-                 asp-route-categoryId="@ViewData["Category"]" asp-route-searchText="@ViewData["SearchText"]"
+                  asp-route-categoryId="@ViewData["Category"]" asp-route-searchText="@ViewData["SearchText"]" 
+                  asp-route-customer="@ViewData["CustomerId"]" asp-route-distributor="@ViewData["DistributorId"]"
                  class="page-link">
                 Đầu
               </a>
             </li>
             <li class="page-item">
               <a asp-action="Admin" asp-route-pg="@(pager.CurrentPage - 1)"
-                 asp-route-categoryId="@ViewData["Category"]" asp-route-searchText="@ViewData["SearchText"]" aria-label="Trước" class="page-link">
+                 asp-route-categoryId="@ViewData["Category"]" asp-route-searchText="@ViewData["SearchText"]" 
+                 asp-route-customer="@ViewData["CustomerId"]" asp-route-distributor="@ViewData["DistributorId"]" aria-label="Trước" class="page-link">
                 <span class="fa fa-chevron-left"></span>
               </a>
             </li>
@@ -167,7 +169,8 @@
                 var pge = p;
               }
               <a asp-controller="Orders" asp-action="Admin" asp-route-pg="@pge"
-                 asp-route-categoryId="@ViewData["Category"]" asp-route-searchText="@ViewData["SearchText"]" class="page-link">
+                 asp-route-categoryId="@ViewData["Category"]" asp-route-searchText="@ViewData["SearchText"]"
+                               asp-route-customer="@ViewData["CustomerId"]" asp-route-distributor="@ViewData["DistributorId"]" class="page-link">
                 @pge
               </a>
             </li>
@@ -177,13 +180,13 @@
           {
             <li class="page-item">
               <a class="page-link" asp-controller="Orders" asp-action="Admin" asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="@(pager.CurrentPage + 1)"
-                 asp-route-categoryId="@ViewData["Category"]" aria-label="Previous">
+                               asp-route-categoryId="@ViewData["Category"]" asp-route-customer="@ViewData["CustomerId"]" asp-route-distributor="@ViewData["DistributorId"]" aria-label="Previous">
                 <span class="fa fa-chevron-right"></span>
               </a>
             </li>
             <li class="page-item">
               <a class="page-link" asp-controller="Orders" asp-action="Admin" asp-route-searchText="@ViewData["SearchText"]" asp-route-pg="@pager.EndPage"
-                 asp-route-categoryId="@ViewData["Category"]">
+                               asp-route-categoryId="@ViewData["Category"]" asp-route-customer="@ViewData["CustomerId"]" asp-route-distributor="@ViewData["DistributorId"]">
                 Cuối
               </a>
             </li>
