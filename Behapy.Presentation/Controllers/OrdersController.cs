@@ -92,12 +92,33 @@ public class OrdersController : Controller
             for (var i = 0; i < order.Products.Count; i++)
             {
                 var product = order.Products[i];
+                var productPrice = _context.Products.First(p => p.Id == product.Id).Price;
+
+                // Lấy chiết khấu từ mức độ phân phối nếu có
+                decimal distributorDiscount = 0;
+
+                if (order.DistributorId.HasValue)
+                {
+                    var distributor = _context.Distributors.Include(d => d.DistributorLevel)
+                        .FirstOrDefault(d => d.Id == order.DistributorId.Value);
+
+                    if (distributor != null && distributor.DistributorLevel != null)
+                    {
+                        distributorDiscount = distributor.DistributorLevel.ImportReduction;
+                    }
+                }
+
+                if (order.IsCustomer)
+                {
+                    distributorDiscount = 0;
+                }
+
                 order.OrderDetails.Add(new OrderDetail
                 {
                     OrderNumber = i + 1,
                     ProductId = product.Id,
                     Amount = product.Amount,
-                    Price = _context.Products.First(p => p.Id == product.Id).Price
+                    Price = productPrice - distributorDiscount
                 });
             }
 
